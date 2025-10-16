@@ -13,9 +13,8 @@ const GOOGLE_AUTH_URL = `https://auth.emergentagent.com/?redirect=${encodeURICom
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [fullName, setFullName] = useState('');
   const [loading, setLoading] = useState(false);
-  const { login, signup, googleLogin, user, getUserRole, userRoles } = useAuth();
+  const { login, googleLogin, user, getUserRole, userRoles } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
