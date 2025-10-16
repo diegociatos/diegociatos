@@ -50,7 +50,7 @@ const AdminUserManagementPage = () => {
     setError('');
 
     try {
-      const response = await api.post('/api/auth/admin/create-user', formData);
+      const response = await api.post('/auth/admin/create-user', formData);
       setTempPassword(response.data.temporary_password);
       alert(`Usuário criado com sucesso!\n\nSenha temporária: ${response.data.temporary_password}\n\nAnote essa senha, ela não será exibida novamente.`);
       
