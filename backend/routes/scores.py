@@ -12,7 +12,6 @@ scoring_service = ScoringService()
 
 @router.post("/{application_id}/recalculate")
 async def recalculate_score(application_id: str, request: Request, session_token: Optional[str] = Cookie(None)):
-    from typing import Optional
     user = await get_current_user(request, session_token)
     
     app = await db.applications.find_one({"id": application_id})
