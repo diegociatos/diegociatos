@@ -44,7 +44,6 @@ async def recalculate_score(application_id: str, request: Request, session_token
 
 @router.get("/{application_id}")
 async def get_score(application_id: str, request: Request, session_token: Optional[str] = Cookie(None)):
-    from typing import Optional
     user = await get_current_user(request, session_token)
     
     score = await db.scores.find_one({"application_id": application_id}, {"_id": 0})
