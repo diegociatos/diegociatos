@@ -159,10 +159,19 @@ async def get_me(request: Request, session_token: Optional[str] = Cookie(None)):
 
 @router.post("/logout")
 async def logout(request: Request, response: Response, session_token: Optional[str] = Cookie(None)):
-    user = await get_current_user(request, session_token)
+    # Não exigir autenticação válida para logout - apenas limpar sessões
+    token = session_token
+    if not token:
+        auth_header = request.headers.get("Authorization")
+        if auth_header and auth_header.startswith("Bearer "):
+            token = auth_header.split(" ")[1]
     
-    if session_token:
-        await db.user_sessions.delete_many({"session_token": session_token})
+    # Tentar deletar sessões se houver token
+    if token:
+        try:
+            await db.user_sessions.delete_many({"session_token": token})
+        except:
+            pass  # Ignorar erros ao deletar sessões
     
     response.delete_cookie(key="session_token", path="/")
     return {"message": "Logout realizado com sucesso"}
