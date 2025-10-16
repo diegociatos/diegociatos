@@ -28,6 +28,7 @@ class User(BaseModel):
     phone: Optional[str] = None
     picture: Optional[str] = None
     is_active: bool = True
+    requires_password_change: bool = False
     created_at: datetime = Field(default_factory=lambda: datetime.now())
     updated_at: datetime = Field(default_factory=lambda: datetime.now())
 
