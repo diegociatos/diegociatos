@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { User, Briefcase, FileText, Award } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { User, Briefcase, FileText, Award, LogOut } from 'lucide-react';
 import api from '../services/api';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
@@ -9,6 +9,7 @@ import { Textarea } from '../components/ui/textarea';
 import { Card, CardHeader, CardContent, CardTitle } from '../components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { toast } from 'sonner';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function CandidateProfilePage() {
   const navigate = useNavigate();
