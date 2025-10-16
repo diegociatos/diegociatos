@@ -81,7 +81,7 @@ export default function JobsPage() {
       <div className="container mx-auto p-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {jobs.map((job) => (
-            <Link to={`/jobs/${job.id}`} key={job.id} data-testid={`job-card-${job.id}`}>
+            <Link to={`/jobs/${job.id}/dashboard`} key={job.id} data-testid={`job-card-${job.id}`}>
               <Card className="glass-card card-hover cursor-pointer h-full">
                 <CardHeader>
                   <div className="flex justify-between items-start mb-2">
