@@ -26,30 +26,31 @@ class SessionIDRequest(BaseModel):
     session_id: str
 
 
-@router.post("/signup")
-async def signup(data: SignupRequest):
-    existing = await db.users.find_one({"email": data.email})
-    if existing:
-        raise HTTPException(status_code=400, detail="Email já cadastrado")
-    
-    user = User(
-        email=data.email,
-        password_hash=hash_password(data.password),
-        full_name=data.full_name,
-        phone=data.phone
-    )
-    
-    await db.users.insert_one(user.model_dump())
-    
-    access_token = create_access_token({"user_id": user.id, "email": user.email})
-    refresh_token = create_refresh_token({"user_id": user.id})
-    
-    return {
-        "access_token": access_token,
-        "refresh_token": refresh_token,
-        "token_type": "bearer",
-        "user": {"id": user.id, "email": user.email, "full_name": user.full_name}
-    }
+# ROTA DESATIVADA - Usar /candidate/signup para candidatos ou /admin/create-user para outros usuários
+# @router.post("/signup")
+# async def signup(data: SignupRequest):
+#     existing = await db.users.find_one({"email": data.email})
+#     if existing:
+#         raise HTTPException(status_code=400, detail="Email já cadastrado")
+#     
+#     user = User(
+#         email=data.email,
+#         password_hash=hash_password(data.password),
+#         full_name=data.full_name,
+#         phone=data.phone
+#     )
+#     
+#     await db.users.insert_one(user.model_dump())
+#     
+#     access_token = create_access_token({"user_id": user.id, "email": user.email})
+#     refresh_token = create_refresh_token({"user_id": user.id})
+#     
+#     return {
+#         "access_token": access_token,
+#         "refresh_token": refresh_token,
+#         "token_type": "bearer",
+#         "user": {"id": user.id, "email": user.email, "full_name": user.full_name}
+#     }
 
 
 @router.post("/login")
