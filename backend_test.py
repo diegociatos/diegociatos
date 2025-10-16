@@ -284,7 +284,7 @@ class BackendTester:
         
         # Test GET /users - List users
         try:
-            response = self.make_request("GET", "/users", auth_token=self.tokens["admin"])
+            response = self.make_request("GET", "/users/", auth_token=self.tokens["admin"])
             
             if response.status_code == 200:
                 users = response.json()
