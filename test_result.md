@@ -101,3 +101,265 @@
 #====================================================================================================
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
+
+user_problem_statement: |
+  Implementar sistema de cadastro e gerenciamento de usuários com controle de acesso:
+  1. Admin: Usuário padrão criado no seed, pode criar novos admins/clientes/analistas
+  2. Cliente: Cadastrado pelo Admin com senha provisória, deve trocar no primeiro acesso
+  3. Analista/Recruiter: Cadastrado pelo Admin com senha provisória, deve trocar no primeiro acesso  
+  4. Candidato: Auto-cadastro público através de página dedicada
+  
+  - Remover rota de signup genérico
+  - Implementar flag requires_password_change
+  - Criar página de troca de senha no primeiro acesso
+  - Criar página de cadastro de candidato
+  - Criar página de gerenciamento de usuários (Admin)
+
+backend:
+  - task: "Adicionar campo requires_password_change no modelo User"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/models.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Campo requires_password_change adicionado ao modelo User com default False"
+
+  - task: "Modificar rota /login para retornar flag requires_password_change"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/routes/auth.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Rota /login atualizada para incluir requires_password_change no response"
+
+  - task: "Criar rota /change-password"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/routes/auth.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Rota criada para permitir troca de senha. Se requires_password_change=True, não precisa validar senha antiga"
+
+  - task: "Criar rota /candidate/signup para auto-cadastro de candidatos"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/routes/auth.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Rota pública criada para candidatos se cadastrarem. Cria user, role de candidato e perfil de candidato automaticamente"
+
+  - task: "Criar rota /admin/create-user para Admin criar usuários"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/routes/auth.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Rota criada para Admin criar novos usuários com senha provisória gerada automaticamente. Requer role admin"
+
+  - task: "Desativar rota /signup genérica"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/routes/auth.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Rota /signup comentada para não ser mais utilizada"
+
+  - task: "Adicionar rotas de gerenciamento de usuários (CRUD)"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/routes/users.py"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Adicionadas rotas GET, PATCH e DELETE para gerenciar usuários"
+
+  - task: "Atualizar seed com campo requires_password_change"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/seed.py"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Seed atualizado para incluir requires_password_change=False nos usuários de teste"
+
+frontend:
+  - task: "Criar página CandidateSignupPage para auto-cadastro"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/CandidateSignupPage.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Página criada com formulário completo de cadastro para candidatos"
+
+  - task: "Criar página ChangePasswordPage para primeiro acesso"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/ChangePasswordPage.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Página criada para troca obrigatória de senha no primeiro acesso"
+
+  - task: "Criar página AdminUserManagementPage"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/AdminUserManagementPage.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Página criada com lista de usuários e modal para criar novos usuários com senha provisória"
+
+  - task: "Atualizar AuthContext com função updateUser"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/contexts/AuthContext.js"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Função updateUser adicionada e login modificado para aceitar token direto"
+
+  - task: "Modificar LoginPage para verificar requires_password_change"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/LoginPage.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "LoginPage atualizado para redirecionar para /change-password se necessário. Removida aba de signup genérico"
+
+  - task: "Adicionar link 'Sou Candidato' no LoginPage"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/LoginPage.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Link adicionado apontando para /candidato/cadastro"
+
+  - task: "Adicionar rotas no App.js"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Rotas adicionadas: /candidato/cadastro, /change-password, /admin/usuarios"
+
+  - task: "Adicionar card de Gerenciar Usuários no Dashboard (para Admins)"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/DashboardPage.js"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Card de gerenciamento de usuários adicionado dinamicamente para usuários admin"
+
+  - task: "Desativar signup genérico no frontend"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/contexts/AuthContext.js"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Função signup no AuthContext modificada para lançar erro"
+
+metadata:
+  created_by: "main_agent"
+  version: "1.0"
+  test_sequence: 0
+  run_ui: false
+
+test_plan:
+  current_focus:
+    - "Testar cadastro de candidato via /candidato/cadastro"
+    - "Testar login com Admin e verificar card de Usuários"
+    - "Testar criação de novo usuário pelo Admin com senha provisória"
+    - "Testar login com usuário novo e troca de senha obrigatória"
+    - "Verificar redirecionamentos baseados em role"
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
+
+agent_communication:
+  - agent: "main"
+    message: |
+      Implementação completa do sistema de cadastro e gerenciamento de usuários.
+      
+      BACKEND:
+      - Adicionado campo requires_password_change no modelo User
+      - Criadas rotas: /candidate/signup, /admin/create-user, /change-password
+      - Rota /signup genérica desativada
+      - Seed atualizado e executado com sucesso
+      
+      FRONTEND:
+      - Criadas páginas: CandidateSignupPage, ChangePasswordPage, AdminUserManagementPage
+      - LoginPage atualizado (removida aba signup, adicionado link candidato)
+      - AuthContext atualizado com updateUser
+      - Rotas adicionadas no App.js
+      - Dashboard mostra card de gerenciamento para admins
+      
+      FLUXOS A TESTAR:
+      1. Cadastro de candidato -> Login -> Dashboard candidato
+      2. Login Admin -> Card Usuários -> Criar novo cliente/analista
+      3. Login com usuário novo (senha provisória) -> Troca de senha -> Dashboard
+      4. Verificar que signup genérico não funciona mais
+      
+      Backend reiniciado e rodando. Pronto para testes!
