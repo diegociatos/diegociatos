@@ -1,34 +1,84 @@
-.App-logo {
-    height: 40vmin;
-    pointer-events: none;
+.App {
+  min-height: 100vh;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-    .App-logo {
-        animation: App-logo-spin infinite 20s linear;
-    }
+.glass-card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
 }
 
-.App-header {
-    background-color: #0f0f10;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-size: calc(10px + 2vmin);
-    color: white;
+.card-hover {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.App-link {
-    color: #61dafb;
+.card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
 }
 
-@keyframes App-logo-spin {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
+.btn-primary {
+  background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 9999px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(52, 211, 153, 0.4);
+}
+
+.stage-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.stage-submitted {
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+
+.stage-screening {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.stage-recruiter_interview {
+  background-color: #e0e7ff;
+  color: #3730a3;
+}
+
+.stage-shortlisted {
+  background-color: #ddd6fe;
+  color: #5b21b6;
+}
+
+.stage-client_interview {
+  background-color: #fce7f3;
+  color: #9f1239;
+}
+
+.stage-offer {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.stage-hired {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.stage-rejected {
+  background-color: #fee2e2;
+  color: #991b1b;
 }
