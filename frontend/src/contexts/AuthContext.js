@@ -55,6 +55,7 @@ export const AuthProvider = ({ children }) => {
   const login = async (token, userData) => {
     // Se receber token e userData diretamente (usado no signup de candidato)
     if (token && userData) {
+      console.log('Login direto com token:', token);
       localStorage.setItem('access_token', token);
       setUser(userData);
       const roles = await fetchUserRoles(userData.id);
@@ -64,8 +65,11 @@ export const AuthProvider = ({ children }) => {
     // Se não, é login normal com email/password
     const email = token;
     const password = userData;
+    console.log('Login com email/password:', email);
     const response = await api.post('/auth/login', { email, password });
+    console.log('Response do login:', response.data);
     localStorage.setItem('access_token', response.data.access_token);
+    console.log('Token salvo no localStorage:', localStorage.getItem('access_token'));
     setUser(response.data.user);
     const roles = await fetchUserRoles(response.data.user.id);
     console.log('Login completo, roles:', roles);
