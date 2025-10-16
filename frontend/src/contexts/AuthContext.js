@@ -57,7 +57,7 @@ export const AuthProvider = ({ children }) => {
     if (token && userData) {
       localStorage.setItem('access_token', token);
       setUser(userData);
-      const roles = await fetchUserRoles(userData.id, token);
+      const roles = await fetchUserRoles(userData.id);
       return { user: userData, roles };
     }
     
@@ -65,10 +65,9 @@ export const AuthProvider = ({ children }) => {
     const email = token;
     const password = userData;
     const response = await api.post('/auth/login', { email, password });
-    const accessToken = response.data.access_token;
-    localStorage.setItem('access_token', accessToken);
+    localStorage.setItem('access_token', response.data.access_token);
     setUser(response.data.user);
-    const roles = await fetchUserRoles(response.data.user.id, accessToken);
+    const roles = await fetchUserRoles(response.data.user.id);
     console.log('Login completo, roles:', roles);
     return response.data;
   };
