@@ -83,6 +83,10 @@ export const AuthProvider = ({ children }) => {
     setUserRoles([]);
   };
 
+  const updateUser = (updatedUser) => {
+    setUser(updatedUser);
+  };
+
   return (
     <AuthContext.Provider value={{ 
       user, 
@@ -93,7 +97,8 @@ export const AuthProvider = ({ children }) => {
       googleLogin, 
       logout, 
       checkAuth,
-      getUserRole
+      getUserRole,
+      updateUser
     }}>
       {children}
     </AuthContext.Provider>
