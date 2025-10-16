@@ -231,10 +231,10 @@ export default function LoginPage() {
             <div className="grid grid-cols-2 gap-3">
               <div className="text-center p-3 border rounded-lg hover:bg-gray-50 transition-colors">
                 <p className="font-semibold text-sm mb-1">Sou Candidato</p>
-                <p className="text-xs text-gray-500 mb-2">Busco emprego</p>
-                <Link to="/carreiras">
+                <p className="text-xs text-gray-500 mb-2">Criar conta grátis</p>
+                <Link to="/candidato/cadastro">
                   <Button variant="outline" size="sm" className="w-full">
-                    Ver Vagas
+                    Cadastrar
                   </Button>
                 </Link>
               </div>
@@ -246,7 +246,13 @@ export default function LoginPage() {
               </div>
             </div>
             
-            <div className="mt-3 text-center text-xs text-gray-500">
+            <div className="mt-3 text-center">
+              <Link to="/carreiras" className="text-sm text-blue-600 hover:underline">
+                Ver vagas disponíveis →
+              </Link>
+            </div>
+            
+            <div className="mt-2 text-center text-xs text-gray-500">
               <p>Admin/Recruiter: Use o login padrão acima</p>
             </div>
           </div>
