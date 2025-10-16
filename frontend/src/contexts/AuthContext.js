@@ -52,7 +52,18 @@ export const AuthProvider = ({ children }) => {
     return userRoles[0]?.role || null;
   };
 
-  const login = async (email, password) => {
+  const login = async (token, userData) => {
+    // Se receber token e userData diretamente (usado no signup de candidato)
+    if (token && userData) {
+      localStorage.setItem('access_token', token);
+      setUser(userData);
+      const roles = await fetchUserRoles(userData.id);
+      return { user: userData, roles };
+    }
+    
+    // Se não, é login normal com email/password
+    const email = token;
+    const password = userData;
     const response = await api.post('/auth/login', { email, password });
     localStorage.setItem('access_token', response.data.access_token);
     setUser(response.data.user);
