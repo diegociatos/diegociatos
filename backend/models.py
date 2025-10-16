@@ -1,0 +1,339 @@
+from pydantic import BaseModel, Field, ConfigDict, EmailStr
+from typing import Optional, List, Dict, Any, Literal
+from datetime import datetime
+import uuid
+
+
+def generate_id():
+    return str(uuid.uuid4())
+
+
+class Organization(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=generate_id)
+    name: str
+    org_type: Literal["agency", "client"]
+    tax_id: Optional[str] = None
+    active: bool = True
+    created_at: datetime = Field(default_factory=lambda: datetime.now())
+    updated_at: datetime = Field(default_factory=lambda: datetime.now())
+
+
+class User(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=generate_id)
+    email: EmailStr
+    password_hash: Optional[str] = None
+    full_name: str
+    phone: Optional[str] = None
+    picture: Optional[str] = None
+    is_active: bool = True
+    created_at: datetime = Field(default_factory=lambda: datetime.now())
+    updated_at: datetime = Field(default_factory=lambda: datetime.now())
+
+
+class UserOrgRole(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=generate_id)
+    user_id: str
+    organization_id: str
+    role: Literal["admin", "recruiter", "client", "candidate"]
+    created_at: datetime = Field(default_factory=lambda: datetime.now())
+
+
+class Candidate(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=generate_id)
+    user_id: str
+    birthdate: Optional[datetime] = None
+    location_city: Optional[str] = None
+    location_state: Optional[str] = None
+    location_country: str = "Brasil"
+    salary_expectation: Optional[float] = None
+    availability: Optional[str] = None
+    visibility: Literal["private", "pool"] = "private"
+    created_at: datetime = Field(default_factory=lambda: datetime.now())
+    updated_at: datetime = Field(default_factory=lambda: datetime.now())
+
+
+class Skill(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=generate_id)
+    name: str
+    category: Optional[str] = None
+    created_at: datetime = Field(default_factory=lambda: datetime.now())
+
+
+class CandidateSkill(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=generate_id)
+    candidate_id: str
+    skill_id: str
+    level: int  # 1-5
+    years: Optional[float] = None
+    created_at: datetime = Field(default_factory=lambda: datetime.now())
+
+
+class Experience(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=generate_id)
+    candidate_id: str
+    company: str
+    title: str
+    start_date: datetime
+    end_date: Optional[datetime] = None
+    is_current: bool = False
+    responsibilities: Optional[str] = None
+    created_at: datetime = Field(default_factory=lambda: datetime.now())
+
+
+class Education(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=generate_id)
+    candidate_id: str
+    institution: str
+    degree: str
+    field: str
+    start_year: int
+    end_year: Optional[int] = None
+    created_at: datetime = Field(default_factory=lambda: datetime.now())
+
+
+class CandidateDocument(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=generate_id)
+    candidate_id: str
+    doc_type: Literal["resume", "cover_letter", "certificate", "other"]
+    file_key: str
+    parse_json: Optional[Dict[str, Any]] = None
+    uploaded_at: datetime = Field(default_factory=lambda: datetime.now())
+
+
+class Job(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=generate_id)
+    organization_id: str
+    title: str
+    description: str
+    employment_type: Optional[str] = None
+    schedule: Optional[str] = None
+    benefits: Optional[str] = None
+    location_city: Optional[str] = None
+    location_state: Optional[str] = None
+    location_country: str = "Brasil"
+    work_mode: Literal["presencial", "hibrido", "remoto"] = "presencial"
+    salary_min: Optional[float] = None
+    salary_max: Optional[float] = None
+    status: Literal["draft", "in_review", "published", "paused", "closed"] = "draft"
+    ideal_profile: Optional[Dict[str, Any]] = None
+    blind_review: bool = False
+    created_by: str
+    created_at: datetime = Field(default_factory=lambda: datetime.now())
+    updated_at: datetime = Field(default_factory=lambda: datetime.now())
+
+
+class JobRequiredSkill(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=generate_id)
+    job_id: str
+    skill_id: str
+    must_have: bool = False
+    min_level: int = 1  # 1-5
+    created_at: datetime = Field(default_factory=lambda: datetime.now())
+
+
+class Application(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=generate_id)
+    job_id: str
+    candidate_id: str
+    current_stage: str = "submitted"
+    stage_score: Optional[float] = None
+    status: Literal["active", "withdrawn", "rejected", "hired"] = "active"
+    applied_at: datetime = Field(default_factory=lambda: datetime.now())
+    updated_at: datetime = Field(default_factory=lambda: datetime.now())
+
+
+class ApplicationStageHistory(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=generate_id)
+    application_id: str
+    from_stage: Optional[str] = None
+    to_stage: str
+    changed_by: str
+    changed_at: datetime = Field(default_factory=lambda: datetime.now())
+    note: Optional[str] = None
+
+
+class Interview(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=generate_id)
+    application_id: str
+    interview_type: Literal["recruiter", "client", "panel", "technical"]
+    starts_at: datetime
+    ends_at: datetime
+    location: Optional[str] = None
+    interviewer_user_id: str
+    outcome: Optional[str] = None
+    notes: Optional[str] = None
+    created_at: datetime = Field(default_factory=lambda: datetime.now())
+
+
+class Feedback(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=generate_id)
+    application_id: str
+    author_user_id: str
+    role_context: Literal["recruiter", "client"]
+    recommendation: Literal["advance", "hold", "reject"]
+    comments: Optional[str] = None
+    visibility: Literal["internal", "client", "candidate"] = "internal"
+    created_at: datetime = Field(default_factory=lambda: datetime.now())
+
+
+class Questionnaire(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=generate_id)
+    key: str
+    name: str
+    description: Optional[str] = None
+    created_at: datetime = Field(default_factory=lambda: datetime.now())
+
+
+class Question(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=generate_id)
+    questionnaire_id: str
+    text: str
+    question_type: Literal["single", "multiple", "scale", "text"]
+    scale_min: Optional[int] = None
+    scale_max: Optional[int] = None
+    options: Optional[List[Dict[str, Any]]] = None
+    order_index: int = 0
+    created_at: datetime = Field(default_factory=lambda: datetime.now())
+
+
+class QuestionnaireAssignment(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=generate_id)
+    application_id: str
+    questionnaire_id: str
+    assigned_at: datetime = Field(default_factory=lambda: datetime.now())
+    completed_at: Optional[datetime] = None
+
+
+class QuestionResponse(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=generate_id)
+    assignment_id: str
+    question_id: str
+    response_json: Dict[str, Any]
+    created_at: datetime = Field(default_factory=lambda: datetime.now())
+
+
+class Assessment(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=generate_id)
+    application_id: str
+    kind: Literal["disc", "recognition", "behavioral"]
+    data: Dict[str, Any]
+    summary: Optional[str] = None
+    score: Optional[float] = None
+    created_at: datetime = Field(default_factory=lambda: datetime.now())
+
+
+class Score(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=generate_id)
+    application_id: str
+    total_score: float
+    breakdown: Dict[str, Any]
+    created_at: datetime = Field(default_factory=lambda: datetime.now())
+    updated_at: datetime = Field(default_factory=lambda: datetime.now())
+
+
+class Tag(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=generate_id)
+    name: str
+    created_at: datetime = Field(default_factory=lambda: datetime.now())
+
+
+class CandidateTag(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=generate_id)
+    candidate_id: str
+    tag_id: str
+    created_at: datetime = Field(default_factory=lambda: datetime.now())
+
+
+class JobPublication(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=generate_id)
+    job_id: str
+    channel: str
+    url: Optional[str] = None
+    published_at: datetime = Field(default_factory=lambda: datetime.now())
+
+
+class Consent(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=generate_id)
+    candidate_id: str
+    purpose: Literal["recruitment", "future_positions"]
+    granted: bool
+    granted_at: datetime = Field(default_factory=lambda: datetime.now())
+    expires_at: Optional[datetime] = None
+    revoked_at: Optional[datetime] = None
+
+
+class Notification(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=generate_id)
+    user_id: str
+    notification_type: Literal["email", "sms", "push", "whatsapp"]
+    channel_ref: Optional[str] = None
+    payload: Dict[str, Any]
+    sent_at: Optional[datetime] = None
+    created_at: datetime = Field(default_factory=lambda: datetime.now())
+
+
+class AuditLog(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=generate_id)
+    actor_user_id: Optional[str] = None
+    organization_id: Optional[str] = None
+    entity: str
+    entity_id: str
+    action: str
+    old_values: Optional[Dict[str, Any]] = None
+    new_values: Optional[Dict[str, Any]] = None
+    occurred_at: datetime = Field(default_factory=lambda: datetime.now())
+
+
+class DataRetentionRule(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=generate_id)
+    entity: str
+    months_to_keep: int
+    action: Literal["anonymize", "delete"]
+    created_at: datetime = Field(default_factory=lambda: datetime.now())
+
+
+class DataSubjectRequest(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=generate_id)
+    candidate_id: str
+    request_type: Literal["access", "rectify", "erase", "revoke_consent"]
+    status: Literal["open", "done"] = "open"
+    created_at: datetime = Field(default_factory=lambda: datetime.now())
+    resolved_at: Optional[datetime] = None
+
+
+class UserSession(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=generate_id)
+    user_id: str
+    session_token: str
+    expires_at: datetime
+    created_at: datetime = Field(default_factory=lambda: datetime.now())
