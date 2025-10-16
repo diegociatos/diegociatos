@@ -68,7 +68,8 @@ async def seed_database():
         email="recrutador@ciatos.com",
         password_hash=hash_password("recruiter123"),
         full_name="Maria Recrutadora",
-        phone="+5511988888888"
+        phone="+5511988888888",
+        requires_password_change=False  # Para testes, deixar False
     )
     await db.users.insert_one(recruiter_user.model_dump())
     print(f"✓ Usuário recrutador criado: {recruiter_user.email}")
