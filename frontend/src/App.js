@@ -37,7 +37,52 @@ function AppRoutes() {
     <Routes>
       <Route path="/login" element={<LoginPage />} />
       <Route path="/carreiras" element={<CareerSitePage />} />
-      <Route path="/perfil-candidato" element={<CandidateProfilePage />} />
+      
+      {/* Rotas do Candidato */}
+      <Route
+        path="/candidato/perfil"
+        element={
+          <PrivateRoute>
+            <CandidateProfilePage />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/candidato/dashboard"
+        element={
+          <PrivateRoute>
+            <CandidateDashboardPage />
+          </PrivateRoute>
+        }
+      />
+      
+      {/* Rotas do Cliente */}
+      <Route
+        path="/cliente/dashboard"
+        element={
+          <PrivateRoute>
+            <ClientDashboardPage />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/cliente/vagas"
+        element={
+          <PrivateRoute>
+            <JobsPage />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/cliente/shortlist"
+        element={
+          <PrivateRoute>
+            <ApplicationsPage />
+          </PrivateRoute>
+        }
+      />
+      
+      {/* Rotas Admin/Recruiter */}
       <Route
         path="/dashboard"
         element={
