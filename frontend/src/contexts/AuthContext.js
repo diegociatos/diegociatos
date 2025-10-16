@@ -90,7 +90,12 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = async () => {
-    await api.post('/auth/logout');
+    try {
+      await api.post('/auth/logout');
+    } catch (error) {
+      // Ignorar erros de logout - limpar localmente mesmo se falhar no backend
+      console.log('Erro ao fazer logout no backend, limpando localmente:', error);
+    }
     localStorage.removeItem('access_token');
     setUser(null);
     setUserRoles([]);
