@@ -121,83 +121,34 @@ export default function LoginPage() {
           <CardDescription>Plataforma de Recrutamento & Seleção</CardDescription>
         </CardHeader>
         <CardContent>
-          <Tabs defaultValue="login" className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="login" data-testid="tab-login">Entrar</TabsTrigger>
-              <TabsTrigger value="signup" data-testid="tab-signup">Cadastrar</TabsTrigger>
-            </TabsList>
-            
-            <TabsContent value="login" data-testid="login-form">
-              <form onSubmit={handleLogin} className="space-y-4 mt-4">
-                <div>
-                  <Label htmlFor="login-email">Email</Label>
-                  <Input
-                    id="login-email"
-                    data-testid="login-email-input"
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="login-password">Senha</Label>
-                  <Input
-                    id="login-password"
-                    data-testid="login-password-input"
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                  />
-                </div>
-                <Button type="submit" className="w-full btn-primary" data-testid="login-submit-button" disabled={loading}>
-                  Entrar
-                </Button>
-              </form>
-            </TabsContent>
-            
-            <TabsContent value="signup" data-testid="signup-form">
-              <form onSubmit={handleSignup} className="space-y-4 mt-4">
-                <div>
-                  <Label htmlFor="signup-name">Nome Completo</Label>
-                  <Input
-                    id="signup-name"
-                    data-testid="signup-name-input"
-                    type="text"
-                    value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
-                    required
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="signup-email">Email</Label>
-                  <Input
-                    id="signup-email"
-                    data-testid="signup-email-input"
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="signup-password">Senha</Label>
-                  <Input
-                    id="signup-password"
-                    data-testid="signup-password-input"
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                  />
-                </div>
-                <Button type="submit" className="w-full btn-primary" data-testid="signup-submit-button" disabled={loading}>
-                  Cadastrar
-                </Button>
-              </form>
-            </TabsContent>
-          </Tabs>
+          {/* Removemos as abas e mantemos apenas o login */}
+          <form onSubmit={handleLogin} className="space-y-4 mt-4" data-testid="login-form">
+            <div>
+              <Label htmlFor="login-email">Email</Label>
+              <Input
+                id="login-email"
+                data-testid="login-email-input"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
+            <div>
+              <Label htmlFor="login-password">Senha</Label>
+              <Input
+                id="login-password"
+                data-testid="login-password-input"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </div>
+            <Button type="submit" className="w-full btn-primary" data-testid="login-submit-button" disabled={loading}>
+              Entrar
+            </Button>
+          </form>
 
           <div className="mt-6">
             <div className="relative">
