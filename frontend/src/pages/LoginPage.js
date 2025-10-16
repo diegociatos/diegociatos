@@ -86,20 +86,6 @@ export default function LoginPage() {
     }
   };
 
-  const handleSignup = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      await signup(email, password, fullName);
-      toast.success('Conta criada com sucesso!');
-      redirectBasedOnRole();
-    } catch (error) {
-      toast.error('Erro ao criar conta');
-    } finally {
-      setLoading(false);
-    }
-  };
-
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
