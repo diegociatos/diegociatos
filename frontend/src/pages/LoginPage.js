@@ -216,6 +216,32 @@ export default function LoginPage() {
               Login com Google
             </Button>
           </div>
+
+          {/* Links Rápidos por Tipo de Usuário */}
+          <div className="mt-8 border-t pt-6">
+            <p className="text-sm text-gray-600 text-center mb-4">Acesso rápido por perfil:</p>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="text-center p-3 border rounded-lg hover:bg-gray-50 transition-colors">
+                <p className="font-semibold text-sm mb-1">Sou Candidato</p>
+                <p className="text-xs text-gray-500 mb-2">Busco emprego</p>
+                <Link to="/carreiras">
+                  <Button variant="outline" size="sm" className="w-full">
+                    Ver Vagas
+                  </Button>
+                </Link>
+              </div>
+              
+              <div className="text-center p-3 border rounded-lg hover:bg-gray-50 transition-colors">
+                <p className="font-semibold text-sm mb-1">Sou Cliente</p>
+                <p className="text-xs text-gray-500 mb-2">Preciso contratar</p>
+                <p className="text-xs text-blue-600">Use suas credenciais</p>
+              </div>
+            </div>
+            
+            <div className="mt-3 text-center text-xs text-gray-500">
+              <p>Admin/Recruiter: Use o login padrão acima</p>
+            </div>
+          </div>
         </CardContent>
       </Card>
     </div>
