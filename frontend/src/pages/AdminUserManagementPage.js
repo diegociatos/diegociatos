@@ -25,8 +25,8 @@ const AdminUserManagementPage = () => {
   const loadData = async () => {
     try {
       const [usersRes, orgsRes] = await Promise.all([
-        api.get('/api/users'),
-        api.get('/api/organizations')
+        api.get('/users'),
+        api.get('/organizations')
       ]);
       setUsers(usersRes.data);
       setOrganizations(orgsRes.data);
