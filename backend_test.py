@@ -124,7 +124,9 @@ class BackendTester:
         """Test login and verify requires_password_change field"""
         for role, credentials in TEST_CREDENTIALS.items():
             try:
-                response = self.make_request("POST", "/auth/login", credentials)
+                # Use a fresh session for each login
+                fresh_session = requests.Session()
+                response = fresh_session.post(f"{BASE_URL}/auth/login", json=credentials)
                 
                 if response.status_code == 200:
                     data = response.json()
