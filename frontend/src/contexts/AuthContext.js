@@ -73,11 +73,13 @@ export const AuthProvider = ({ children }) => {
   };
 
   const signup = async (email, password, full_name) => {
-    const response = await api.post('/auth/signup', { email, password, full_name });
-    localStorage.setItem('access_token', response.data.access_token);
-    setUser(response.data.user);
-    await fetchUserRoles(response.data.user.id);
-    return response.data;
+    // ROTA DESATIVADA - Usar /candidate/signup para candidatos
+    throw new Error('Esta rota não está mais disponível. Use o cadastro de candidato.');
+    // const response = await api.post('/auth/signup', { email, password, full_name });
+    // localStorage.setItem('access_token', response.data.access_token);
+    // setUser(response.data.user);
+    // await fetchUserRoles(response.data.user.id);
+    // return response.data;
   };
 
   const googleLogin = async (sessionId) => {
