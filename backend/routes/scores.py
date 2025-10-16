@@ -1,4 +1,5 @@
 from fastapi import APIRouter, HTTPException, Depends, Request, Cookie
+from typing import Optional
 from server import db
 from models import Score
 from utils.auth import get_current_user
