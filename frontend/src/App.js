@@ -6,6 +6,7 @@ import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
 import JobsPage from './pages/JobsPage';
 import CreateJobPage from './pages/CreateJobPage';
+import JobDashboardPage from './pages/JobDashboardPage';
 import ApplicationsPage from './pages/ApplicationsPage';
 import CareerSitePage from './pages/CareerSitePage';
 import CandidateProfilePage from './pages/CandidateProfilePage';
