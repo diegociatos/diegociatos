@@ -412,3 +412,30 @@ agent_communication:
       5. ✅ Gerenciamento de usuários (CRUD)
       
       🚀 BACKEND PRONTO PARA PRODUÇÃO!
+
+  - agent: "main"
+    message: |
+      CORREÇÃO DE BUG - Logout 401 Error
+      
+      PROBLEMA REPORTADO:
+      - Usuário admin não conseguia fazer logout (erro 401)
+      
+      CAUSA:
+      - Rota /logout estava chamando get_current_user que lançava 401 se token inválido
+      - Frontend não tratava erros de logout graciosamente
+      
+      CORREÇÃO APLICADA:
+      Backend (/app/backend/routes/auth.py):
+      - Rota de logout não exige mais autenticação válida
+      - Tenta deletar sessões se houver token, mas ignora erros
+      - Sempre retorna sucesso (200 OK)
+      
+      Frontend (/app/frontend/src/contexts/AuthContext.js):
+      - Função logout agora tem try-catch
+      - Limpa localStorage mesmo se requisição falhar
+      - Logout sempre funciona localmente
+      
+      TESTADO:
+      - curl POST /api/auth/logout retorna 200 OK
+      - Backend reiniciado e funcionando
+      - Pronto para usuário testar novamente
