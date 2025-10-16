@@ -30,20 +30,9 @@ export default function DashboardPage() {
     { title: 'Vagas', description: 'Gerenciar vagas e publicações', icon: Briefcase, link: '/jobs', color: '#10b981', testId: 'card-jobs' },
     { title: 'Candidatos', description: 'Buscar e gerenciar candidatos', icon: Users, link: '/candidates', color: '#3b82f6', testId: 'card-candidates' },
     { title: 'Candidaturas', description: 'Pipeline e avaliações', icon: FileText, link: '/applications', color: '#8b5cf6', testId: 'card-applications' },
-    { title: 'Relatórios', description: 'Análises e métricas', icon: BarChart3, link: '/reports', color: '#f59e0b', testId: 'card-reports' }
+    { title: 'Relatórios', description: 'Análises e métricas', icon: BarChart3, link: '/reports', color: '#f59e0b', testId: 'card-reports' },
+    { title: 'Gerenciar Usuários', description: 'Criar e gerenciar usuários', icon: UserCog, link: '/admin/usuarios', color: '#ec4899', testId: 'card-users' }
   ];
-
-  // Adicionar card de gerenciamento de usuários se for admin
-  if (isAdmin) {
-    cards.push({
-      title: 'Usuários',
-      description: 'Gerenciar usuários do sistema',
-      icon: UserCog,
-      link: '/admin/usuarios',
-      color: '#ec4899',
-      testId: 'card-users'
-    });
-  }
 
   return (
     <div className="min-h-screen" style={{ background: 'linear-gradient(135deg, #f5f7fa 0%, #e8f0f5 100%)' }}>
