@@ -49,7 +49,8 @@ async def seed_database():
         email="admin@ciatos.com",
         password_hash=hash_password("admin123"),
         full_name="Administrador Sistema",
-        phone="+5511999999999"
+        phone="+5511999999999",
+        requires_password_change=False
     )
     await db.users.insert_one(admin_user.model_dump())
     print(f"✓ Usuário admin criado: {admin_user.email}")
