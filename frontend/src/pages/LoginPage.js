@@ -16,7 +16,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
   const [loading, setLoading] = useState(false);
-  const { login, signup, googleLogin, user } = useAuth();
+  const { login, signup, googleLogin, user, getUserRole } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -25,9 +25,28 @@ export default function LoginPage() {
       const sessionId = hash.split('session_id=')[1].split('&')[0];
       handleGoogleCallback(sessionId);
     } else if (user) {
-      navigate('/dashboard');
+      redirectBasedOnRole();
     }
   }, [user]);
+
+  const redirectBasedOnRole = () => {
+    const role = getUserRole();
+    
+    switch(role) {
+      case 'candidate':
+        navigate('/candidato/perfil');
+        break;
+      case 'client':
+        navigate('/cliente/dashboard');
+        break;
+      case 'recruiter':
+      case 'admin':
+        navigate('/dashboard');
+        break;
+      default:
+        navigate('/dashboard');
+    }
+  };
 
   const handleGoogleCallback = async (sessionId) => {
     setLoading(true);
