@@ -366,7 +366,7 @@ class BackendTester:
         """Test that admin routes require proper authorization"""
         # Test admin route without token
         try:
-            response = self.make_request("GET", "/users")
+            response = self.make_request("GET", "/users/")
             if response.status_code == 401:
                 self.log_test("Authorization Check (No Token)", True, "Properly rejected request without token")
             else:
