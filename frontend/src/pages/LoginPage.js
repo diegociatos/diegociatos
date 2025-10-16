@@ -68,7 +68,10 @@ export default function LoginPage() {
     e.preventDefault();
     setLoading(true);
     try {
+      console.log('Iniciando login...');
       const response = await login(email, password);
+      console.log('Login response:', response);
+      console.log('Token no localStorage:', localStorage.getItem('access_token'));
       
       // Verificar se precisa trocar senha
       if (response.user && response.user.requires_password_change) {
@@ -80,6 +83,7 @@ export default function LoginPage() {
       toast.success('Login realizado com sucesso!');
       redirectBasedOnRole();
     } catch (error) {
+      console.error('Erro no login:', error);
       toast.error('Credenciais inválidas');
     } finally {
       setLoading(false);
