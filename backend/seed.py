@@ -88,7 +88,8 @@ async def seed_database():
         email="cliente@techcorp.com",
         password_hash=hash_password("client123"),
         full_name="João Cliente",
-        phone="+5511977777777"
+        phone="+5511977777777",
+        requires_password_change=False  # Para testes, deixar False
     )
     await db.users.insert_one(client_user.model_dump())
     print(f"✓ Usuário cliente criado: {client_user.email}")
