@@ -323,7 +323,7 @@ class BackendTester:
         if hasattr(self, 'temp_user'):
             try:
                 # Get the created user's ID first
-                users_response = self.make_request("GET", "/users", auth_token=self.tokens["admin"])
+                users_response = self.make_request("GET", "/users/", auth_token=self.tokens["admin"])
                 if users_response.status_code == 200:
                     users = users_response.json()
                     temp_user_obj = next((u for u in users if u["email"] == self.temp_user["email"]), None)
