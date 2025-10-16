@@ -33,6 +33,7 @@ function AppRoutes() {
     <Routes>
       <Route path="/login" element={<LoginPage />} />
       <Route path="/carreiras" element={<CareerSitePage />} />
+      <Route path="/perfil-candidato" element={<CandidateProfilePage />} />
       <Route
         path="/dashboard"
         element={
@@ -46,6 +47,14 @@ function AppRoutes() {
         element={
           <PrivateRoute>
             <JobsPage />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/jobs/new"
+        element={
+          <PrivateRoute>
+            <CreateJobPage />
           </PrivateRoute>
         }
       />
