@@ -67,8 +67,8 @@ export default function LoginPage() {
     setLoading(true);
     try {
       await login(email, password);
-      navigate('/dashboard');
       toast.success('Login realizado com sucesso!');
+      redirectBasedOnRole();
     } catch (error) {
       toast.error('Credenciais inválidas');
     } finally {
@@ -81,8 +81,8 @@ export default function LoginPage() {
     setLoading(true);
     try {
       await signup(email, password, fullName);
-      navigate('/dashboard');
       toast.success('Conta criada com sucesso!');
+      redirectBasedOnRole();
     } catch (error) {
       toast.error('Erro ao criar conta');
     } finally {
