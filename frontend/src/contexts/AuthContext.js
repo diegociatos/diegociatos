@@ -26,10 +26,9 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const fetchUserRoles = async (userId, token = null) => {
+  const fetchUserRoles = async (userId) => {
     try {
-      const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
-      const response = await api.get('/users/me/roles', config);
+      const response = await api.get('/users/me/roles');
       console.log('Roles carregados:', response.data);
       setUserRoles(response.data);
       return response.data;
