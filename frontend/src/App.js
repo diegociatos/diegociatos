@@ -13,6 +13,9 @@ import ApplicationsPage from './pages/ApplicationsPage';
 import CandidatesPage from './pages/CandidatesPage';
 import CareerSitePage from './pages/CareerSitePage';
 import CandidateProfilePage from './pages/CandidateProfilePage';
+import CandidateSignupPage from './pages/CandidateSignupPage';
+import ChangePasswordPage from './pages/ChangePasswordPage';
+import AdminUserManagementPage from './pages/AdminUserManagementPage';
 import './App.css';
 
 const PrivateRoute = ({ children }) => {
