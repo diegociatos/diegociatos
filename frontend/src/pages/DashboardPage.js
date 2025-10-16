@@ -7,8 +7,14 @@ import { Card, CardHeader, CardContent, CardTitle, CardDescription } from '../co
 import { toast } from 'sonner';
 
 export default function DashboardPage() {
-  const { user, logout } = useAuth();
+  const { user, logout, getUserRole } = useAuth();
   const navigate = useNavigate();
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    const role = getUserRole();
+    setIsAdmin(role === 'admin');
+  }, []);
 
   const handleLogout = async () => {
     await logout();
@@ -22,6 +28,18 @@ export default function DashboardPage() {
     { title: 'Candidaturas', description: 'Pipeline e avaliações', icon: FileText, link: '/applications', color: '#8b5cf6', testId: 'card-applications' },
     { title: 'Relatórios', description: 'Análises e métricas', icon: BarChart3, link: '/reports', color: '#f59e0b', testId: 'card-reports' }
   ];
+
+  // Adicionar card de gerenciamento de usuários se for admin
+  if (isAdmin) {
+    cards.push({
+      title: 'Usuários',
+      description: 'Gerenciar usuários do sistema',
+      icon: UserCog,
+      link: '/admin/usuarios',
+      color: '#ec4899',
+      testId: 'card-users'
+    });
+  }
 
   return (
     <div className="min-h-screen" style={{ background: 'linear-gradient(135deg, #f5f7fa 0%, #e8f0f5 100%)' }}>
