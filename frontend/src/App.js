@@ -76,6 +76,14 @@ function AppRoutes() {
           </PrivateRoute>
         }
       />
+      <Route
+        path="/candidates"
+        element={
+          <PrivateRoute>
+            <CandidatesPage />
+          </PrivateRoute>
+        }
+      />
       <Route path="/" element={<Navigate to="/login" replace />} />
     </Routes>
   );
