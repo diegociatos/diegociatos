@@ -70,7 +70,15 @@ export default function LoginPage() {
     e.preventDefault();
     setLoading(true);
     try {
-      await login(email, password);
+      const response = await login(email, password);
+      
+      // Verificar se precisa trocar senha
+      if (response.user && response.user.requires_password_change) {
+        toast.info('Você precisa alterar sua senha no primeiro acesso');
+        navigate('/change-password');
+        return;
+      }
+      
       toast.success('Login realizado com sucesso!');
       redirectBasedOnRole();
     } catch (error) {
