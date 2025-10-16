@@ -24,13 +24,17 @@ export default function LoginPage() {
     if (hash && hash.includes('session_id=')) {
       const sessionId = hash.split('session_id=')[1].split('&')[0];
       handleGoogleCallback(sessionId);
-    } else if (user) {
-      redirectBasedOnRole();
+    } else if (user && getUserRole) {
+      // Aguardar um pouco para garantir que os roles foram carregados
+      setTimeout(() => {
+        redirectBasedOnRole();
+      }, 500);
     }
   }, [user]);
 
   const redirectBasedOnRole = () => {
     const role = getUserRole();
+    console.log('Role detectado:', role);
     
     switch(role) {
       case 'candidate':
@@ -40,10 +44,13 @@ export default function LoginPage() {
         navigate('/cliente/dashboard');
         break;
       case 'recruiter':
+        navigate('/dashboard');
+        break;
       case 'admin':
         navigate('/dashboard');
         break;
       default:
+        console.log('Role não identificado, indo para dashboard padrão');
         navigate('/dashboard');
     }
   };
