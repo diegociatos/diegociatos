@@ -16,7 +16,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
   const [loading, setLoading] = useState(false);
-  const { login, signup, googleLogin, user, getUserRole } = useAuth();
+  const { login, signup, googleLogin, user, getUserRole, userRoles } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -24,17 +24,14 @@ export default function LoginPage() {
     if (hash && hash.includes('session_id=')) {
       const sessionId = hash.split('session_id=')[1].split('&')[0];
       handleGoogleCallback(sessionId);
-    } else if (user && getUserRole) {
-      // Aguardar um pouco para garantir que os roles foram carregados
-      setTimeout(() => {
-        redirectBasedOnRole();
-      }, 500);
+    } else if (user && userRoles.length > 0) {
+      redirectBasedOnRole();
     }
-  }, [user]);
+  }, [user, userRoles]);
 
   const redirectBasedOnRole = () => {
     const role = getUserRole();
-    console.log('Role detectado:', role);
+    console.log('Redirecionando para role:', role);
     
     switch(role) {
       case 'candidate':
@@ -50,7 +47,7 @@ export default function LoginPage() {
         navigate('/dashboard');
         break;
       default:
-        console.log('Role não identificado, indo para dashboard padrão');
+        console.log('Role não identificado:', role);
         navigate('/dashboard');
     }
   };
