@@ -29,14 +29,18 @@ export const AuthProvider = ({ children }) => {
   const fetchUserRoles = async (userId) => {
     try {
       const response = await api.get('/users/me/roles');
+      console.log('Roles carregados:', response.data);
       setUserRoles(response.data);
+      return response.data;
     } catch (error) {
       console.error('Erro ao buscar roles:', error);
       setUserRoles([]);
+      return [];
     }
   };
 
   const getUserRole = () => {
+    console.log('getUserRole chamado, userRoles:', userRoles);
     if (userRoles.length === 0) return null;
     
     // Prioridade: admin > recruiter > client > candidate
@@ -52,7 +56,8 @@ export const AuthProvider = ({ children }) => {
     const response = await api.post('/auth/login', { email, password });
     localStorage.setItem('access_token', response.data.access_token);
     setUser(response.data.user);
-    await fetchUserRoles(response.data.user.id);
+    const roles = await fetchUserRoles(response.data.user.id);
+    console.log('Login completo, roles:', roles);
     return response.data;
   };
 
