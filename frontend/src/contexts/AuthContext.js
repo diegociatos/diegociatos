@@ -52,19 +52,19 @@ export const AuthProvider = ({ children }) => {
     return userRoles[0]?.role || null;
   };
 
-  const login = async (token, userData) => {
-    // Se receber token e userData diretamente (usado no signup de candidato)
-    if (token && userData) {
-      console.log('Login direto com token:', token);
-      localStorage.setItem('access_token', token);
-      setUser(userData);
-      const roles = await fetchUserRoles(userData.id);
-      return { user: userData, roles };
+  const login = async (emailOrToken, passwordOrUserData) => {
+    // Se receber um objeto como segundo parâmetro, é login direto com token
+    if (passwordOrUserData && typeof passwordOrUserData === 'object') {
+      console.log('Login direto com token');
+      localStorage.setItem('access_token', emailOrToken);
+      setUser(passwordOrUserData);
+      const roles = await fetchUserRoles(passwordOrUserData.id);
+      return { user: passwordOrUserData, roles };
     }
     
     // Se não, é login normal com email/password
-    const email = token;
-    const password = userData;
+    const email = emailOrToken;
+    const password = passwordOrUserData;
     console.log('Login com email/password:', email);
     const response = await api.post('/auth/login', { email, password });
     console.log('Response do login:', response.data);
