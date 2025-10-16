@@ -8,6 +8,7 @@ import JobsPage from './pages/JobsPage';
 import CreateJobPage from './pages/CreateJobPage';
 import JobDashboardPage from './pages/JobDashboardPage';
 import ApplicationsPage from './pages/ApplicationsPage';
+import CandidatesPage from './pages/CandidatesPage';
 import CareerSitePage from './pages/CareerSitePage';
 import CandidateProfilePage from './pages/CandidateProfilePage';
 import './App.css';
