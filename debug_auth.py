@@ -40,6 +40,22 @@ async def debug_auth():
         print(f"Organizations response: {orgs_response.status_code}")
         if orgs_response.status_code != 200:
             print(f"Organizations error: {orgs_response.text}")
+        
+        # Try with trailing slash
+        orgs_response2 = requests.get(f"{BASE_URL}/organizations/", headers=headers)
+        print(f"Organizations/ response: {orgs_response2.status_code}")
+        if orgs_response2.status_code != 200:
+            print(f"Organizations/ error: {orgs_response2.text}")
+        else:
+            print(f"Organizations/ success: {orgs_response2.json()}")
+        
+        # Test /auth/me endpoint
+        me_response = requests.get(f"{BASE_URL}/auth/me", headers=headers)
+        print(f"Auth/me response: {me_response.status_code}")
+        if me_response.status_code != 200:
+            print(f"Auth/me error: {me_response.text}")
+        else:
+            print(f"Auth/me success: {me_response.json()}")
 
 if __name__ == "__main__":
     asyncio.run(debug_auth())
