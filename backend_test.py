@@ -151,7 +151,7 @@ class BackendTester:
         
         # First, get an organization ID
         try:
-            orgs_response = self.make_request("GET", "/organizations", auth_token=self.tokens["admin"])
+            orgs_response = self.make_request("GET", "/organizations/", auth_token=self.tokens["admin"])
             if orgs_response.status_code != 200:
                 self.log_test("Admin Create User", False, "Could not fetch organizations", orgs_response.text)
                 return
