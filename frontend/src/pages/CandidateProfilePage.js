@@ -105,10 +105,22 @@ export default function CandidateProfilePage() {
 
   return (
     <div className="min-h-screen" style={{ background: 'linear-gradient(135deg, #f5f7fa 0%, #e8f0f5 100%)' }}>
-      <nav className="glass-card border-b py-4 px-6">
+      <nav className="glass-card border-b py-4 px-6 flex justify-between items-center">
         <h1 className="text-2xl font-bold" style={{ fontFamily: 'Space Grotesk', color: '#10b981' }}>
           Meu Perfil
         </h1>
+        <div className="flex items-center gap-4">
+          <Link to="/carreiras">
+            <Button variant="outline">Ver Vagas</Button>
+          </Link>
+          <Link to="/candidato/dashboard">
+            <Button variant="outline">Dashboard</Button>
+          </Link>
+          <Button variant="outline" onClick={() => { logout(); navigate('/login'); }} data-testid="logout-button">
+            <LogOut className="w-4 h-4 mr-2" />
+            Sair
+          </Button>
+        </div>
       </nav>
 
       <div className="container mx-auto p-6 max-w-5xl">
