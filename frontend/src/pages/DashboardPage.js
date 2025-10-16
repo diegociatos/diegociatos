@@ -7,14 +7,18 @@ import { Card, CardHeader, CardContent, CardTitle, CardDescription } from '../co
 import { toast } from 'sonner';
 
 export default function DashboardPage() {
-  const { user, logout, getUserRole } = useAuth();
+  const { user, logout, getUserRole, userRoles } = useAuth();
   const navigate = useNavigate();
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    const role = getUserRole();
-    setIsAdmin(role === 'admin');
-  }, []);
+    // Verificar role quando userRoles mudar
+    if (userRoles && userRoles.length > 0) {
+      const role = getUserRole();
+      console.log('Role detectado no dashboard:', role);
+      setIsAdmin(role === 'admin');
+    }
+  }, [userRoles, getUserRole]);
 
   const handleLogout = async () => {
     await logout();
