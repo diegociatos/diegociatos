@@ -5,8 +5,10 @@ import { Toaster } from './components/ui/sonner';
 import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
 import JobsPage from './pages/JobsPage';
+import CreateJobPage from './pages/CreateJobPage';
 import ApplicationsPage from './pages/ApplicationsPage';
 import CareerSitePage from './pages/CareerSitePage';
+import CandidateProfilePage from './pages/CandidateProfilePage';
 import './App.css';
 
 const PrivateRoute = ({ children }) => {
