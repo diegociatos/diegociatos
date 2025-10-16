@@ -26,9 +26,10 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const fetchUserRoles = async (userId) => {
+  const fetchUserRoles = async (userId, token = null) => {
     try {
-      const response = await api.get('/users/me/roles');
+      const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
+      const response = await api.get('/users/me/roles', config);
       console.log('Roles carregados:', response.data);
       setUserRoles(response.data);
       return response.data;
@@ -57,8 +58,7 @@ export const AuthProvider = ({ children }) => {
     if (token && userData) {
       localStorage.setItem('access_token', token);
       setUser(userData);
-      await new Promise(resolve => setTimeout(resolve, 100)); // Aguardar token ser salvo
-      const roles = await fetchUserRoles(userData.id);
+      const roles = await fetchUserRoles(userData.id, token);
       return { user: userData, roles };
     }
     
@@ -66,10 +66,10 @@ export const AuthProvider = ({ children }) => {
     const email = token;
     const password = userData;
     const response = await api.post('/auth/login', { email, password });
-    localStorage.setItem('access_token', response.data.access_token);
+    const accessToken = response.data.access_token;
+    localStorage.setItem('access_token', accessToken);
     setUser(response.data.user);
-    await new Promise(resolve => setTimeout(resolve, 100)); // Aguardar token ser salvo
-    const roles = await fetchUserRoles(response.data.user.id);
+    const roles = await fetchUserRoles(response.data.user.id, accessToken);
     console.log('Login completo, roles:', roles);
     return response.data;
   };
