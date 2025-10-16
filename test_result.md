@@ -118,87 +118,108 @@ user_problem_statement: |
 backend:
   - task: "Adicionar campo requires_password_change no modelo User"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/models.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Campo requires_password_change adicionado ao modelo User com default False"
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTADO: Campo requires_password_change funcionando corretamente. Login retorna o campo e usuários criados pelo admin têm requires_password_change=True"
 
   - task: "Modificar rota /login para retornar flag requires_password_change"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/routes/auth.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Rota /login atualizada para incluir requires_password_change no response"
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTADO: Rota /login retorna requires_password_change corretamente para todos os usuários (admin: false, recruiter: false, client: false)"
 
   - task: "Criar rota /change-password"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/routes/auth.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Rota criada para permitir troca de senha. Se requires_password_change=True, não precisa validar senha antiga"
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTADO: Rota /change-password funcionando. Usuários normais precisam da senha antiga, usuários com requires_password_change=True podem trocar sem senha antiga"
 
   - task: "Criar rota /candidate/signup para auto-cadastro de candidatos"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/routes/auth.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Rota pública criada para candidatos se cadastrarem. Cria user, role de candidato e perfil de candidato automaticamente"
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTADO: Rota /candidate/signup funcionando. Cria usuário, role de candidato e perfil automaticamente. Retorna token válido e requires_password_change=false"
 
   - task: "Criar rota /admin/create-user para Admin criar usuários"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/routes/auth.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Rota criada para Admin criar novos usuários com senha provisória gerada automaticamente. Requer role admin"
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTADO: Rota /admin/create-user funcionando. Admin pode criar usuários com senha provisória. Retorna senha temporária e usuário criado tem requires_password_change=True"
 
   - task: "Desativar rota /signup genérica"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/routes/auth.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Rota /signup comentada para não ser mais utilizada"
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTADO: Rota /signup genérica desativada corretamente. Retorna 404 Not Found quando acessada"
 
   - task: "Adicionar rotas de gerenciamento de usuários (CRUD)"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/routes/users.py"
     stuck_count: 0
     priority: "medium"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Adicionadas rotas GET, PATCH e DELETE para gerenciar usuários"
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTADO: Rotas CRUD funcionando. GET /users/ lista usuários, GET /users/{id} busca usuário específico, PATCH e DELETE funcionam corretamente com autorização admin"
 
   - task: "Atualizar seed com campo requires_password_change"
     implemented: true
