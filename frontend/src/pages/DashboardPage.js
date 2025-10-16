@@ -109,15 +109,31 @@ export default function DashboardPage() {
                   Buscar Candidatos
                 </Button>
               </Link>
+              {isAdmin && (
+                <Link to="/admin/usuarios">
+                  <Button variant="outline" className="w-full justify-start" data-testid="quick-manage-users">
+                    <UserCog className="w-4 h-4 mr-2" />
+                    Gerenciar Usuários
+                  </Button>
+                </Link>
+              )}
             </CardContent>
           </Card>
 
           <Card className="glass-card">
             <CardHeader>
-              <CardTitle>Atividades Recentes</CardTitle>
+              <CardTitle>Informações do Perfil</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-gray-500 text-sm">Nenhuma atividade recente</p>
+              <p className="text-sm text-gray-600 mb-2">
+                <strong>Perfil:</strong> {getUserRole() || 'Carregando...'}
+              </p>
+              <p className="text-sm text-gray-600 mb-2">
+                <strong>É Admin?</strong> {isAdmin ? 'Sim' : 'Não'}
+              </p>
+              <p className="text-sm text-gray-600">
+                <strong>Total de Cards:</strong> {cards.length}
+              </p>
             </CardContent>
           </Card>
         </div>
