@@ -22,6 +22,8 @@ import AnalystJobDetailPage from './pages/AnalystJobDetailPage';
 import RecruiterDashboardPage from './pages/RecruiterDashboardPage';
 import JobPipelinePage from './pages/JobPipelinePage';
 import ApplicationHistoryPage from './pages/ApplicationHistoryPage';
+import NotificationsPage from './pages/NotificationsPage';
+import NotificationPreferencesPage from './pages/NotificationPreferencesPage';
 import './App.css';
 
 const PrivateRoute = ({ children }) => {
