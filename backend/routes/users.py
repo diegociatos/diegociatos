@@ -25,6 +25,12 @@ async def list_users(organization_id: Optional[str] = None, request: Request = N
     
     query = {"is_active": True}
     users = await db.users.find(query, {"_id": 0, "password_hash": 0}).to_list(1000)
+    
+    # Buscar roles de cada usuário
+    for user_data in users:
+        roles = await db.user_org_roles.find({"user_id": user_data["id"]}, {"_id": 0}).to_list(100)
+        user_data["roles"] = roles
+    
     return users
 
 
