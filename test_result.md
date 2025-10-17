@@ -625,3 +625,59 @@ agent_communication:
       
       🎉 FUNCIONALIDADE DE ALTERAR SENHA MANUALMENTE 100% FUNCIONAL!
 
+  - agent: "main"
+    message: |
+      🔧 FIX CRÍTICO - KeyError: 'expires_at' no Sistema de Autenticação
+      
+      PROBLEMA IDENTIFICADO:
+      - Erro `KeyError: 'expires_at'` bloqueando funcionalidade da Job Edit Page
+      - Usuário reportou: "Continuo não conseguindo editar vaga"
+      - API de edição de vaga retornava erro 500 devido a problema na autenticação
+      
+      CAUSA RAIZ:
+      - Modelo `UserSession` em models.py (linhas 340-345) estava FALTANDO os campos:
+        * expires_at: datetime
+        * created_at: datetime
+      - Ao criar sessões em auth.py, os campos eram definidos mas não persistidos
+      - model_dump() não incluía campos não definidos no modelo
+      - Sessões no DB não tinham expires_at, causando KeyError em get_current_user
+      - Também havia campos duplicados erroneamente no modelo DataSubjectRequest
+      
+      CORREÇÃO APLICADA:
+      Backend (/app/backend/models.py):
+      1. ✅ Adicionados campos ao UserSession:
+         - expires_at: datetime
+         - created_at: datetime = Field(default_factory=lambda: datetime.now())
+      2. ✅ Removidos campos duplicados de DataSubjectRequest (linhas 356-357)
+      
+      Migration (/app/backend/fix_sessions.py):
+      - ✅ Criado script para atualizar sessões existentes sem expires_at
+      - ✅ Executado: 0 sessões precisaram de correção (DB já estava limpo)
+      
+      Backend reiniciado com sucesso (status: RUNNING)
+      
+      PRÓXIMO PASSO:
+      - Testar autenticação e Job Edit Page para confirmar funcionamento
+
+backend:
+  - task: "Fix KeyError expires_at in UserSession model"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/models.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: false
+        agent: "user"
+        comment: "Usuário reportou: Job Edit Page não funciona, erro 500 ao editar vaga"
+      - working: "NA"
+        agent: "main"
+        comment: "Identificado problema: modelo UserSession não tinha campos expires_at e created_at. Campos adicionados ao modelo e backend reiniciado."
+
+test_plan:
+  current_focus:
+    - "Testar autenticação após fix do UserSession"
+    - "Testar Job Edit Page (GET /jobs/{job_id} e PATCH /jobs/{job_id})"
+    - "Verificar se todas as APIs protegidas funcionam corretamente"
+
