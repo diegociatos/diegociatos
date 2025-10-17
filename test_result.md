@@ -439,3 +439,29 @@ agent_communication:
       - curl POST /api/auth/logout retorna 200 OK
       - Backend reiniciado e funcionando
       - Pronto para usuário testar novamente
+
+  - agent: "main"
+    message: |
+      NOVA FUNCIONALIDADE - Admin pode definir senha inicial ao criar usuário
+      
+      IMPLEMENTAÇÃO:
+      Backend (/app/backend/routes/auth.py):
+      - Adicionado campo opcional `password` no modelo CreateUserRequest
+      - Rota /admin/create-user agora aceita senha opcional
+      - Se senha fornecida: usa a senha e valida (mínimo 1 caractere)
+      - Se senha não fornecida: gera automaticamente
+      - Sempre define requires_password_change=True (usuário troca no primeiro login)
+      
+      Frontend (/app/frontend/src/pages/AdminUserManagementPage.js):
+      - Adicionado checkbox "Definir senha inicial" no modal de criar usuário
+      - Campo de senha aparece condicionalmente quando checkbox marcado
+      - Validação: mínimo 1 caractere
+      - Mensagem clara sobre comportamento (usuário pode manter ou trocar senha)
+      
+      TESTADO VISUALMENTE:
+      - Modal de criar usuário exibe checkbox corretamente
+      - Campo de senha aparece/desaparece ao marcar/desmarcar checkbox
+      - Mensagem amarela atualiza dinamicamente
+      
+      PRÓXIMO PASSO:
+      - Testar fluxo completo end-to-end (criar usuário com senha definida, fazer login, verificar requires_password_change)
