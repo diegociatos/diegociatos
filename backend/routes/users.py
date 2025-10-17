@@ -123,3 +123,94 @@ async def delete_user(user_id: str, request: Request, session_token: Optional[st
         raise HTTPException(status_code=404, detail="Usuário não encontrado")
     
     return {"message": "Usuário desativado com sucesso"}
+
+
+
+@router.put("/me")
+async def update_my_profile(update_data: dict, request: Request, session_token: Optional[str] = Cookie(None)):
+    """Usuário atualiza seu próprio perfil"""
+    user = await get_current_user(request, session_token)
+    
+    # Remover campos que não devem ser atualizados
+    update_data.pop("id", None)
+    update_data.pop("password_hash", None)
+    update_data.pop("created_at", None)
+    update_data.pop("requires_password_change", None)
+    
+    if not update_data:
+        raise HTTPException(status_code=400, detail="Nenhum campo para atualizar")
+    
+    from datetime import datetime, timezone
+    update_data["updated_at"] = datetime.now(timezone.utc).isoformat()
+    
+    result = await db.users.update_one(
+        {"id": user["id"]},
+        {"$set": update_data}
+    )
+    
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Usuário não encontrado")
+    
+    return {"message": "Perfil atualizado com sucesso"}
+
+
+@router.put("/me/password")
+async def change_my_password(data: dict, request: Request, session_token: Optional[str] = Cookie(None)):
+    """Usuário troca sua própria senha"""
+    user = await get_current_user(request, session_token)
+    
+    from utils.auth import verify_password, hash_password
+    
+    old_password = data.get("old_password")
+    new_password = data.get("new_password")
+    
+    if not old_password or not new_password:
+        raise HTTPException(status_code=400, detail="Senha antiga e nova são obrigatórias")
+    
+    # Verificar senha antiga
+    if not verify_password(old_password, user["password_hash"]):
+        raise HTTPException(status_code=400, detail="Senha antiga incorreta")
+    
+    # Atualizar senha
+    new_hash = hash_password(new_password)
+    from datetime import datetime, timezone
+    await db.users.update_one(
+        {"id": user["id"]},
+        {"$set": {
+            "password_hash": new_hash,
+            "requires_password_change": False,
+            "updated_at": datetime.now(timezone.utc).isoformat()
+        }}
+    )
+    
+    return {"message": "Senha alterada com sucesso"}
+
+
+@router.put("/{user_id}/reset-password")
+async def admin_reset_password(user_id: str, request: Request, session_token: Optional[str] = Cookie(None)):
+    """Admin reseta senha de um usuário"""
+    user = await get_current_user(request, session_token)
+    await require_role(user, ["admin"])
+    
+    # Gerar nova senha provisória
+    import secrets
+    from utils.auth import hash_password
+    temp_password = secrets.token_urlsafe(12)
+    
+    from datetime import datetime, timezone
+    result = await db.users.update_one(
+        {"id": user_id},
+        {"$set": {
+            "password_hash": hash_password(temp_password),
+            "requires_password_change": True,
+            "updated_at": datetime.now(timezone.utc).isoformat()
+        }}
+    )
+    
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Usuário não encontrado")
+    
+    return {
+        "message": "Senha resetada com sucesso",
+        "temporary_password": temp_password
+    }
