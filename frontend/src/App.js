@@ -87,6 +87,22 @@ function AppRoutes() {
           </PrivateRoute>
         }
       />
+      <Route
+        path="/notifications"
+        element={
+          <PrivateRoute>
+            <NotificationsPage />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/notification-preferences"
+        element={
+          <PrivateRoute>
+            <NotificationPreferencesPage />
+          </PrivateRoute>
+        }
+      />
       
       {/* Rotas do Candidato */}
       <Route
