@@ -594,6 +594,73 @@ const AdminUserManagementPage = () => {
           </div>
         </div>
       )}
+
+      {/* Change Password Modal */}
+      {showChangePasswordModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
+            <h3 className="text-2xl font-bold text-gray-800 mb-4">Alterar Senha</h3>
+            
+            {error && (
+              <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+                {error}
+              </div>
+            )}
+
+            <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded">
+              <p className="text-sm text-blue-800">
+                <strong>Usuário:</strong> {selectedUser?.full_name}
+              </p>
+            </div>
+            
+            <form onSubmit={handleChangePassword} className="space-y-4">
+              <div>
+                <label className="block text-gray-700 font-medium mb-2">
+                  Nova Senha * <span className="text-sm font-normal text-gray-500">(mínimo 1 caractere)</span>
+                </label>
+                <input
+                  type="password"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  required
+                  minLength={1}
+                  placeholder="Digite a nova senha"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                <p className="mt-1 text-xs text-gray-500">
+                  O usuário poderá manter esta senha (não será obrigado a trocar no próximo login).
+                </p>
+              </div>
+
+              <div className="bg-green-50 border border-green-200 rounded p-3">
+                <p className="text-sm text-green-800">
+                  ✓ A senha será alterada imediatamente e o usuário poderá utilizá-la para fazer login.
+                </p>
+              </div>
+
+              <div className="flex space-x-3">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowChangePasswordModal(false);
+                    setNewPassword('');
+                    setError('');
+                  }}
+                  className="flex-1 bg-gray-300 text-gray-700 py-2 rounded-lg hover:bg-gray-400"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  className="flex-1 bg-orange-600 text-white py-2 rounded-lg hover:bg-orange-700"
+                >
+                  Alterar Senha
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
