@@ -264,12 +264,20 @@ const RecruiterDashboardPage = () => {
                           </div>
                         </td>
                         <td className="px-6 py-4">
-                          <button
-                            onClick={() => navigate(`/jobs/${job.jobId}/pipeline`)}
-                            className="inline-flex items-center px-3 py-1.5 bg-blue-600 text-white rounded-md text-sm font-medium hover:bg-blue-700 transition-colors"
-                          >
-                            Ver Pipeline
-                          </button>
+                          <div className="flex gap-2">
+                            <button
+                              onClick={() => navigate(`/jobs/${job.jobId}/edit`)}
+                              className="inline-flex items-center px-3 py-1.5 bg-gray-600 text-white rounded-md text-sm font-medium hover:bg-gray-700 transition-colors"
+                            >
+                              Editar
+                            </button>
+                            <button
+                              onClick={() => navigate(`/jobs/${job.jobId}/pipeline`)}
+                              className="inline-flex items-center px-3 py-1.5 bg-blue-600 text-white rounded-md text-sm font-medium hover:bg-blue-700 transition-colors"
+                            >
+                              Pipeline
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     );
