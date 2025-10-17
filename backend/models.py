@@ -338,3 +338,31 @@ class UserSession(BaseModel):
     session_token: str
     expires_at: datetime
     created_at: datetime = Field(default_factory=lambda: datetime.now())
+
+
+class Notification(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=generate_id)
+    user_id: str
+    type: str
+    title: str
+    message: str
+    link: Optional[str] = None
+    read: bool = False
+    data: Optional[Dict[str, Any]] = None
+    created_at: datetime = Field(default_factory=lambda: datetime.now())
+
+
+class Interview(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=generate_id)
+    application_id: str
+    job_id: str
+    candidate_id: str
+    scheduled_by: str
+    scheduled_date: datetime
+    location: str
+    notes: Optional[str] = None
+    status: Literal["scheduled", "completed", "cancelled"] = "scheduled"
+    created_at: datetime = Field(default_factory=lambda: datetime.now())
+    updated_at: datetime = Field(default_factory=lambda: datetime.now())
