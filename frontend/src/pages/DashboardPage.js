@@ -31,6 +31,7 @@ export default function DashboardPage() {
     { title: 'Candidatos', description: 'Buscar e gerenciar candidatos', icon: Users, link: '/candidates', color: '#3b82f6', testId: 'card-candidates' },
     { title: 'Candidaturas', description: 'Pipeline e avaliações', icon: FileText, link: '/applications', color: '#8b5cf6', testId: 'card-applications' },
     { title: 'Relatórios', description: 'Análises e métricas', icon: BarChart3, link: '/reports', color: '#f59e0b', testId: 'card-reports' },
+    { title: 'Organizações', description: 'Cadastrar empresas clientes', icon: UserCog, link: '/admin/organizacoes', color: '#06b6d4', testId: 'card-organizations' },
     { title: 'Gerenciar Usuários', description: 'Criar e gerenciar usuários', icon: UserCog, link: '/admin/usuarios', color: '#ec4899', testId: 'card-users' }
   ];
 
