@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
+import NotificationBell from '../components/NotificationBell';
 
 const RecruiterDashboardPage = () => {
   const navigate = useNavigate();
