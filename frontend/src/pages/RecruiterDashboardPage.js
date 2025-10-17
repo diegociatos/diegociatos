@@ -92,6 +92,14 @@ const RecruiterDashboardPage = () => {
               <span className="ml-4 px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full">Analista</span>
             </div>
             <div className="flex items-center space-x-4">
+              <NotificationBell />
+              <button
+                onClick={() => navigate('/notification-preferences')}
+                className="text-gray-600 hover:text-gray-800"
+                title="Preferências de Notificação"
+              >
+                ⚙️
+              </button>
               <button
                 onClick={() => navigate('/dashboard')}
                 className="text-gray-600 hover:text-gray-800"
