@@ -61,7 +61,7 @@ export default function CreateJobPage() {
         salary_max: formData.salary_max ? parseFloat(formData.salary_max) : null
       };
 
-      await api.post(`/jobs?organization_id=${formData.organization_id}`, payload);
+      await api.post(`/jobs/?organization_id=${formData.organization_id}`, payload);
       toast.success('Vaga cadastrada com sucesso! Aguarde revisão do analista.');
       navigate('/jobs');
     } catch (error) {
