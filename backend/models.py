@@ -170,15 +170,17 @@ class ApplicationStageHistory(BaseModel):
 class Interview(BaseModel):
     model_config = ConfigDict(extra="ignore")
     id: str = Field(default_factory=generate_id)
+    tenant_id: str  # organization_id
     application_id: str
-    interview_type: Literal["recruiter", "client", "panel", "technical"]
-    starts_at: datetime
-    ends_at: datetime
+    interview_type: Literal["recruiter", "client", "technical"]
+    starts_at: Optional[datetime] = None
+    ends_at: Optional[datetime] = None
     location: Optional[str] = None
-    interviewer_user_id: str
-    outcome: Optional[str] = None
+    interviewer_user_id: Optional[str] = None
+    status: Literal["scheduled", "done", "no_show", "canceled"] = "scheduled"
     notes: Optional[str] = None
     created_at: datetime = Field(default_factory=lambda: datetime.now())
+    updated_at: datetime = Field(default_factory=lambda: datetime.now())
 
 
 class Feedback(BaseModel):
