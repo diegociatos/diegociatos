@@ -70,14 +70,17 @@ async def get_current_user(request: Request, session_token: Optional[str] = Cook
         except:
             raise HTTPException(status_code=401, detail="Sessão inválida")
     else:
-        expires_at = session["expires_at"]
-        if isinstance(expires_at, str):
-            expires_at = datetime.fromisoformat(expires_at)
-        if not expires_at.tzinfo:
-            expires_at = expires_at.replace(tzinfo=timezone.utc)
+        # Verificar se session tem expires_at
+        if "expires_at" in session:
+            expires_at = session["expires_at"]
+            if isinstance(expires_at, str):
+                expires_at = datetime.fromisoformat(expires_at)
+            if not expires_at.tzinfo:
+                expires_at = expires_at.replace(tzinfo=timezone.utc)
+            
+            if expires_at < datetime.now(timezone.utc):
+                raise HTTPException(status_code=401, detail="Sessão expirada")
         
-        if expires_at < datetime.now(timezone.utc):
-            raise HTTPException(status_code=401, detail="Sessão expirada")
         user_id = session["user_id"]
     
     user = await db.users.find_one({"id": user_id}, {"_id": 0})
