@@ -42,7 +42,7 @@ const AdminOrganizationsPage = () => {
     setError('');
 
     try {
-      await api.post('/organizations', formData);
+      await api.post('/organizations/', formData);
       alert('Organização criada com sucesso!');
       
       // Resetar formulário e recarregar lista
