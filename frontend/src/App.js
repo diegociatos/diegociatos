@@ -84,6 +84,14 @@ function AppRoutes() {
         }
       />
       <Route
+        path="/job/:jobId/candidates"
+        element={
+          <PrivateRoute>
+            <JobCandidatesPage />
+          </PrivateRoute>
+        }
+      />
+      <Route
         path="/cliente/vagas"
         element={
           <PrivateRoute>
