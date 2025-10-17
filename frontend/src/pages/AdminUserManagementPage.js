@@ -49,6 +49,12 @@ const AdminUserManagementPage = () => {
     e.preventDefault();
     setError('');
 
+    // Validar se organização foi selecionada
+    if (!formData.organization_id) {
+      setError('Por favor, selecione uma organização');
+      return;
+    }
+
     try {
       const response = await api.post('/auth/admin/create-user', formData);
       const tempPass = response.data.temporary_password;
