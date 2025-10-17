@@ -568,7 +568,7 @@ const AdminUserManagementPage = () => {
 
               <div className="bg-blue-50 border border-blue-200 rounded p-3">
                 <p className="text-sm text-blue-800">
-                  💡 Para alterar a senha deste usuário, use o botão "Resetar Senha" na lista.
+                  💡 Para alterar a senha deste usuário, use o botão "Alterar Senha" na lista.
                 </p>
               </div>
 
