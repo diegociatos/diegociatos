@@ -362,7 +362,8 @@ const AdminUserManagementPage = () => {
                     </div>
                   </td>
                 </tr>
-              ))}
+                );
+              })}
             </tbody>
           </table>
         </div>
