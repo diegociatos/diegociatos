@@ -122,6 +122,8 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('access_token');
     setUser(null);
     setUserRoles([]);
+    rolesCache.current = null;
+    fetchingRoles.current = false;
   };
 
   const updateUser = (updatedUser) => {
