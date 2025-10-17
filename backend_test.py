@@ -426,8 +426,10 @@ class BackendTester:
             return
         
         # Test creating user with custom password
+        import time
+        timestamp = str(int(time.time()))
         test_user_data = {
-            "email": "teste.senha.custom@example.com",
+            "email": f"teste.senha.custom.{timestamp}@example.com",
             "full_name": "Usuario Senha Custom",
             "phone": "+5511777777777",
             "role": "client",
