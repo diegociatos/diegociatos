@@ -268,6 +268,9 @@ async def get_application_history(
 
 async def create_stage_change_notifications(app: Dict, to_stage: str, changed_by_user_id: str):
     """Helper para criar notificações ao mudar estágio"""
+    from services.notification_service import get_notification_service
+    
+    service = get_notification_service()
     
     # Buscar vaga
     job = await db.jobs.find_one({"id": app["job_id"]}, {"_id": 0})
@@ -280,6 +283,7 @@ async def create_stage_change_notifications(app: Dict, to_stage: str, changed_by
     
     # Buscar usuário do candidato
     candidate_user = await db.users.find_one({"id": candidate["user_id"]}, {"_id": 0})
+    candidate_name = candidate_user["full_name"] if candidate_user else "Candidato"
     
     # Mapeamento de estágios para labels
     stage_labels = {
@@ -296,19 +300,26 @@ async def create_stage_change_notifications(app: Dict, to_stage: str, changed_by
     
     stage_label = stage_labels.get(to_stage, to_stage)
     
-    # 1. Notificação para o candidato
+    # 1. Notificação para o candidato (sempre)
     if candidate_user:
-        from models import Notification
-        notif_candidate = Notification(
+        await service.create_in_app(
             user_id=candidate_user["id"],
             tenant_id=app["tenant_id"],
-            channel="system",
-            title=f"Atualização no processo seletivo",
+            notification_type="stage_changed",
+            title="Atualização no processo seletivo",
             body=f"Seu processo mudou para '{stage_label}' na vaga {job_title}",
-            link=f"/applications/{app['id']}",
-            is_read=False
+            link=f"/applications/{app['id']}/history"
         )
-        await db.notifications.insert_one(notif_candidate.model_dump())
+        
+        # Também enfileirar email
+        await service.enqueue_email(
+            user_id=candidate_user["id"],
+            tenant_id=app["tenant_id"],
+            notification_type="stage_changed",
+            title="Atualização no processo seletivo",
+            body=f"Seu processo mudou para '{stage_label}' na vaga {job_title}",
+            link=f"/applications/{app['id']}/history"
+        )
     
     # 2. Notificação para o cliente (somente em estágios específicos)
     notify_client_stages = ["shortlisted", "client_interview", "offer", "hired"]
@@ -320,14 +331,20 @@ async def create_stage_change_notifications(app: Dict, to_stage: str, changed_by
         }, {"_id": 0}).to_list(100)
         
         for role in client_roles:
-            from models import Notification
-            notif_client = Notification(
+            await service.create_in_app(
                 user_id=role["user_id"],
                 tenant_id=app["tenant_id"],
-                channel="system",
+                notification_type="stage_changed",
                 title=f"Candidato movido para {stage_label}",
-                body=f"Candidato {candidate_user['full_name'] if candidate_user else 'N/A'} foi movido para '{stage_label}' na vaga {job_title}",
-                link=f"/jobs/{app['job_id']}/pipeline",
-                is_read=False
+                body=f"Candidato {candidate_name} foi movido para '{stage_label}' na vaga {job_title}",
+                link=f"/jobs/{app['job_id']}/pipeline"
             )
-            await db.notifications.insert_one(notif_client.model_dump())
+            
+            await service.enqueue_email(
+                user_id=role["user_id"],
+                tenant_id=app["tenant_id"],
+                notification_type="stage_changed",
+                title=f"Candidato movido para {stage_label}",
+                body=f"Candidato {candidate_name} foi movido para '{stage_label}' na vaga {job_title}",
+                link=f"/jobs/{app['job_id']}/pipeline"
+            )
