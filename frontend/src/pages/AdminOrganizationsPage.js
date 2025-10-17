@@ -20,7 +20,7 @@ const AdminOrganizationsPage = () => {
 
   const loadOrganizations = async () => {
     try {
-      const response = await api.get('/organizations');
+      const response = await api.get('/organizations/');
       setOrganizations(response.data);
     } catch (err) {
       console.error('Erro ao carregar organizações:', err);
