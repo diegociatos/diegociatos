@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { DndContext, DragOverlay, closestCorners, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import api from '../services/api';
+import InterviewModal from '../components/InterviewModal';
 
 const JobPipelinePage = () => {
   const { jobId } = useParams();
