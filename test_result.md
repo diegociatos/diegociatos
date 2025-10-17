@@ -388,6 +388,8 @@ test_plan:
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
+  completed_tests:
+    - "Nova funcionalidade: Admin alterar senha manualmente de qualquer usuário"
 
 agent_communication:
   - agent: "main"
