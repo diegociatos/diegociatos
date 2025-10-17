@@ -346,11 +346,11 @@ const AdminUserManagementPage = () => {
                         Editar
                       </button>
                       <button
-                        onClick={() => handleResetPassword(user.id, user.full_name)}
+                        onClick={() => handleOpenChangePassword(user)}
                         className="text-orange-600 hover:text-orange-900"
-                        title="Resetar senha"
+                        title="Alterar senha"
                       >
-                        Resetar Senha
+                        Alterar Senha
                       </button>
                       <button
                         onClick={() => handleDeleteUser(user.id)}
