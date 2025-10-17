@@ -662,11 +662,11 @@ agent_communication:
 backend:
   - task: "Fix KeyError expires_at in UserSession model"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/models.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: false
         agent: "user"
@@ -674,10 +674,15 @@ backend:
       - working: "NA"
         agent: "main"
         comment: "Identificado problema: modelo UserSession não tinha campos expires_at e created_at. Campos adicionados ao modelo e backend reiniciado."
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTADO E CORRIGIDO: KeyError: 'expires_at' resolvido completamente. Todos os testes passaram: (1) Login admin/cliente funcionando sem KeyError, (2) get_current_user funciona corretamente com expires_at, (3) GET /jobs/{job_id} retorna 200 OK, (4) PATCH /jobs/{job_id} funciona perfeitamente - Job Edit Page totalmente funcional. Credenciais funcionais: admin@ciatos.com/admin123, cliente@techcorp.com/client123"
 
 test_plan:
   current_focus:
-    - "Testar autenticação após fix do UserSession"
-    - "Testar Job Edit Page (GET /jobs/{job_id} e PATCH /jobs/{job_id})"
-    - "Verificar se todas as APIs protegidas funcionam corretamente"
+    - "Testar cadastro de candidato via /candidato/cadastro"
+    - "Testar login com Admin e verificar card de Usuários"
+    - "Testar criação de novo usuário pelo Admin com senha provisória"
+    - "Testar login com usuário novo e troca de senha obrigatória"
+    - "Verificar redirecionamentos baseados em role"
 
