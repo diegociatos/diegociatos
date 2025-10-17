@@ -298,12 +298,15 @@ class Notification(BaseModel):
     user_id: str
     tenant_id: Optional[str] = None  # organization_id
     channel: Literal["system", "email"]
+    notification_type: str  # job_created, stage_changed, etc
     title: str
     body: str
     link: Optional[str] = None
     is_read: bool = False
     created_at: datetime = Field(default_factory=lambda: datetime.now())
     sent_at: Optional[datetime] = None
+    status: Optional[Literal["pending", "sent", "failed"]] = None
+    error_msg: Optional[str] = None
 
 
 
