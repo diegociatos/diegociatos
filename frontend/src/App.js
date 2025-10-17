@@ -104,6 +104,14 @@ function AppRoutes() {
           </PrivateRoute>
         }
       />
+      <Route
+        path="/interviews-calendar"
+        element={
+          <PrivateRoute>
+            <InterviewsCalendarPage />
+          </PrivateRoute>
+        }
+      />
       
       {/* Rotas do Candidato */}
       <Route
