@@ -324,6 +324,17 @@ class UserSession(BaseModel):
     id: str = Field(default_factory=generate_id)
     user_id: str
     session_token: str
+
+
+class DataSubjectRequest(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=generate_id)
+    candidate_id: str
+    request_type: Literal["access", "rectify", "erase", "revoke_consent"]
+    status: Literal["open", "done"] = "open"
+    created_at: datetime = Field(default_factory=lambda: datetime.now())
+    resolved_at: Optional[datetime] = None
+
     expires_at: datetime
     created_at: datetime = Field(default_factory=lambda: datetime.now())
 
