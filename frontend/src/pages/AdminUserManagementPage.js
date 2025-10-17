@@ -64,8 +64,27 @@ const AdminUserManagementPage = () => {
       return;
     }
 
+    // Validar senha se o admin optou por definir
+    if (setCustomPassword && formData.password.length < 1) {
+      setError('Senha deve ter pelo menos 1 caractere');
+      return;
+    }
+
     try {
-      const response = await api.post('/auth/admin/create-user', formData);
+      // Preparar dados - só enviar senha se foi definida
+      const payload = {
+        email: formData.email,
+        full_name: formData.full_name,
+        phone: formData.phone,
+        role: formData.role,
+        organization_id: formData.organization_id
+      };
+      
+      if (setCustomPassword && formData.password) {
+        payload.password = formData.password;
+      }
+      
+      const response = await api.post('/auth/admin/create-user', payload);
       const tempPass = response.data.temporary_password;
       
       // Fechar modal primeiro
@@ -77,15 +96,21 @@ const AdminUserManagementPage = () => {
         full_name: '',
         phone: '',
         role: 'client',
-        organization_id: ''
+        organization_id: '',
+        password: ''
       });
+      setSetCustomPassword(false);
       
       // Recarregar lista
       await loadData();
       
-      // Mostrar senha após modal fechado (usando setTimeout para garantir que o DOM foi atualizado)
+      // Mostrar senha após modal fechado
       setTimeout(() => {
-        alert(`Usuário criado com sucesso!\n\nSenha temporária: ${tempPass}\n\n⚠️ IMPORTANTE: Anote essa senha, ela não será exibida novamente.`);
+        if (setCustomPassword) {
+          alert(`Usuário criado com sucesso!\n\nSenha definida: ${tempPass}\n\n⚠️ IMPORTANTE: O usuário deverá trocar essa senha no primeiro login.`);
+        } else {
+          alert(`Usuário criado com sucesso!\n\nSenha temporária: ${tempPass}\n\n⚠️ IMPORTANTE: Anote essa senha, ela não será exibida novamente.`);
+        }
       }, 100);
       
     } catch (err) {
