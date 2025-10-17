@@ -24,6 +24,7 @@ import JobPipelinePage from './pages/JobPipelinePage';
 import ApplicationHistoryPage from './pages/ApplicationHistoryPage';
 import NotificationsPage from './pages/NotificationsPage';
 import NotificationPreferencesPage from './pages/NotificationPreferencesPage';
+import InterviewsCalendarPage from './pages/InterviewsCalendarPage';
 import './App.css';
 
 const PrivateRoute = ({ children }) => {
