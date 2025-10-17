@@ -28,6 +28,14 @@ class JobCreate(BaseModel):
 class JobUpdate(BaseModel):
     title: Optional[str] = None
     description: Optional[str] = None
+    employment_type: Optional[str] = None
+    schedule: Optional[str] = None
+    benefits: Optional[str] = None
+    location_city: Optional[str] = None
+    location_state: Optional[str] = None
+    work_mode: Optional[Literal["presencial", "hibrido", "remoto"]] = None
+    salary_min: Optional[float] = None
+    salary_max: Optional[float] = None
     status: Optional[Literal["draft", "in_review", "published", "paused", "closed"]] = None
     ideal_profile: Optional[Dict[str, Any]] = None
     blind_review: Optional[bool] = None
