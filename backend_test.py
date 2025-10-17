@@ -613,6 +613,220 @@ class BackendTester:
         except Exception as e:
             self.log_test("Password Validation (Empty)", False, f"Request failed: {str(e)}")
 
+    def test_admin_manual_password_reset_with_password(self):
+        """Test admin manually resetting password WITH new password provided"""
+        if "admin" not in self.tokens:
+            self.log_test("Admin Manual Password Reset (With Password)", False, "Admin token not available")
+            return
+        
+        # Get client user ID (cliente@techcorp.com)
+        try:
+            users_response = self.make_request("GET", "/users/", auth_token=self.tokens["admin"])
+            if users_response.status_code != 200:
+                self.log_test("Admin Manual Password Reset (With Password)", False, "Could not fetch users")
+                return
+            
+            users = users_response.json()
+            client_user = next((u for u in users if u["email"] == "cliente@techcorp.com"), None)
+            
+            if not client_user:
+                self.log_test("Admin Manual Password Reset (With Password)", False, "Client user not found")
+                return
+            
+            # Reset password with manual password
+            reset_data = {"new_password": "novaSenha456"}
+            
+            reset_response = self.make_request("PUT", f"/users/{client_user['id']}/reset-password", 
+                                             reset_data, auth_token=self.tokens["admin"])
+            
+            if reset_response.status_code == 200:
+                response_data = reset_response.json()
+                
+                if response_data.get("new_password") == "novaSenha456":
+                    # Store for later login test
+                    self.manual_reset_user = {
+                        "email": "cliente@techcorp.com",
+                        "password": "novaSenha456"
+                    }
+                    
+                    self.log_test("Admin Manual Password Reset (With Password)", True, 
+                                f"Password reset successful, new_password: {response_data['new_password']}")
+                else:
+                    self.log_test("Admin Manual Password Reset (With Password)", False, 
+                                f"Expected new_password='novaSenha456', got {response_data.get('new_password')}")
+            else:
+                self.log_test("Admin Manual Password Reset (With Password)", False, 
+                            f"Password reset failed: {reset_response.status_code}", reset_response.text)
+                
+        except Exception as e:
+            self.log_test("Admin Manual Password Reset (With Password)", False, f"Request failed: {str(e)}")
+
+    def test_admin_manual_password_reset_without_password(self):
+        """Test admin manually resetting password WITHOUT providing new password (auto-generate)"""
+        if "admin" not in self.tokens:
+            self.log_test("Admin Manual Password Reset (Auto)", False, "Admin token not available")
+            return
+        
+        # Get recruiter user ID (recrutador@ciatos.com)
+        try:
+            users_response = self.make_request("GET", "/users/", auth_token=self.tokens["admin"])
+            if users_response.status_code != 200:
+                self.log_test("Admin Manual Password Reset (Auto)", False, "Could not fetch users")
+                return
+            
+            users = users_response.json()
+            recruiter_user = next((u for u in users if u["email"] == "recrutador@ciatos.com"), None)
+            
+            if not recruiter_user:
+                self.log_test("Admin Manual Password Reset (Auto)", False, "Recruiter user not found")
+                return
+            
+            # Reset password without providing new password (empty body)
+            reset_response = self.make_request("PUT", f"/users/{recruiter_user['id']}/reset-password", 
+                                             {}, auth_token=self.tokens["admin"])
+            
+            if reset_response.status_code == 200:
+                response_data = reset_response.json()
+                
+                if ("new_password" in response_data and 
+                    len(response_data["new_password"]) > 0):
+                    
+                    # Store for later verification
+                    self.auto_reset_user = {
+                        "email": "recrutador@ciatos.com",
+                        "password": response_data["new_password"]
+                    }
+                    
+                    self.log_test("Admin Manual Password Reset (Auto)", True, 
+                                f"Auto password reset successful, generated password: {response_data['new_password']}")
+                else:
+                    self.log_test("Admin Manual Password Reset (Auto)", False, 
+                                "Auto-generated password not returned properly", response_data)
+            else:
+                self.log_test("Admin Manual Password Reset (Auto)", False, 
+                            f"Auto password reset failed: {reset_response.status_code}", reset_response.text)
+                
+        except Exception as e:
+            self.log_test("Admin Manual Password Reset (Auto)", False, f"Request failed: {str(e)}")
+
+    def test_login_with_manually_reset_password(self):
+        """Test login with manually reset password and verify requires_password_change=False"""
+        if not hasattr(self, 'manual_reset_user'):
+            self.log_test("Login with Manual Reset Password", False, "Manual reset user not available")
+            return
+        
+        login_data = {
+            "email": self.manual_reset_user["email"],
+            "password": self.manual_reset_user["password"]
+        }
+        
+        try:
+            response = self.make_request("POST", "/auth/login", login_data)
+            
+            if response.status_code == 200:
+                data = response.json()
+                user_info = data.get("user", {})
+                
+                if user_info.get("requires_password_change") == False:
+                    self.log_test("Login with Manual Reset Password", True, 
+                                "Login successful with manually reset password, requires_password_change=False")
+                else:
+                    self.log_test("Login with Manual Reset Password", False, 
+                                f"requires_password_change should be False, got {user_info.get('requires_password_change')}")
+            else:
+                self.log_test("Login with Manual Reset Password", False, 
+                            f"Login failed with status {response.status_code}", response.text)
+        except Exception as e:
+            self.log_test("Login with Manual Reset Password", False, f"Request failed: {str(e)}")
+
+    def test_password_reset_empty_password_validation(self):
+        """Test validation: empty password should return error 400"""
+        if "admin" not in self.tokens:
+            self.log_test("Password Reset Empty Validation", False, "Admin token not available")
+            return
+        
+        # Get admin user ID for testing
+        try:
+            users_response = self.make_request("GET", "/users/", auth_token=self.tokens["admin"])
+            if users_response.status_code != 200:
+                self.log_test("Password Reset Empty Validation", False, "Could not fetch users")
+                return
+            
+            users = users_response.json()
+            admin_user = next((u for u in users if u["email"] == "admin@ciatos.com"), None)
+            
+            if not admin_user:
+                self.log_test("Password Reset Empty Validation", False, "Admin user not found")
+                return
+            
+            # Try to reset password with empty string
+            reset_data = {"new_password": ""}
+            
+            reset_response = self.make_request("PUT", f"/users/{admin_user['id']}/reset-password", 
+                                             reset_data, auth_token=self.tokens["admin"])
+            
+            if reset_response.status_code == 400:
+                self.log_test("Password Reset Empty Validation", True, 
+                            "Empty password properly rejected with 400 error")
+            else:
+                self.log_test("Password Reset Empty Validation", False, 
+                            f"Expected 400 error, got {reset_response.status_code}", reset_response.text)
+                
+        except Exception as e:
+            self.log_test("Password Reset Empty Validation", False, f"Request failed: {str(e)}")
+
+    def test_users_list_includes_roles(self):
+        """Test that GET /users/ returns roles for each user"""
+        if "admin" not in self.tokens:
+            self.log_test("Users List Includes Roles", False, "Admin token not available")
+            return
+        
+        try:
+            response = self.make_request("GET", "/users/", auth_token=self.tokens["admin"])
+            
+            if response.status_code == 200:
+                users = response.json()
+                
+                if isinstance(users, list) and len(users) > 0:
+                    # Check that each user has roles field
+                    all_have_roles = True
+                    role_structure_valid = True
+                    
+                    for user in users:
+                        if "roles" not in user:
+                            all_have_roles = False
+                            break
+                        
+                        # Check role structure
+                        roles = user["roles"]
+                        if isinstance(roles, list):
+                            for role in roles:
+                                required_fields = ["user_id", "organization_id", "role"]
+                                if not all(field in role for field in required_fields):
+                                    role_structure_valid = False
+                                    break
+                        
+                        if not role_structure_valid:
+                            break
+                    
+                    if all_have_roles and role_structure_valid:
+                        self.log_test("Users List Includes Roles", True, 
+                                    f"All {len(users)} users have properly structured roles field")
+                    elif not all_have_roles:
+                        self.log_test("Users List Includes Roles", False, 
+                                    "Some users missing 'roles' field")
+                    else:
+                        self.log_test("Users List Includes Roles", False, 
+                                    "Role structure invalid - missing required fields (user_id, organization_id, role)")
+                else:
+                    self.log_test("Users List Includes Roles", False, 
+                                "No users returned or response is not a list", users)
+            else:
+                self.log_test("Users List Includes Roles", False, 
+                            f"Failed to list users: {response.status_code}", response.text)
+        except Exception as e:
+            self.log_test("Users List Includes Roles", False, f"Request failed: {str(e)}")
+
     def test_password_reset_functionality(self):
         """Test that password reset still works after new functionality"""
         if "admin" not in self.tokens or not hasattr(self, 'custom_password_user'):
