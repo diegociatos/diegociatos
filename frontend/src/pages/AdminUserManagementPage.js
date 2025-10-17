@@ -8,12 +8,19 @@ const AdminUserManagementPage = () => {
   const [organizations, setOrganizations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
   const [formData, setFormData] = useState({
     email: '',
     full_name: '',
     phone: '',
     role: 'client',
     organization_id: ''
+  });
+  const [editData, setEditData] = useState({
+    full_name: '',
+    email: '',
+    phone: ''
   });
   const [tempPassword, setTempPassword] = useState('');
   const [error, setError] = useState('');
