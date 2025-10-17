@@ -20,8 +20,13 @@ app = FastAPI(title="Ciatos ATS API", version="1.0.0")
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
 
+# Initialize NotificationService
+from services.notification_service import NotificationService
+import services.notification_service as notif_service_module
+notif_service_module.notification_service = NotificationService(db)
+
 # Import and include all route modules
-from routes import auth, organizations, users, candidates, skills, jobs, applications, interviews, feedbacks, questionnaires, assessments, scores, notifications, consents, reports, recruiter, pipeline
+from routes import auth, organizations, users, candidates, skills, jobs, applications, interviews, feedbacks, questionnaires, assessments, scores, notifications, consents, reports, recruiter, pipeline, notifications_api
 
 api_router.include_router(auth.router, prefix="/auth", tags=["auth"])
 api_router.include_router(organizations.router, prefix="/organizations", tags=["organizations"])
