@@ -45,6 +45,7 @@ api_router.include_router(consents.router, prefix="/consents", tags=["consents"]
 api_router.include_router(reports.router, prefix="/reports", tags=["reports"])
 api_router.include_router(recruiter.router, prefix="/recruiter", tags=["recruiter"])
 api_router.include_router(pipeline.router, prefix="/applications", tags=["pipeline"])
+api_router.include_router(notifications_api.router, prefix="/notifications", tags=["notifications_v2"])
 
 api_router.get("/")(lambda: {"message": "Ciatos ATS API v1.0"})
 
