@@ -50,14 +50,17 @@ class BackendTester:
             headers["Authorization"] = f"Bearer {auth_token}"
         
         try:
+            # Use a fresh session for each request to avoid session conflicts
+            fresh_session = requests.Session()
+            
             if method.upper() == "GET":
-                response = self.session.get(url, headers=headers)
+                response = fresh_session.get(url, headers=headers)
             elif method.upper() == "POST":
-                response = self.session.post(url, json=data, headers=headers)
+                response = fresh_session.post(url, json=data, headers=headers)
             elif method.upper() == "PATCH":
-                response = self.session.patch(url, json=data, headers=headers)
+                response = fresh_session.patch(url, json=data, headers=headers)
             elif method.upper() == "DELETE":
-                response = self.session.delete(url, headers=headers)
+                response = fresh_session.delete(url, headers=headers)
             else:
                 raise ValueError(f"Unsupported method: {method}")
             
