@@ -186,23 +186,40 @@ async def change_my_password(data: dict, request: Request, session_token: Option
     return {"message": "Senha alterada com sucesso"}
 
 
+class ChangePasswordByAdminRequest(BaseModel):
+    new_password: Optional[str] = None
+
+
 @router.put("/{user_id}/reset-password")
-async def admin_reset_password(user_id: str, request: Request, session_token: Optional[str] = Cookie(None)):
-    """Admin reseta senha de um usuário"""
+async def admin_change_password(
+    user_id: str, 
+    data: ChangePasswordByAdminRequest = ChangePasswordByAdminRequest(),
+    request: Request = None, 
+    session_token: Optional[str] = Cookie(None)
+):
+    """Admin altera senha de um usuário (pode definir manualmente ou gerar automaticamente)"""
     user = await get_current_user(request, session_token)
     await require_role(user, ["admin"])
     
-    # Gerar nova senha provisória
+    # Usar senha fornecida ou gerar automaticamente
     import secrets
     from utils.auth import hash_password
-    temp_password = secrets.token_urlsafe(12)
+    
+    if data.new_password is not None:
+        # Validar que a senha tem pelo menos 1 caractere
+        if len(data.new_password) < 1:
+            raise HTTPException(status_code=400, detail="Senha deve ter pelo menos 1 caractere")
+        new_password = data.new_password
+    else:
+        # Gerar senha provisória automaticamente
+        new_password = secrets.token_urlsafe(12)
     
     from datetime import datetime, timezone
     result = await db.users.update_one(
         {"id": user_id},
         {"$set": {
-            "password_hash": hash_password(temp_password),
-            "requires_password_change": True,
+            "password_hash": hash_password(new_password),
+            "requires_password_change": False,  # Usuário pode manter a senha
             "updated_at": datetime.now(timezone.utc).isoformat()
         }}
     )
@@ -211,6 +228,6 @@ async def admin_reset_password(user_id: str, request: Request, session_token: Op
         raise HTTPException(status_code=404, detail="Usuário não encontrado")
     
     return {
-        "message": "Senha resetada com sucesso",
-        "temporary_password": temp_password
+        "message": "Senha alterada com sucesso",
+        "new_password": new_password
     }
