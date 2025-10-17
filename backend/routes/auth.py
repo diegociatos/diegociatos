@@ -196,6 +196,7 @@ class CreateUserRequest(BaseModel):
     phone: Optional[str] = None
     role: str
     organization_id: str
+    password: Optional[str] = None  # Senha inicial opcional (admin pode definir)
 
 
 @router.post("/change-password")
