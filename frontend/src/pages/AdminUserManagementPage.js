@@ -336,25 +336,25 @@ const AdminUserManagementPage = () => {
                       </span>
                     )}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <div className="flex gap-2">
+                  <td className="px-6 py-4 text-sm font-medium w-80">
+                    <div className="flex flex-wrap gap-2">
                       <button
                         onClick={() => handleEditUser(user)}
-                        className="text-blue-600 hover:text-blue-900"
+                        className="text-blue-600 hover:text-blue-900 whitespace-nowrap"
                         title="Editar usuário"
                       >
                         Editar
                       </button>
                       <button
                         onClick={() => handleOpenChangePassword(user)}
-                        className="text-orange-600 hover:text-orange-900"
+                        className="text-orange-600 hover:text-orange-900 whitespace-nowrap"
                         title="Alterar senha"
                       >
                         Alterar Senha
                       </button>
                       <button
                         onClick={() => handleDeleteUser(user.id)}
-                        className="text-red-600 hover:text-red-900"
+                        className="text-red-600 hover:text-red-900 whitespace-nowrap"
                         title="Desativar usuário"
                       >
                         Desativar
