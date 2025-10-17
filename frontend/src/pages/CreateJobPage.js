@@ -31,18 +31,37 @@ export default function CreateJobPage() {
   });
 
   useEffect(() => {
-    fetchOrganizations();
+    fetchUserOrganization();
   }, []);
 
-  const fetchOrganizations = async () => {
+  const fetchUserOrganization = async () => {
     try {
-      const response = await api.get('/organizations/');
-      setOrganizations(response.data);
-      if (response.data.length > 0) {
-        setFormData(prev => ({ ...prev, organization_id: response.data[0].id }));
+      // Buscar os roles do usuário atual para descobrir sua organização
+      const rolesResponse = await api.get('/users/me/roles');
+      const roles = rolesResponse.data;
+      
+      if (roles && roles.length > 0) {
+        const userOrgId = roles[0].organization_id;
+        
+        // Buscar detalhes da organização
+        const orgResponse = await api.get(`/organizations/${userOrgId}`);
+        setOrganizations([orgResponse.data]);
+        setFormData(prev => ({ ...prev, organization_id: userOrgId }));
+        
+        console.log('Organização do usuário:', orgResponse.data);
       }
     } catch (error) {
-      console.error('Erro ao carregar organizações:', error);
+      console.error('Erro ao carregar organização do usuário:', error);
+      // Fallback: carregar todas as organizações
+      try {
+        const response = await api.get('/organizations/');
+        setOrganizations(response.data);
+        if (response.data.length > 0) {
+          setFormData(prev => ({ ...prev, organization_id: response.data[0].id }));
+        }
+      } catch (err) {
+        console.error('Erro ao carregar organizações:', err);
+      }
     }
   };
 
