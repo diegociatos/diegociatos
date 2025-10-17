@@ -449,6 +449,15 @@ const AdminUserManagementPage = () => {
                   type="button"
                   onClick={() => {
                     setShowCreateModal(false);
+                    setSetCustomPassword(false);
+                    setFormData({
+                      email: '',
+                      full_name: '',
+                      phone: '',
+                      role: 'client',
+                      organization_id: '',
+                      password: ''
+                    });
                     setError('');
                   }}
                   className="flex-1 bg-gray-300 text-gray-700 py-2 rounded-lg hover:bg-gray-400"
