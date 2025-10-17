@@ -58,6 +58,16 @@ function AppRoutes() {
         } 
       />
       
+      {/* Rotas do Analista/Recrutador */}
+      <Route
+        path="/recruiter/dashboard"
+        element={
+          <PrivateRoute>
+            <RecruiterDashboardPage />
+          </PrivateRoute>
+        }
+      />
+      
       {/* Rotas do Candidato */}
       <Route
         path="/candidato/perfil"
