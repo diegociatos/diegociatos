@@ -295,77 +295,12 @@ class Notification(BaseModel):
     model_config = ConfigDict(extra="ignore")
     id: str = Field(default_factory=generate_id)
     user_id: str
-    notification_type: Literal["email", "sms", "push", "whatsapp"]
-    channel_ref: Optional[str] = None
-    payload: Dict[str, Any]
-    sent_at: Optional[datetime] = None
-    created_at: datetime = Field(default_factory=lambda: datetime.now())
-
-
-class AuditLog(BaseModel):
-    model_config = ConfigDict(extra="ignore")
-    id: str = Field(default_factory=generate_id)
-    actor_user_id: Optional[str] = None
-    organization_id: Optional[str] = None
-    entity: str
-    entity_id: str
-    action: str
-    old_values: Optional[Dict[str, Any]] = None
-    new_values: Optional[Dict[str, Any]] = None
-    occurred_at: datetime = Field(default_factory=lambda: datetime.now())
-
-
-class DataRetentionRule(BaseModel):
-    model_config = ConfigDict(extra="ignore")
-    id: str = Field(default_factory=generate_id)
-    entity: str
-    months_to_keep: int
-    action: Literal["anonymize", "delete"]
-    created_at: datetime = Field(default_factory=lambda: datetime.now())
-
-
-class DataSubjectRequest(BaseModel):
-    model_config = ConfigDict(extra="ignore")
-    id: str = Field(default_factory=generate_id)
-    candidate_id: str
-    request_type: Literal["access", "rectify", "erase", "revoke_consent"]
-    status: Literal["open", "done"] = "open"
-    created_at: datetime = Field(default_factory=lambda: datetime.now())
-    resolved_at: Optional[datetime] = None
-
-
-class UserSession(BaseModel):
-    model_config = ConfigDict(extra="ignore")
-    id: str = Field(default_factory=generate_id)
-    user_id: str
-    session_token: str
-    expires_at: datetime
-    created_at: datetime = Field(default_factory=lambda: datetime.now())
-
-
-class Notification(BaseModel):
-    model_config = ConfigDict(extra="ignore")
-    id: str = Field(default_factory=generate_id)
-    user_id: str
-    type: str
+    tenant_id: Optional[str] = None  # organization_id
+    channel: Literal["system", "email"]
     title: str
-    message: str
+    body: str
     link: Optional[str] = None
-    read: bool = False
-    data: Optional[Dict[str, Any]] = None
+    is_read: bool = False
     created_at: datetime = Field(default_factory=lambda: datetime.now())
+    sent_at: Optional[datetime] = None
 
-
-class Interview(BaseModel):
-    model_config = ConfigDict(extra="ignore")
-    id: str = Field(default_factory=generate_id)
-    application_id: str
-    job_id: str
-    candidate_id: str
-    scheduled_by: str
-    scheduled_date: datetime
-    location: str
-    notes: Optional[str] = None
-    status: Literal["scheduled", "completed", "cancelled"] = "scheduled"
-    created_at: datetime = Field(default_factory=lambda: datetime.now())
-    updated_at: datetime = Field(default_factory=lambda: datetime.now())
