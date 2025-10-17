@@ -20,6 +20,8 @@ import AdminOrganizationsPage from './pages/AdminOrganizationsPage';
 import JobCandidatesPage from './pages/JobCandidatesPage';
 import AnalystJobDetailPage from './pages/AnalystJobDetailPage';
 import RecruiterDashboardPage from './pages/RecruiterDashboardPage';
+import JobPipelinePage from './pages/JobPipelinePage';
+import ApplicationHistoryPage from './pages/ApplicationHistoryPage';
 import './App.css';
 
 const PrivateRoute = ({ children }) => {
