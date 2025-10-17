@@ -160,20 +160,43 @@ const AdminUserManagementPage = () => {
     }
   };
 
-  const handleResetPassword = async (userId, userName) => {
-    if (!window.confirm(`Tem certeza que deseja resetar a senha de ${userName}?\n\nUma nova senha temporária será gerada.`)) {
+  const handleOpenChangePassword = (user) => {
+    setSelectedUser(user);
+    setNewPassword('');
+    setShowChangePasswordModal(true);
+    setError('');
+  };
+
+  const handleChangePassword = async (e) => {
+    e.preventDefault();
+    setError('');
+
+    // Validar senha
+    if (newPassword.length < 1) {
+      setError('Senha deve ter pelo menos 1 caractere');
       return;
     }
 
     try {
-      const response = await api.put(`/users/${userId}/reset-password`);
-      const tempPass = response.data.temporary_password;
+      const response = await api.put(`/users/${selectedUser.id}/reset-password`, {
+        new_password: newPassword
+      });
+      const newPass = response.data.new_password;
       
-      alert(`Senha resetada com sucesso!\n\nNova senha temporária: ${tempPass}\n\n⚠️ IMPORTANTE: Anote essa senha e envie para o usuário.\nEla não será exibida novamente.`);
+      // Fechar modal primeiro
+      setShowChangePasswordModal(false);
+      setNewPassword('');
       
-      loadData();
+      // Recarregar lista
+      await loadData();
+      
+      // Mostrar senha após modal fechado
+      setTimeout(() => {
+        alert(`Senha alterada com sucesso!\n\nNova senha: ${newPass}\n\n⚠️ IMPORTANTE: Anote essa senha e envie para o usuário.\nO usuário pode manter esta senha.`);
+      }, 100);
+      
     } catch (err) {
-      alert('Erro ao resetar senha: ' + (err.response?.data?.detail || 'Erro desconhecido'));
+      setError(err.response?.data?.detail || 'Erro ao alterar senha');
     }
   };
 
