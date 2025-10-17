@@ -146,12 +146,13 @@ class JobRequiredSkill(BaseModel):
 class Application(BaseModel):
     model_config = ConfigDict(extra="ignore")
     id: str = Field(default_factory=generate_id)
+    tenant_id: str  # organization_id (tenantId)
     job_id: str
     candidate_id: str
-    current_stage: str = "submitted"
-    stage_score: Optional[float] = None
+    current_stage: Literal["submitted", "screening", "recruiter_interview", "shortlisted", "client_interview", "offer", "hired", "rejected", "withdrawn"] = "submitted"
     status: Literal["active", "withdrawn", "rejected", "hired"] = "active"
-    applied_at: datetime = Field(default_factory=lambda: datetime.now())
+    scores: Optional[Dict[str, Any]] = None  # { total: Number, breakdown: {...} }
+    created_at: datetime = Field(default_factory=lambda: datetime.now())
     updated_at: datetime = Field(default_factory=lambda: datetime.now())
 
 
