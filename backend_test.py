@@ -492,8 +492,10 @@ class BackendTester:
             return
         
         # Test creating user without password (should auto-generate)
+        import time
+        timestamp = str(int(time.time()))
         test_user_data = {
-            "email": "teste.senha.auto@example.com",
+            "email": f"teste.senha.auto.{timestamp}@example.com",
             "full_name": "Usuario Senha Auto",
             "phone": "+5511666666666",
             "role": "client",
