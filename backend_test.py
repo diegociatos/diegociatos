@@ -688,9 +688,10 @@ class BackendTester:
     def run_all_tests(self):
         """Run all backend tests"""
         print("🚀 Starting Backend API Tests for Ciatos ATS User Management")
+        print("🔍 TESTING NEW FUNCTIONALITY: Admin Custom Password Definition")
         print("=" * 60)
         
-        # Test sequence
+        # Test sequence - existing tests first
         self.test_generic_signup_disabled()
         self.test_candidate_signup()
         self.test_login_with_requires_password_change()
@@ -698,6 +699,15 @@ class BackendTester:
         self.test_change_password_flow()
         self.test_user_crud_operations()
         self.test_authorization_checks()
+        
+        # NEW FUNCTIONALITY TESTS
+        print("\n" + "🆕 TESTING NEW ADMIN PASSWORD FUNCTIONALITY")
+        print("=" * 60)
+        self.test_admin_create_user_with_custom_password()
+        self.test_admin_create_user_without_password()
+        self.test_login_with_custom_password()
+        self.test_password_validation_empty()
+        self.test_password_reset_functionality()
         
         # Summary
         print("\n" + "=" * 60)
