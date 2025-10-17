@@ -309,6 +309,16 @@ class Notification(BaseModel):
     error_msg: Optional[str] = None
 
 
+class NotificationPreferences(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=generate_id)
+    user_id: str
+    prefs: Dict[str, Dict[str, bool]] = Field(default_factory=dict)
+    created_at: datetime = Field(default_factory=lambda: datetime.now())
+    updated_at: datetime = Field(default_factory=lambda: datetime.now())
+
+
+
 
 class AuditLog(BaseModel):
     model_config = ConfigDict(extra="ignore")
