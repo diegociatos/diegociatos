@@ -256,7 +256,7 @@ const RecruiterDashboardPage = () => {
                         </td>
                         <td className="px-6 py-4">
                           <button
-                            onClick={() => alert('Kanban será implementado na Fase 2')}
+                            onClick={() => navigate(`/jobs/${job.jobId}/pipeline`)}
                             className="inline-flex items-center px-3 py-1.5 bg-blue-600 text-white rounded-md text-sm font-medium hover:bg-blue-700 transition-colors"
                           >
                             Ver Pipeline
