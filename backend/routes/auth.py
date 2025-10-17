@@ -288,7 +288,7 @@ async def admin_create_user(data: CreateUserRequest, request: Request, session_t
     
     # Usar senha fornecida ou gerar automaticamente
     import secrets
-    if data.password:
+    if data.password is not None:
         # Validar que a senha tem pelo menos 1 caractere
         if len(data.password) < 1:
             raise HTTPException(status_code=400, detail="Senha deve ter pelo menos 1 caractere")
