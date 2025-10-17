@@ -1045,7 +1045,7 @@ class BackendTester:
             self.log_test("Job GET Endpoint", False, f"Job creation/get test failed: {str(e)}")
 
     def test_job_update_endpoint(self):
-        """Test PATCH /jobs/{job_id} endpoint with authentication"""
+        """Test PATCH /jobs/{job_id} endpoint with authentication - the specific endpoint user reported as broken"""
         if "admin" not in self.tokens:
             self.log_test("Job UPDATE Endpoint", False, "Admin token not available")
             return
@@ -1060,10 +1060,10 @@ class BackendTester:
                 if isinstance(jobs, list) and len(jobs) > 0:
                     job_id = jobs[0]["id"]
                     
-                    # Test PATCH job
+                    # Test the exact scenario from the review request
                     update_data = {
-                        "title": "Updated Test Job Title",
-                        "description": "Updated description to test job editing functionality",
+                        "title": "Test Job Update",
+                        "description": "Updated description",
                         "status": "in_review"
                     }
                     
@@ -1076,16 +1076,16 @@ class BackendTester:
                         if (updated_job.get("title") == update_data["title"] and 
                             updated_job.get("status") == update_data["status"]):
                             self.log_test("Job UPDATE Endpoint", True, 
-                                        f"Successfully updated job {job_id}")
+                                        f"✅ Job Edit Page FIXED - Successfully updated job {job_id}")
                         else:
                             self.log_test("Job UPDATE Endpoint", False, 
                                         "Job update data incorrect", updated_job)
                     elif update_response.status_code == 401:
                         self.log_test("Job UPDATE Endpoint", False, 
-                                    "Authentication failed - KeyError may still exist", update_response.text)
+                                    "❌ STILL BROKEN - Authentication failed (KeyError may still exist)", update_response.text)
                     elif update_response.status_code == 500:
                         self.log_test("Job UPDATE Endpoint", False, 
-                                    "Internal server error - likely KeyError in authentication", update_response.text)
+                                    "❌ STILL BROKEN - Internal server error (likely KeyError in authentication)", update_response.text)
                     else:
                         self.log_test("Job UPDATE Endpoint", False, 
                                     f"Failed to update job: {update_response.status_code}", update_response.text)
@@ -1096,6 +1096,76 @@ class BackendTester:
                             f"Failed to list jobs: {jobs_response.status_code}", jobs_response.text)
         except Exception as e:
             self.log_test("Job UPDATE Endpoint", False, f"Request failed: {str(e)}")
+
+    def test_comprehensive_job_edit_flow(self):
+        """Test the complete job editing flow that user reported as broken"""
+        if "admin" not in self.tokens:
+            self.log_test("Complete Job Edit Flow", False, "Admin token not available")
+            return
+        
+        try:
+            # Step 1: Get jobs list (simulating user navigating to job list)
+            jobs_response = self.make_request("GET", "/jobs/", auth_token=self.tokens["admin"])
+            
+            if jobs_response.status_code != 200:
+                self.log_test("Complete Job Edit Flow", False, 
+                            f"Failed to list jobs: {jobs_response.status_code}", jobs_response.text)
+                return
+            
+            jobs = jobs_response.json()
+            if not jobs:
+                self.log_test("Complete Job Edit Flow", False, "No jobs available for testing")
+                return
+            
+            job_id = jobs[0]["id"]
+            
+            # Step 2: GET specific job (simulating user clicking "Edit Job")
+            get_response = self.make_request("GET", f"/jobs/{job_id}", auth_token=self.tokens["admin"])
+            
+            if get_response.status_code != 200:
+                self.log_test("Complete Job Edit Flow", False, 
+                            f"❌ Job Edit Page broken - GET /jobs/{job_id} failed: {get_response.status_code}", 
+                            get_response.text)
+                return
+            
+            original_job = get_response.json()
+            
+            # Step 3: PATCH job (simulating user saving changes)
+            update_data = {
+                "title": f"EDITED - {original_job.get('title', 'Test Job')}",
+                "description": "This job was successfully edited after the UserSession fix",
+                "status": "in_review"
+            }
+            
+            patch_response = self.make_request("PATCH", f"/jobs/{job_id}", 
+                                             update_data, auth_token=self.tokens["admin"])
+            
+            if patch_response.status_code == 200:
+                updated_job = patch_response.json()
+                
+                # Verify the update worked
+                if (updated_job.get("title") == update_data["title"] and 
+                    updated_job.get("description") == update_data["description"]):
+                    
+                    self.log_test("Complete Job Edit Flow", True, 
+                                f"🎉 JOB EDIT PAGE FULLY WORKING - Complete flow successful for job {job_id}")
+                else:
+                    self.log_test("Complete Job Edit Flow", False, 
+                                "Job update data doesn't match expected values", updated_job)
+            elif patch_response.status_code == 401:
+                self.log_test("Complete Job Edit Flow", False, 
+                            "❌ STILL BROKEN - PATCH authentication failed (KeyError likely still exists)", 
+                            patch_response.text)
+            elif patch_response.status_code == 500:
+                self.log_test("Complete Job Edit Flow", False, 
+                            "❌ STILL BROKEN - PATCH internal server error (KeyError likely still exists)", 
+                            patch_response.text)
+            else:
+                self.log_test("Complete Job Edit Flow", False, 
+                            f"PATCH failed with status {patch_response.status_code}", patch_response.text)
+                
+        except Exception as e:
+            self.log_test("Complete Job Edit Flow", False, f"Request failed: {str(e)}")
 
     def test_session_expiration_check(self):
         """Test that get_current_user properly checks expires_at field"""
