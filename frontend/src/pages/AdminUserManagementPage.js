@@ -10,12 +10,14 @@ const AdminUserManagementPage = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
+  const [setCustomPassword, setSetCustomPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
     full_name: '',
     phone: '',
     role: 'client',
-    organization_id: ''
+    organization_id: '',
+    password: ''
   });
   const [editData, setEditData] = useState({
     full_name: '',
