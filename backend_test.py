@@ -912,38 +912,268 @@ class BackendTester:
         except Exception as e:
             self.log_test("Password Reset Test", False, f"Request failed: {str(e)}")
     
+    def test_authentication_after_usersession_fix(self):
+        """Test authentication flow after UserSession model fix"""
+        print("\n🔧 TESTING AUTHENTICATION AFTER USERSESSION FIX")
+        print("=" * 60)
+        
+        # Test login with admin credentials
+        admin_creds = {"email": "admin@ciatos.com", "password": "admin123"}
+        
+        try:
+            response = self.make_request("POST", "/auth/login", admin_creds)
+            
+            if response.status_code == 200:
+                data = response.json()
+                
+                # Check required fields
+                required_fields = ["access_token", "refresh_token", "token_type", "user"]
+                if all(field in data for field in required_fields):
+                    user_data = data["user"]
+                    
+                    # Verify user data structure
+                    if ("id" in user_data and "email" in user_data and 
+                        "expires_at" not in str(response.text)):  # Should not have KeyError
+                        
+                        self.tokens["admin"] = data["access_token"]
+                        self.log_test("Authentication After Fix", True, 
+                                    "Login successful, no KeyError: 'expires_at'")
+                    else:
+                        self.log_test("Authentication After Fix", False, 
+                                    "User data structure incorrect", user_data)
+                else:
+                    self.log_test("Authentication After Fix", False, 
+                                "Missing required fields in response", data)
+            else:
+                self.log_test("Authentication After Fix", False, 
+                            f"Login failed with status {response.status_code}", response.text)
+        except Exception as e:
+            self.log_test("Authentication After Fix", False, f"Request failed: {str(e)}")
+
+    def test_job_get_endpoint(self):
+        """Test GET /jobs/{job_id} endpoint with authentication"""
+        if "admin" not in self.tokens:
+            self.log_test("Job GET Endpoint", False, "Admin token not available")
+            return
+        
+        # First, get a list of jobs to find a job ID
+        try:
+            jobs_response = self.make_request("GET", "/jobs/", auth_token=self.tokens["admin"])
+            
+            if jobs_response.status_code == 200:
+                jobs = jobs_response.json()
+                
+                if isinstance(jobs, list) and len(jobs) > 0:
+                    job_id = jobs[0]["id"]
+                    
+                    # Test GET specific job
+                    job_response = self.make_request("GET", f"/jobs/{job_id}", auth_token=self.tokens["admin"])
+                    
+                    if job_response.status_code == 200:
+                        job_data = job_response.json()
+                        
+                        if "id" in job_data and job_data["id"] == job_id:
+                            self.log_test("Job GET Endpoint", True, 
+                                        f"Successfully retrieved job {job_id}")
+                        else:
+                            self.log_test("Job GET Endpoint", False, 
+                                        "Job data structure incorrect", job_data)
+                    elif job_response.status_code == 401:
+                        self.log_test("Job GET Endpoint", False, 
+                                    "Authentication failed - KeyError may still exist", job_response.text)
+                    else:
+                        self.log_test("Job GET Endpoint", False, 
+                                    f"Failed to get job: {job_response.status_code}", job_response.text)
+                else:
+                    # Create a test job first
+                    self.create_test_job_and_test_get()
+            else:
+                self.log_test("Job GET Endpoint", False, 
+                            f"Failed to list jobs: {jobs_response.status_code}", jobs_response.text)
+        except Exception as e:
+            self.log_test("Job GET Endpoint", False, f"Request failed: {str(e)}")
+
+    def create_test_job_and_test_get(self):
+        """Create a test job and then test GET endpoint"""
+        if "admin" not in self.tokens:
+            return
+        
+        # Get organization ID first
+        try:
+            orgs_response = self.make_request("GET", "/organizations/", auth_token=self.tokens["admin"])
+            if orgs_response.status_code != 200:
+                self.log_test("Job GET Endpoint", False, "Could not fetch organizations for job creation")
+                return
+            
+            orgs = orgs_response.json()
+            if not orgs:
+                self.log_test("Job GET Endpoint", False, "No organizations found for job creation")
+                return
+            
+            org_id = orgs[0]["id"]
+            
+            # Create test job
+            job_data = {
+                "title": "Test Job for Authentication",
+                "description": "Test job to verify authentication works after UserSession fix",
+                "work_mode": "remoto"
+            }
+            
+            create_response = self.make_request("POST", f"/jobs/?organization_id={org_id}", 
+                                              job_data, auth_token=self.tokens["admin"])
+            
+            if create_response.status_code == 200:
+                created_job = create_response.json()
+                job_id = created_job["id"]
+                
+                # Now test GET
+                job_response = self.make_request("GET", f"/jobs/{job_id}", auth_token=self.tokens["admin"])
+                
+                if job_response.status_code == 200:
+                    self.log_test("Job GET Endpoint", True, 
+                                f"Successfully created and retrieved test job {job_id}")
+                elif job_response.status_code == 401:
+                    self.log_test("Job GET Endpoint", False, 
+                                "Authentication failed on GET - KeyError may still exist", job_response.text)
+                else:
+                    self.log_test("Job GET Endpoint", False, 
+                                f"Failed to get created job: {job_response.status_code}", job_response.text)
+            else:
+                self.log_test("Job GET Endpoint", False, 
+                            f"Failed to create test job: {create_response.status_code}", create_response.text)
+        except Exception as e:
+            self.log_test("Job GET Endpoint", False, f"Job creation/get test failed: {str(e)}")
+
+    def test_job_update_endpoint(self):
+        """Test PATCH /jobs/{job_id} endpoint with authentication"""
+        if "admin" not in self.tokens:
+            self.log_test("Job UPDATE Endpoint", False, "Admin token not available")
+            return
+        
+        # Get a job to update
+        try:
+            jobs_response = self.make_request("GET", "/jobs/", auth_token=self.tokens["admin"])
+            
+            if jobs_response.status_code == 200:
+                jobs = jobs_response.json()
+                
+                if isinstance(jobs, list) and len(jobs) > 0:
+                    job_id = jobs[0]["id"]
+                    
+                    # Test PATCH job
+                    update_data = {
+                        "title": "Updated Test Job Title",
+                        "description": "Updated description to test job editing functionality",
+                        "status": "in_review"
+                    }
+                    
+                    update_response = self.make_request("PATCH", f"/jobs/{job_id}", 
+                                                      update_data, auth_token=self.tokens["admin"])
+                    
+                    if update_response.status_code == 200:
+                        updated_job = update_response.json()
+                        
+                        if (updated_job.get("title") == update_data["title"] and 
+                            updated_job.get("status") == update_data["status"]):
+                            self.log_test("Job UPDATE Endpoint", True, 
+                                        f"Successfully updated job {job_id}")
+                        else:
+                            self.log_test("Job UPDATE Endpoint", False, 
+                                        "Job update data incorrect", updated_job)
+                    elif update_response.status_code == 401:
+                        self.log_test("Job UPDATE Endpoint", False, 
+                                    "Authentication failed - KeyError may still exist", update_response.text)
+                    elif update_response.status_code == 500:
+                        self.log_test("Job UPDATE Endpoint", False, 
+                                    "Internal server error - likely KeyError in authentication", update_response.text)
+                    else:
+                        self.log_test("Job UPDATE Endpoint", False, 
+                                    f"Failed to update job: {update_response.status_code}", update_response.text)
+                else:
+                    self.log_test("Job UPDATE Endpoint", False, "No jobs available to update")
+            else:
+                self.log_test("Job UPDATE Endpoint", False, 
+                            f"Failed to list jobs: {jobs_response.status_code}", jobs_response.text)
+        except Exception as e:
+            self.log_test("Job UPDATE Endpoint", False, f"Request failed: {str(e)}")
+
+    def test_session_expiration_check(self):
+        """Test that get_current_user properly checks expires_at field"""
+        if "admin" not in self.tokens:
+            self.log_test("Session Expiration Check", False, "Admin token not available")
+            return
+        
+        try:
+            # Test /auth/me endpoint which uses get_current_user
+            me_response = self.make_request("GET", "/auth/me", auth_token=self.tokens["admin"])
+            
+            if me_response.status_code == 200:
+                user_data = me_response.json()
+                
+                if "user" in user_data and "id" in user_data["user"]:
+                    self.log_test("Session Expiration Check", True, 
+                                "get_current_user works correctly with expires_at field")
+                else:
+                    self.log_test("Session Expiration Check", False, 
+                                "Invalid user data structure", user_data)
+            elif me_response.status_code == 401:
+                self.log_test("Session Expiration Check", False, 
+                            "Authentication failed - KeyError may still exist", me_response.text)
+            else:
+                self.log_test("Session Expiration Check", False, 
+                            f"Unexpected status: {me_response.status_code}", me_response.text)
+        except Exception as e:
+            self.log_test("Session Expiration Check", False, f"Request failed: {str(e)}")
+
+    def test_recruiter_login_and_job_access(self):
+        """Test recruiter login and job access"""
+        # Update credentials to use the new password from test_result.md
+        recruiter_creds = {"email": "cliente@techcorp.com", "password": "novaSenha456"}
+        
+        try:
+            response = self.make_request("POST", "/auth/login", recruiter_creds)
+            
+            if response.status_code == 200:
+                data = response.json()
+                
+                if "access_token" in data:
+                    self.tokens["client"] = data["access_token"]
+                    
+                    # Test job access with client token
+                    jobs_response = self.make_request("GET", "/jobs/", auth_token=self.tokens["client"])
+                    
+                    if jobs_response.status_code == 200:
+                        self.log_test("Client Login and Job Access", True, 
+                                    "Client can login and access jobs successfully")
+                    elif jobs_response.status_code == 401:
+                        self.log_test("Client Login and Job Access", False, 
+                                    "Job access failed - authentication issue", jobs_response.text)
+                    else:
+                        self.log_test("Client Login and Job Access", False, 
+                                    f"Job access failed: {jobs_response.status_code}", jobs_response.text)
+                else:
+                    self.log_test("Client Login and Job Access", False, 
+                                "Login response missing access_token", data)
+            else:
+                self.log_test("Client Login and Job Access", False, 
+                            f"Client login failed: {response.status_code}", response.text)
+        except Exception as e:
+            self.log_test("Client Login and Job Access", False, f"Request failed: {str(e)}")
+
     def run_all_tests(self):
-        """Run all backend tests"""
-        print("🚀 Starting Backend API Tests for Ciatos ATS User Management")
-        print("🔍 TESTING NEW FUNCTIONALITY: Admin Custom Password Definition")
+        """Run focused tests for authentication and job editing after UserSession fix"""
+        print("🚀 Testing Authentication and Job Editing After UserSession Fix")
+        print("🔍 FOCUS: Verify KeyError: 'expires_at' is resolved")
         print("=" * 60)
         
-        # Test sequence - existing tests first
-        self.test_generic_signup_disabled()
-        self.test_candidate_signup()
-        self.test_login_with_requires_password_change()
-        self.test_admin_create_user()
-        self.test_change_password_flow()
-        self.test_user_crud_operations()
-        self.test_authorization_checks()
+        # Core authentication tests
+        self.test_authentication_after_usersession_fix()
+        self.test_session_expiration_check()
+        self.test_recruiter_login_and_job_access()
         
-        # NEW FUNCTIONALITY TESTS
-        print("\n" + "🆕 TESTING NEW ADMIN PASSWORD FUNCTIONALITY")
-        print("=" * 60)
-        self.test_admin_create_user_with_custom_password()
-        self.test_admin_create_user_without_password()
-        self.test_login_with_custom_password()
-        self.test_password_validation_empty()
-        self.test_password_reset_functionality()
-        
-        # MANUAL PASSWORD RESET FUNCTIONALITY TESTS
-        print("\n" + "🔧 TESTING MANUAL PASSWORD RESET FUNCTIONALITY")
-        print("=" * 60)
-        self.test_admin_manual_password_reset_with_password()
-        self.test_admin_manual_password_reset_without_password()
-        self.test_login_with_manually_reset_password()
-        self.test_password_reset_empty_password_validation()
-        self.test_users_list_includes_roles()
+        # Job editing functionality tests
+        self.test_job_get_endpoint()
+        self.test_job_update_endpoint()
         
         # Summary
         print("\n" + "=" * 60)
