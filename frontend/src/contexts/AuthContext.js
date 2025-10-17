@@ -29,15 +29,32 @@ export const AuthProvider = ({ children }) => {
   };
 
   const fetchUserRoles = async (userId) => {
+    // Se já está buscando ou tem cache, retorna
+    if (fetchingRoles.current) {
+      console.log('Já está buscando roles, aguardando...');
+      return rolesCache.current || [];
+    }
+    
+    if (rolesCache.current) {
+      console.log('Usando roles do cache');
+      setUserRoles(rolesCache.current);
+      return rolesCache.current;
+    }
+    
+    fetchingRoles.current = true;
+    
     try {
       const response = await api.get('/users/me/roles');
       console.log('Roles carregados:', response.data);
+      rolesCache.current = response.data;
       setUserRoles(response.data);
       return response.data;
     } catch (error) {
       console.error('Erro ao buscar roles:', error);
       setUserRoles([]);
       return [];
+    } finally {
+      fetchingRoles.current = false;
     }
   };
 
