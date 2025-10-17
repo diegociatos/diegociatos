@@ -1254,6 +1254,7 @@ class BackendTester:
         # Job editing functionality tests
         self.test_job_get_endpoint()
         self.test_job_update_endpoint()
+        self.test_comprehensive_job_edit_flow()
         
         # Summary
         print("\n" + "=" * 60)
