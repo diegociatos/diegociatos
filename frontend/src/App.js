@@ -69,6 +69,22 @@ function AppRoutes() {
           </PrivateRoute>
         }
       />
+      <Route
+        path="/jobs/:jobId/pipeline"
+        element={
+          <PrivateRoute>
+            <JobPipelinePage />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/applications/:applicationId/history"
+        element={
+          <PrivateRoute>
+            <ApplicationHistoryPage />
+          </PrivateRoute>
+        }
+      />
       
       {/* Rotas do Candidato */}
       <Route
