@@ -18,6 +18,7 @@ import ChangePasswordPage from './pages/ChangePasswordPage';
 import AdminUserManagementPage from './pages/AdminUserManagementPage';
 import AdminOrganizationsPage from './pages/AdminOrganizationsPage';
 import JobCandidatesPage from './pages/JobCandidatesPage';
+import AnalystJobDetailPage from './pages/AnalystJobDetailPage';
 import './App.css';
 
 const PrivateRoute = ({ children }) => {
