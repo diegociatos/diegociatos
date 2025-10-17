@@ -51,10 +51,12 @@ const AdminUserManagementPage = () => {
 
     try {
       const response = await api.post('/auth/admin/create-user', formData);
-      setTempPassword(response.data.temporary_password);
-      alert(`Usuário criado com sucesso!\n\nSenha temporária: ${response.data.temporary_password}\n\nAnote essa senha, ela não será exibida novamente.`);
+      const tempPass = response.data.temporary_password;
       
-      // Resetar formulário e recarregar lista
+      // Fechar modal primeiro
+      setShowCreateModal(false);
+      
+      // Resetar formulário
       setFormData({
         email: '',
         full_name: '',
@@ -62,8 +64,15 @@ const AdminUserManagementPage = () => {
         role: 'client',
         organization_id: ''
       });
-      setShowCreateModal(false);
-      loadData();
+      
+      // Recarregar lista
+      await loadData();
+      
+      // Mostrar senha após modal fechado (usando setTimeout para garantir que o DOM foi atualizado)
+      setTimeout(() => {
+        alert(`Usuário criado com sucesso!\n\nSenha temporária: ${tempPass}\n\n⚠️ IMPORTANTE: Anote essa senha, ela não será exibida novamente.`);
+      }, 100);
+      
     } catch (err) {
       setError(err.response?.data?.detail || 'Erro ao criar usuário');
     }
