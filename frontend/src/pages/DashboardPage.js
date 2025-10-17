@@ -100,12 +100,20 @@ export default function DashboardPage() {
                 </Button>
               </Link>
               {isAdmin && (
-                <Link to="/admin/usuarios">
-                  <Button variant="outline" className="w-full justify-start" data-testid="quick-manage-users">
-                    <UserCog className="w-4 h-4 mr-2" />
-                    Gerenciar Usuários
-                  </Button>
-                </Link>
+                <>
+                  <Link to="/admin/organizacoes">
+                    <Button variant="outline" className="w-full justify-start" data-testid="quick-manage-orgs">
+                      <UserCog className="w-4 h-4 mr-2" />
+                      Gerenciar Organizações
+                    </Button>
+                  </Link>
+                  <Link to="/admin/usuarios">
+                    <Button variant="outline" className="w-full justify-start" data-testid="quick-manage-users">
+                      <UserCog className="w-4 h-4 mr-2" />
+                      Gerenciar Usuários
+                    </Button>
+                  </Link>
+                </>
               )}
             </CardContent>
           </Card>
