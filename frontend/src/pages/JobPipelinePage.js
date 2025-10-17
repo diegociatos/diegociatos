@@ -161,11 +161,21 @@ const JobPipelinePage = () => {
         <button
           onClick={(e) => {
             e.stopPropagation();
-            alert('Ver perfil - Fase 3');
+            alert('Ver perfil - Implementar');
           }}
           className="text-blue-600 hover:text-blue-800"
         >
           Ver perfil
+        </button>
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            setSelectedApplicationId(card.applicationId);
+            setShowInterviewModal(true);
+          }}
+          className="text-green-600 hover:text-green-800"
+        >
+          Marcar entrevista
         </button>
         <button
           onClick={(e) => {
