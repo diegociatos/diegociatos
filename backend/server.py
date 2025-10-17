@@ -26,7 +26,7 @@ import services.notification_service as notif_service_module
 notif_service_module.notification_service = NotificationService(db)
 
 # Import and include all route modules
-from routes import auth, organizations, users, candidates, skills, jobs, applications, interviews, feedbacks, questionnaires, assessments, scores, notifications, consents, reports, recruiter, pipeline, notifications_api
+from routes import auth, organizations, users, candidates, skills, jobs, applications, interviews, feedbacks, questionnaires, assessments, scores, notifications, consents, reports, recruiter, pipeline, notifications_api, interviews_api
 
 api_router.include_router(auth.router, prefix="/auth", tags=["auth"])
 api_router.include_router(organizations.router, prefix="/organizations", tags=["organizations"])
