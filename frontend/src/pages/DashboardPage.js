@@ -15,7 +15,6 @@ export default function DashboardPage() {
     // Verificar role quando userRoles mudar
     if (userRoles && userRoles.length > 0) {
       const role = getUserRole();
-      console.log('Role detectado no dashboard:', role);
       setIsAdmin(role === 'admin');
     }
   }, [userRoles, getUserRole]);
