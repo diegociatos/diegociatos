@@ -152,6 +152,7 @@ class Application(BaseModel):
     current_stage: Literal["submitted", "screening", "recruiter_interview", "shortlisted", "client_interview", "offer", "hired", "rejected", "withdrawn"] = "submitted"
     status: Literal["active", "withdrawn", "rejected", "hired"] = "active"
     scores: Optional[Dict[str, Any]] = None  # { total: Number, breakdown: {...} }
+    stage_history: List[Dict[str, Any]] = Field(default_factory=list)  # [{ from?, to, changedBy, changedAt, note? }]
     created_at: datetime = Field(default_factory=lambda: datetime.now())
     updated_at: datetime = Field(default_factory=lambda: datetime.now())
 
