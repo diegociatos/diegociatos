@@ -97,7 +97,7 @@ const AdminUserManagementPage = () => {
     }
 
     try {
-      await api.delete(`/api/users/${userId}`);
+      await api.delete(`/users/${userId}`);
       alert('Usuário desativado com sucesso');
       loadData();
     } catch (err) {
