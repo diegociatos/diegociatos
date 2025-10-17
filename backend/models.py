@@ -1,32 +1,3 @@
-
-
-class Notification(BaseModel):
-    model_config = ConfigDict(extra="ignore")
-    id: str = Field(default_factory=generate_id)
-    user_id: str  # Quem vai receber a notificação
-    type: str  # 'new_job', 'candidate_approved', 'interview_scheduled', 'status_changed'
-    title: str
-    message: str
-    link: Optional[str] = None  # URL para onde a notificação leva
-    read: bool = False
-    data: Optional[Dict[str, Any]] = None  # Dados extras em JSON
-    created_at: datetime = Field(default_factory=lambda: datetime.now())
-
-
-class Interview(BaseModel):
-    model_config = ConfigDict(extra="ignore")
-    id: str = Field(default_factory=generate_id)
-    application_id: str
-    job_id: str
-    candidate_id: str
-    scheduled_by: str  # user_id do cliente que agendou
-    scheduled_date: datetime
-    location: str  # "Presencial: Rua X" ou "Online: https://meet.google.com/xxx"
-    notes: Optional[str] = None
-    status: Literal["scheduled", "completed", "cancelled"] = "scheduled"
-    created_at: datetime = Field(default_factory=lambda: datetime.now())
-    updated_at: datetime = Field(default_factory=lambda: datetime.now())
-
 from pydantic import BaseModel, Field, ConfigDict, EmailStr
 from typing import Optional, List, Dict, Any, Literal
 from datetime import datetime
