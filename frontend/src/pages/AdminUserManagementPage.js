@@ -105,6 +105,50 @@ const AdminUserManagementPage = () => {
     }
   };
 
+
+  const handleEditUser = (user) => {
+    setSelectedUser(user);
+    setEditData({
+      full_name: user.full_name,
+      email: user.email,
+      phone: user.phone || ''
+    });
+    setShowEditModal(true);
+    setError('');
+  };
+
+  const handleSaveEdit = async (e) => {
+    e.preventDefault();
+    setError('');
+
+    try {
+      await api.patch(`/users/${selectedUser.id}`, editData);
+      alert('Usuário atualizado com sucesso!');
+      setShowEditModal(false);
+      loadData();
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Erro ao atualizar usuário');
+    }
+  };
+
+  const handleResetPassword = async (userId, userName) => {
+    if (!window.confirm(`Tem certeza que deseja resetar a senha de ${userName}?\n\nUma nova senha temporária será gerada.`)) {
+      return;
+    }
+
+    try {
+      const response = await api.put(`/users/${userId}/reset-password`);
+      const tempPass = response.data.temporary_password;
+      
+      alert(`Senha resetada com sucesso!\n\nNova senha temporária: ${tempPass}\n\n⚠️ IMPORTANTE: Anote essa senha e envie para o usuário.\nEla não será exibida novamente.`);
+      
+      loadData();
+    } catch (err) {
+      alert('Erro ao resetar senha: ' + (err.response?.data?.detail || 'Erro desconhecido'));
+    }
+  };
+
+
   const handleLogout = async () => {
     try {
       await api.post('/auth/logout');
