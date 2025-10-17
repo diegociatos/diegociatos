@@ -643,8 +643,10 @@ class BackendTester:
             org_id = orgs[0]["id"]
             
             # Create another user to test reset behavior
+            import time
+            timestamp = str(int(time.time()))
             reset_test_data = {
-                "email": "teste.reset.senha@example.com",
+                "email": f"teste.reset.senha.{timestamp}@example.com",
                 "full_name": "Usuario Reset Teste",
                 "phone": "+5511444444444",
                 "role": "client",
