@@ -17,7 +17,7 @@ export default function JobsPage() {
 
   const fetchJobs = async () => {
     try {
-      const response = await api.get('/jobs');
+      const response = await api.get('/jobs/');
       setJobs(response.data);
     } catch (error) {
       toast.error('Erro ao carregar vagas');
