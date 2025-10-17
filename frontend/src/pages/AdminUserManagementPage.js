@@ -297,10 +297,26 @@ const AdminUserManagementPage = () => {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {users.map((user) => (
+              {users.map((user) => {
+                // Função para formatar o papel/role
+                const getRoleLabel = (roles) => {
+                  if (!roles || roles.length === 0) return '-';
+                  const roleMap = {
+                    'admin': 'Administrador',
+                    'recruiter': 'Analista/Recrutador',
+                    'client': 'Cliente',
+                    'candidate': 'Candidato'
+                  };
+                  return roles.map(r => roleMap[r.role] || r.role).join(', ');
+                };
+
+                return (
                 <tr key={user.id}>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm font-medium text-gray-900">{user.full_name}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-gray-700 font-medium">{getRoleLabel(user.roles)}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm text-gray-500">{user.email}</div>
