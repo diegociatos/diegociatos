@@ -304,3 +304,26 @@ class Notification(BaseModel):
     created_at: datetime = Field(default_factory=lambda: datetime.now())
     sent_at: Optional[datetime] = None
 
+
+
+class AuditLog(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=generate_id)
+    actor_user_id: Optional[str] = None
+    tenant_id: Optional[str] = None  # organization_id
+    entity: str
+    entity_id: str
+    action: str
+    old_values: Optional[Dict[str, Any]] = None
+    new_values: Optional[Dict[str, Any]] = None
+    occurred_at: datetime = Field(default_factory=lambda: datetime.now())
+
+
+class UserSession(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=generate_id)
+    user_id: str
+    session_token: str
+    expires_at: datetime
+    created_at: datetime = Field(default_factory=lambda: datetime.now())
+
