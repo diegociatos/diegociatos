@@ -127,6 +127,14 @@ function AppRoutes() {
         }
       />
       <Route
+        path="/jobs/:jobId/manage"
+        element={
+          <PrivateRoute>
+            <AnalystJobDetailPage />
+          </PrivateRoute>
+        }
+      />
+      <Route
         path="/jobs/new"
         element={
           <PrivateRoute>
