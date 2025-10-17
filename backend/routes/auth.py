@@ -286,16 +286,23 @@ async def admin_create_user(data: CreateUserRequest, request: Request, session_t
     if existing:
         raise HTTPException(status_code=400, detail="Email já cadastrado")
     
-    # Gerar senha provisória
+    # Usar senha fornecida ou gerar automaticamente
     import secrets
-    temp_password = secrets.token_urlsafe(12)
+    if data.password:
+        # Validar que a senha tem pelo menos 1 caractere
+        if len(data.password) < 1:
+            raise HTTPException(status_code=400, detail="Senha deve ter pelo menos 1 caractere")
+        temp_password = data.password
+    else:
+        # Gerar senha provisória automaticamente
+        temp_password = secrets.token_urlsafe(12)
     
     new_user = User(
         email=data.email,
         password_hash=hash_password(temp_password),
         full_name=data.full_name,
         phone=data.phone,
-        requires_password_change=True  # Flag para trocar senha no primeiro acesso
+        requires_password_change=True  # Sempre exige troca no primeiro login
     )
     
     await db.users.insert_one(new_user.model_dump())
