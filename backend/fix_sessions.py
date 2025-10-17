@@ -10,8 +10,11 @@ from dotenv import load_dotenv
 load_dotenv()
 
 async def fix_sessions():
-    client = AsyncIOMotorClient(os.getenv("MONGO_URL"))
-    db = client.get_database()
+    mongo_url = os.getenv("MONGO_URL")
+    client = AsyncIOMotorClient(mongo_url)
+    # Extract database name from URL (format: mongodb://host:port/dbname)
+    db_name = mongo_url.split("/")[-1].split("?")[0]
+    db = client[db_name]
     
     # Find all sessions without expires_at
     sessions_without_expires = await db.user_sessions.find(
