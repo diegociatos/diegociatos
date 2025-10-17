@@ -190,10 +190,6 @@ async def change_my_password(data: dict, request: Request, session_token: Option
     return {"message": "Senha alterada com sucesso"}
 
 
-class ChangePasswordByAdminRequest(BaseModel):
-    new_password: Optional[str] = None
-
-
 @router.put("/{user_id}/reset-password")
 async def admin_change_password(
     user_id: str, 
