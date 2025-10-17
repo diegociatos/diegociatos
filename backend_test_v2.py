@@ -8,7 +8,7 @@ import requests
 import json
 import sys
 
-BASE_URL = "https://hire-genius-24.preview.emergentagent.com/api"
+BASE_URL = "https://recruta-system.preview.emergentagent.com/api"
 
 TEST_CREDENTIALS = {
     "admin": {"email": "admin@ciatos.com", "password": "admin123"},
