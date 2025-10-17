@@ -266,12 +266,29 @@ const AdminUserManagementPage = () => {
                     )}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <button
-                      onClick={() => handleDeleteUser(user.id)}
-                      className="text-red-600 hover:text-red-900"
-                    >
-                      Desativar
-                    </button>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => handleEditUser(user)}
+                        className="text-blue-600 hover:text-blue-900"
+                        title="Editar usuário"
+                      >
+                        Editar
+                      </button>
+                      <button
+                        onClick={() => handleResetPassword(user.id, user.full_name)}
+                        className="text-orange-600 hover:text-orange-900"
+                        title="Resetar senha"
+                      >
+                        Resetar Senha
+                      </button>
+                      <button
+                        onClick={() => handleDeleteUser(user.id)}
+                        className="text-red-600 hover:text-red-900"
+                        title="Desativar usuário"
+                      >
+                        Desativar
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
