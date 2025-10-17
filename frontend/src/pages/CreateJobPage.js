@@ -81,11 +81,18 @@ export default function CreateJobPage() {
       };
 
       await api.post(`/jobs/?organization_id=${formData.organization_id}`, payload);
+      
+      // Mostrar mensagem de sucesso
       toast.success('Vaga cadastrada com sucesso! Aguarde revisão do analista.');
-      navigate('/jobs');
+      
+      // Aguardar um pouco antes de navegar para evitar erro de React
+      setTimeout(() => {
+        navigate('/jobs');
+      }, 1000);
+      
     } catch (error) {
-      toast.error('Erro ao cadastrar vaga');
-      console.error(error);
+      console.error('Erro ao cadastrar vaga:', error);
+      toast.error(error.response?.data?.detail || 'Erro ao cadastrar vaga');
     } finally {
       setLoading(false);
     }
