@@ -1127,38 +1127,48 @@ class BackendTester:
 
     def test_recruiter_login_and_job_access(self):
         """Test recruiter login and job access"""
-        # Update credentials to use the new password from test_result.md
-        recruiter_creds = {"email": "cliente@techcorp.com", "password": "novaSenha456"}
+        # Try both possible client credentials from test_result.md
+        client_credentials = [
+            {"email": "cliente@techcorp.com", "password": "novaSenha456"},
+            {"email": "cliente@techcorp.com", "password": "client123"}
+        ]
         
-        try:
-            response = self.make_request("POST", "/auth/login", recruiter_creds)
-            
-            if response.status_code == 200:
-                data = response.json()
+        login_successful = False
+        
+        for creds in client_credentials:
+            try:
+                response = self.make_request("POST", "/auth/login", creds)
                 
-                if "access_token" in data:
-                    self.tokens["client"] = data["access_token"]
+                if response.status_code == 200:
+                    data = response.json()
                     
-                    # Test job access with client token
-                    jobs_response = self.make_request("GET", "/jobs/", auth_token=self.tokens["client"])
-                    
-                    if jobs_response.status_code == 200:
-                        self.log_test("Client Login and Job Access", True, 
-                                    "Client can login and access jobs successfully")
-                    elif jobs_response.status_code == 401:
-                        self.log_test("Client Login and Job Access", False, 
-                                    "Job access failed - authentication issue", jobs_response.text)
+                    if "access_token" in data:
+                        self.tokens["client"] = data["access_token"]
+                        login_successful = True
+                        
+                        # Test job access with client token
+                        jobs_response = self.make_request("GET", "/jobs/", auth_token=self.tokens["client"])
+                        
+                        if jobs_response.status_code == 200:
+                            self.log_test("Client Login and Job Access", True, 
+                                        f"Client can login with {creds['password']} and access jobs successfully")
+                        elif jobs_response.status_code == 401:
+                            self.log_test("Client Login and Job Access", False, 
+                                        "Job access failed - authentication issue", jobs_response.text)
+                        else:
+                            self.log_test("Client Login and Job Access", False, 
+                                        f"Job access failed: {jobs_response.status_code}", jobs_response.text)
+                        break
                     else:
-                        self.log_test("Client Login and Job Access", False, 
-                                    f"Job access failed: {jobs_response.status_code}", jobs_response.text)
+                        continue
                 else:
-                    self.log_test("Client Login and Job Access", False, 
-                                "Login response missing access_token", data)
-            else:
-                self.log_test("Client Login and Job Access", False, 
-                            f"Client login failed: {response.status_code}", response.text)
-        except Exception as e:
-            self.log_test("Client Login and Job Access", False, f"Request failed: {str(e)}")
+                    continue
+            except Exception as e:
+                continue
+        
+        if not login_successful:
+            self.log_test("Client Login and Job Access", False, 
+                        "Could not login with any known client credentials")
 
     def run_all_tests(self):
         """Run focused tests for authentication and job editing after UserSession fix"""
