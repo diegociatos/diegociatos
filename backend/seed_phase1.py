@@ -196,9 +196,28 @@ async def seed_phase1(db):
         # Cada vaga terá entre 6-10 applications
         num_apps = random.randint(6, 10)
         
+        # Pegar candidatos aleatórios, mas sem repetir para a mesma vaga
+        used_candidates = []
+        
         for i in range(num_apps):
-            candidate_user_id = random.choice(candidates_ids)
+            # Pegar candidato que ainda não aplicou para esta vaga
+            available_cands = [c for c in candidates_ids if c not in used_candidates]
+            if not available_cands:
+                break
+                
+            candidate_user_id = random.choice(available_cands)
+            used_candidates.append(candidate_user_id)
+            
             candidate = await db.candidates.find_one({"user_id": candidate_user_id})
+            
+            # Verificar se já existe application
+            existing_app = await db.applications.find_one({
+                "job_id": job_data["id"],
+                "candidate_id": candidate["id"]
+            })
+            
+            if existing_app:
+                continue
             
             application = Application(
                 id=f"app-{app_id_counter:03d}",
