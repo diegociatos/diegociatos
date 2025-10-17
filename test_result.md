@@ -248,6 +248,21 @@ backend:
         agent: "testing"
         comment: "✅ TESTADO: Todos os cenários funcionando - criar com senha definida, criar sem senha (auto), login com senha definida, validação senha vazia, reset funciona. Correção aplicada: validação senha vazia (if data.password is not None)"
 
+  - task: "Nova funcionalidade: Admin alterar senha manualmente de qualquer usuário"
+    implemented: true
+    working: true
+    file: "/app/backend/routes/users.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Rota PUT /{user_id}/reset-password modificada para aceitar senha opcional. Se fornecida usa ela, senão gera automaticamente. Define requires_password_change=False"
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTADO: Todos os cenários funcionando - alterar com senha definida, alterar sem senha (auto), login com nova senha, validação senha vazia, GET /users/ retorna roles. requires_password_change=False após alteração"
+
 frontend:
   - task: "Criar página CandidateSignupPage para auto-cadastro"
     implemented: true
