@@ -399,9 +399,48 @@ const AdminUserManagementPage = () => {
                 </select>
               </div>
 
+              {/* Opção de definir senha inicial */}
+              <div className="border-t border-gray-200 pt-4">
+                <div className="flex items-center mb-3">
+                  <input
+                    type="checkbox"
+                    id="setCustomPassword"
+                    checked={setCustomPassword}
+                    onChange={(e) => setSetCustomPassword(e.target.checked)}
+                    className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                  />
+                  <label htmlFor="setCustomPassword" className="ml-2 text-gray-700 font-medium">
+                    Definir senha inicial
+                  </label>
+                </div>
+
+                {setCustomPassword && (
+                  <div>
+                    <label className="block text-gray-700 font-medium mb-2">
+                      Senha Inicial * <span className="text-sm font-normal text-gray-500">(mínimo 1 caractere)</span>
+                    </label>
+                    <input
+                      type="password"
+                      name="password"
+                      value={formData.password}
+                      onChange={handleChange}
+                      required={setCustomPassword}
+                      minLength={1}
+                      placeholder="Digite a senha inicial"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                    <p className="mt-1 text-xs text-gray-500">
+                      O usuário poderá manter esta senha ou alterá-la no primeiro login.
+                    </p>
+                  </div>
+                )}
+              </div>
+
               <div className="bg-yellow-50 border border-yellow-200 rounded p-3">
                 <p className="text-sm text-yellow-800">
-                  Uma senha temporária será gerada automaticamente. O usuário deverá alterá-la no primeiro acesso.
+                  {setCustomPassword 
+                    ? "O usuário receberá a senha definida e deverá alterá-la no primeiro acesso." 
+                    : "Uma senha temporária será gerada automaticamente. O usuário deverá alterá-la no primeiro acesso."}
                 </p>
               </div>
 
