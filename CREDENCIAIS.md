@@ -70,12 +70,12 @@ O administrador pode resetar a senha de qualquer usuário através de:
 ## Acesso Rápido
 
 ### URLs Importantes
-- Login: https://recruta-system.preview.emergentagent.com/login
-- Dashboard Admin: https://recruta-system.preview.emergentagent.com/admin/usuarios
-- Dashboard Analista: https://recruta-system.preview.emergentagent.com/recruiter/dashboard
-- Kanban: https://recruta-system.preview.emergentagent.com/jobs/{jobId}/pipeline
-- Calendário Entrevistas: https://recruta-system.preview.emergentagent.com/interviews-calendar
-- Notificações: https://recruta-system.preview.emergentagent.com/notifications
+- Login: https://jobsift.preview.emergentagent.com/login
+- Dashboard Admin: https://jobsift.preview.emergentagent.com/admin/usuarios
+- Dashboard Analista: https://jobsift.preview.emergentagent.com/recruiter/dashboard
+- Kanban: https://jobsift.preview.emergentagent.com/jobs/{jobId}/pipeline
+- Calendário Entrevistas: https://jobsift.preview.emergentagent.com/interviews-calendar
+- Notificações: https://jobsift.preview.emergentagent.com/notifications
 
 ---
 

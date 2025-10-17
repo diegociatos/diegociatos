@@ -28,11 +28,11 @@ print('User ID: ' + userId);
 ## Step 2: Test Backend API
 ```bash
 # Test auth endpoint
-curl -X GET "https://recruta-system.preview.emergentagent.com/api/auth/me" \
+curl -X GET "https://jobsift.preview.emergentagent.com/api/auth/me" \
   -H "Authorization: Bearer YOUR_SESSION_TOKEN"
 
 # Test protected endpoints
-curl -X GET "https://recruta-system.preview.emergentagent.com/api/jobs" \
+curl -X GET "https://jobsift.preview.emergentagent.com/api/jobs" \
   -H "Authorization: Bearer YOUR_SESSION_TOKEN"
 ```
 
@@ -48,5 +48,5 @@ await page.context.add_cookies([{
     "secure": true,
     "sameSite": "None"
 }]);
-await page.goto("https://recruta-system.preview.emergentagent.com");
+await page.goto("https://jobsift.preview.emergentagent.com");
 ```

@@ -2,7 +2,7 @@
 import requests
 import json
 
-BASE_URL = "https://recruta-system.preview.emergentagent.com/api"
+BASE_URL = "https://jobsift.preview.emergentagent.com/api"
 
 def test_admin_endpoint():
     # Login as admin

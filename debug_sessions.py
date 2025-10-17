@@ -13,7 +13,7 @@ from utils.auth import decode_token
 
 load_dotenv(Path(__file__).parent / "backend" / '.env')
 
-BASE_URL = "https://recruta-system.preview.emergentagent.com/api"
+BASE_URL = "https://jobsift.preview.emergentagent.com/api"
 
 async def debug_sessions():
     mongo_url = os.environ['MONGO_URL']
