@@ -36,7 +36,7 @@ export default function CreateJobPage() {
 
   const fetchOrganizations = async () => {
     try {
-      const response = await api.get('/organizations');
+      const response = await api.get('/organizations/');
       setOrganizations(response.data);
       if (response.data.length > 0) {
         setFormData(prev => ({ ...prev, organization_id: response.data[0].id }));
