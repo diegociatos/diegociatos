@@ -233,6 +233,21 @@ backend:
         agent: "main"
         comment: "Seed atualizado para incluir requires_password_change=False nos usuários de teste"
 
+  - task: "Nova funcionalidade: Admin definir senha inicial ao criar usuário"
+    implemented: true
+    working: true
+    file: "/app/backend/routes/auth.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Adicionado campo opcional password no CreateUserRequest. Admin pode definir senha inicial ou deixar auto-gerar"
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTADO: Todos os cenários funcionando - criar com senha definida, criar sem senha (auto), login com senha definida, validação senha vazia, reset funciona. Correção aplicada: validação senha vazia (if data.password is not None)"
+
 frontend:
   - task: "Criar página CandidateSignupPage para auto-cadastro"
     implemented: true
