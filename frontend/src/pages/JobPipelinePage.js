@@ -13,6 +13,8 @@ const JobPipelinePage = () => {
   const [pipeline, setPipeline] = useState(null);
   const [activeCard, setActiveCard] = useState(null);
   const [filters, setFilters] = useState({ search: '', city: '', minScore: '', hasMustHave: false });
+  const [showInterviewModal, setShowInterviewModal] = useState(false);
+  const [selectedApplicationId, setSelectedApplicationId] = useState(null);
   
   const sensors = useSensors(
     useSensor(PointerSensor, {
