@@ -113,6 +113,14 @@ function AppRoutes() {
           </PrivateRoute>
         }
       />
+      <Route
+        path="/jobs/:jobId/edit"
+        element={
+          <PrivateRoute>
+            <JobEditPage />
+          </PrivateRoute>
+        }
+      />
       
       {/* Rotas do Candidato */}
       <Route
