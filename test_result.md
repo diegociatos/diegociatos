@@ -521,3 +521,44 @@ agent_communication:
       - Recrutador: recrutador@ciatos.com / recruiter123 ❌ (senha pode ter sido alterada)
       
       🎉 NOVA FUNCIONALIDADE 100% FUNCIONAL E TESTADA!
+
+  - agent: "main"
+    message: |
+      NOVA FUNCIONALIDADE - Alterar Senha Manualmente + Coluna de Papel/Tipo de Usuário
+      
+      IMPLEMENTAÇÃO BACKEND (/app/backend/routes/users.py):
+      1. Modificada rota PUT /{user_id}/reset-password:
+         - Aceita body opcional com campo `new_password`
+         - Se senha fornecida: usa ela e valida (mínimo 1 caractere)
+         - Se senha não fornecida: gera automaticamente
+         - Define requires_password_change=False (usuário pode manter a senha)
+         - Retorna campo "new_password" ao invés de "temporary_password"
+      
+      2. Modificado endpoint GET /users/:
+         - Agora retorna também os papéis (roles) de cada usuário
+         - Busca roles de user_org_roles para cada usuário listado
+      
+      IMPLEMENTAÇÃO FRONTEND (/app/frontend/src/pages/AdminUserManagementPage.js):
+      1. Adicionada coluna "PAPEL" entre NOME e E-MAIL:
+         - Mostra: Administrador, Analista/Recrutador, Cliente, Candidato
+         - Função helper getRoleLabel para formatar os papéis
+      
+      2. Substituído botão "Resetar Senha" por "Alterar Senha":
+         - Abre modal ao invés de confirmar direto
+         - Admin digita manualmente a nova senha
+         - Validação: mínimo 1 caractere
+      
+      3. Criado modal "Alterar Senha":
+         - Mostra nome do usuário
+         - Campo para digitar nova senha
+         - Mensagem clara: usuário pode manter a senha (facultativo trocar)
+         - Botão laranja "Alterar Senha"
+      
+      TESTADO VISUALMENTE:
+      - Coluna PAPEL exibindo corretamente
+      - Botão "Alterar Senha" visível
+      - Modal abre corretamente com todas as informações
+      
+      PRÓXIMO PASSO:
+      - Testar fluxo completo (alterar senha manualmente via interface, fazer login com nova senha)
+
