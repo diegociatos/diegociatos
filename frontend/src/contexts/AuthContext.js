@@ -59,7 +59,6 @@ export const AuthProvider = ({ children }) => {
   };
 
   const getUserRole = () => {
-    console.log('getUserRole chamado, userRoles:', userRoles);
     if (userRoles.length === 0) return null;
     
     // Prioridade: admin > recruiter > client > candidate
