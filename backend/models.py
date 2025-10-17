@@ -174,12 +174,16 @@ class Interview(BaseModel):
     tenant_id: str  # organization_id
     application_id: str
     interview_type: Literal["recruiter", "client", "technical"]
-    starts_at: Optional[datetime] = None
-    ends_at: Optional[datetime] = None
-    location: Optional[str] = None
+    starts_at: datetime
+    ends_at: datetime
+    timezone: str = "America/Sao_Paulo"
+    location: Dict[str, Any] = Field(default_factory=dict)  # {kind: onsite|video|phone, address?, meetUrl?, phone?}
     interviewer_user_id: Optional[str] = None
+    created_by: str
     status: Literal["scheduled", "done", "no_show", "canceled"] = "scheduled"
     notes: Optional[str] = None
+    confirmations: Dict[str, Any] = Field(default_factory=dict)  # {recruiter?, client?, candidate?}
+    reminders: Dict[str, bool] = Field(default_factory=dict)  # {sent24h?, sent2h?}
     created_at: datetime = Field(default_factory=lambda: datetime.now())
     updated_at: datetime = Field(default_factory=lambda: datetime.now())
 
