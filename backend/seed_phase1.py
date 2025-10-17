@@ -184,8 +184,8 @@ async def seed_phase1(db):
             jobs.append(job)
             print(f"  ✓ {job.title}")
     
-    # 6. APPLICATIONS (30+)
-    print("\n📋 Criando applications...")
+    # 6. APPLICATIONS (30+) com stage_history
+    print("\n📋 Criando applications com histórico...")
     stages = ["submitted", "screening", "recruiter_interview", "shortlisted", "client_interview", "offer", "hired", "rejected"]
     
     applications = []
@@ -219,14 +219,45 @@ async def seed_phase1(db):
             if existing_app:
                 continue
             
+            # Definir estágio atual
+            current_stage = random.choice(stages)
+            
+            # Criar histórico de mudanças (simular evolução)
+            stage_history = []
+            
+            # Sempre começa em 'submitted'
+            stage_history.append({
+                "from": None,
+                "to": "submitted",
+                "changedBy": "user-recruiter",
+                "changedAt": (datetime.now(timezone.utc) - timedelta(days=random.randint(5, 15))).isoformat(),
+                "note": "Candidatura recebida"
+            })
+            
+            # Se não está mais em submitted, adicionar evolução
+            if current_stage != "submitted":
+                stage_progression = ["screening", "recruiter_interview", "shortlisted", "client_interview", "offer", "hired"]
+                current_idx = stage_progression.index(current_stage) if current_stage in stage_progression else 0
+                
+                for idx in range(current_idx + 1):
+                    if idx < len(stage_progression):
+                        stage_history.append({
+                            "from": stage_progression[idx - 1] if idx > 0 else "submitted",
+                            "to": stage_progression[idx],
+                            "changedBy": "user-recruiter",
+                            "changedAt": (datetime.now(timezone.utc) - timedelta(days=random.randint(1, 4))).isoformat(),
+                            "note": f"Aprovado para {stage_progression[idx]}"
+                        })
+            
             application = Application(
                 id=f"app-{app_id_counter:03d}",
                 tenant_id=job_data["tenant_id"],
                 job_id=job_data["id"],
                 candidate_id=candidate["id"],
-                current_stage=random.choice(stages),
+                current_stage=current_stage,
                 status="active",
-                scores={"total": random.randint(50, 95), "breakdown": {"skills": random.randint(40, 100)}}
+                scores={"total": random.randint(50, 95), "breakdown": {"skills": random.randint(40, 100)}},
+                stage_history=stage_history
             )
             
             await db.applications.insert_one(application.model_dump())
