@@ -934,6 +934,15 @@ class BackendTester:
         self.test_password_validation_empty()
         self.test_password_reset_functionality()
         
+        # MANUAL PASSWORD RESET FUNCTIONALITY TESTS
+        print("\n" + "🔧 TESTING MANUAL PASSWORD RESET FUNCTIONALITY")
+        print("=" * 60)
+        self.test_admin_manual_password_reset_with_password()
+        self.test_admin_manual_password_reset_without_password()
+        self.test_login_with_manually_reset_password()
+        self.test_password_reset_empty_password_validation()
+        self.test_users_list_includes_roles()
+        
         # Summary
         print("\n" + "=" * 60)
         print("📊 TEST SUMMARY")
