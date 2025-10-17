@@ -59,6 +59,8 @@ class BackendTester:
                 response = fresh_session.post(url, json=data, headers=headers)
             elif method.upper() == "PATCH":
                 response = fresh_session.patch(url, json=data, headers=headers)
+            elif method.upper() == "PUT":
+                response = fresh_session.put(url, json=data, headers=headers)
             elif method.upper() == "DELETE":
                 response = fresh_session.delete(url, headers=headers)
             else:
