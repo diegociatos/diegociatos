@@ -342,6 +342,8 @@ class UserSession(BaseModel):
     id: str = Field(default_factory=generate_id)
     user_id: str
     session_token: str
+    expires_at: datetime
+    created_at: datetime = Field(default_factory=lambda: datetime.now())
 
 
 class DataSubjectRequest(BaseModel):
@@ -352,7 +354,4 @@ class DataSubjectRequest(BaseModel):
     status: Literal["open", "done"] = "open"
     created_at: datetime = Field(default_factory=lambda: datetime.now())
     resolved_at: Optional[datetime] = None
-
-    expires_at: datetime
-    created_at: datetime = Field(default_factory=lambda: datetime.now())
 
