@@ -38,6 +38,7 @@ api_router.include_router(scores.router, prefix="/scores", tags=["scores"])
 api_router.include_router(notifications.router, prefix="/notifications", tags=["notifications"])
 api_router.include_router(consents.router, prefix="/consents", tags=["consents"])
 api_router.include_router(reports.router, prefix="/reports", tags=["reports"])
+api_router.include_router(recruiter.router, prefix="/recruiter", tags=["recruiter"])
 
 api_router.get("/")(lambda: {"message": "Ciatos ATS API v1.0"})
 
