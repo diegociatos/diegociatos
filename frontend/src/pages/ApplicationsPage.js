@@ -29,7 +29,7 @@ export default function ApplicationsPage() {
     try {
       const [appsRes, jobsRes] = await Promise.all([
         api.get('/applications'),
-        api.get('/jobs')
+        api.get('/jobs/')
       ]);
       setApplications(appsRes.data);
       setJobs(jobsRes.data);
