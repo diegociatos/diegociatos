@@ -62,8 +62,11 @@ async def seed_phase1(db):
     
     users = []
     for u_data in users_data:
-        existing = await db.users.find_one({"id": u_data["id"]})
-        if not existing:
+        existing = await db.users.find_one({"email": u_data["email"]})
+        if existing:
+            print(f"  ⊙ {u_data['full_name']} (já existe)")
+            users.append(existing)
+        else:
             user = User(
                 id=u_data["id"],
                 email=u_data["email"],
@@ -72,7 +75,7 @@ async def seed_phase1(db):
                 is_active=True
             )
             await db.users.insert_one(user.model_dump())
-            users.append(user)
+            users.append(user.model_dump())
             print(f"  ✓ {user.full_name}")
     
     # 3. USER_ORG_ROLES
