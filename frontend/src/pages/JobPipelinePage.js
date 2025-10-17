@@ -350,6 +350,23 @@ const JobPipelinePage = () => {
           </DragOverlay>
         </DndContext>
       </div>
+      
+      {/* Modal de Agendar Entrevista */}
+      {showInterviewModal && (
+        <InterviewModal
+          applicationId={selectedApplicationId}
+          onClose={() => {
+            setShowInterviewModal(false);
+            setSelectedApplicationId(null);
+          }}
+          onSuccess={() => {
+            setShowInterviewModal(false);
+            setSelectedApplicationId(null);
+            alert('Entrevista agendada com sucesso!');
+            loadPipeline();
+          }}
+        />
+      )}
     </div>
   );
 };
