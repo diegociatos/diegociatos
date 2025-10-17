@@ -156,6 +156,14 @@ function AppRoutes() {
           </PrivateRoute>
         }
       />
+      <Route
+        path="/admin/organizacoes"
+        element={
+          <PrivateRoute>
+            <AdminOrganizationsPage />
+          </PrivateRoute>
+        }
+      />
       <Route path="/" element={<Navigate to="/login" replace />} />
     </Routes>
   );
