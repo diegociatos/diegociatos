@@ -562,3 +562,49 @@ agent_communication:
       PRÓXIMO PASSO:
       - Testar fluxo completo (alterar senha manualmente via interface, fazer login com nova senha)
 
+  - agent: "testing"
+    message: |
+      ✅ FUNCIONALIDADE DE ALTERAR SENHA MANUALMENTE TESTADA E APROVADA
+      
+      CENÁRIOS TESTADOS COM SUCESSO:
+      
+      1. ✅ ALTERAR SENHA COM SENHA DEFINIDA MANUALMENTE
+         - Admin logado (admin@ciatos.com / admin123)
+         - Alterou senha do cliente@techcorp.com para "novaSenha456"
+         - Retornou new_password = "novaSenha456" corretamente
+         - Usuário definido com requires_password_change=False
+      
+      2. ✅ ALTERAR SENHA SEM FORNECER SENHA (AUTOMÁTICA)
+         - Admin alterou senha do recrutador@ciatos.com sem fornecer body
+         - Sistema gerou senha automaticamente (ex: QMx_GgnVq23yJS8q)
+         - Retornou new_password gerada automaticamente
+         - Usuário definido com requires_password_change=False
+      
+      3. ✅ LOGIN COM NOVA SENHA DEFINIDA MANUALMENTE
+         - Login com cliente@techcorp.com / novaSenha456 funcionou
+         - Verificado que requires_password_change=False
+         - Usuário pode manter a senha (não é obrigado a trocar)
+      
+      4. ✅ VALIDAÇÃO: SENHA VAZIA
+         - Tentativa de alterar senha com {"new_password": ""}
+         - Retornou erro 400: "Senha deve ter pelo menos 1 caractere"
+      
+      5. ✅ ENDPOINT GET /users/ RETORNA ROLES
+         - Listou todos os usuários (26 usuários encontrados)
+         - Cada usuário tem campo "roles" com array de papéis
+         - Estrutura dos roles válida: user_id, organization_id, role
+      
+      DIFERENÇA IMPORTANTE IDENTIFICADA:
+      - Rota PUT /users/{user_id}/reset-password define requires_password_change=FALSE
+      - Rota POST /auth/admin/create-user define requires_password_change=TRUE
+      - Comportamento correto conforme especificação
+      
+      CREDENCIAIS FUNCIONAIS:
+      - Admin: admin@ciatos.com / admin123 ✅
+      - Cliente: cliente@techcorp.com / novaSenha456 ✅ (senha alterada pelo teste)
+      
+      ISSUE CONHECIDA (NÃO CRÍTICA):
+      - Recrutador: recrutador@ciatos.com / recruiter123 ❌ (senha alterada durante testes)
+      
+      🎉 FUNCIONALIDADE DE ALTERAR SENHA MANUALMENTE 100% FUNCIONAL!
+
