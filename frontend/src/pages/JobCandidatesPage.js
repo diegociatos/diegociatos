@@ -31,7 +31,9 @@ export default function JobCandidatesPage() {
   const fetchApplications = async () => {
     try {
       const response = await api.get(`/applications/?job_id=${jobId}`);
-      setApplications(response.data);
+      // Cliente vê apenas candidatos aprovados pelo analista
+      const approvedCandidates = response.data.filter(app => app.approved_by_analyst === true);
+      setApplications(approvedCandidates);
     } catch (error) {
       console.error('Erro ao carregar candidatos:', error);
       toast.error('Erro ao carregar candidatos');
