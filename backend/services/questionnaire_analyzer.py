@@ -282,14 +282,9 @@ O relatório deve incluir:
 Seja equilibrado, construtivo e focado no potencial."""
 
         try:
-            response = self.client.chat.completions.create(
-                model="gpt-4",
-                messages=[{"role": "user", "content": prompt}],
-                max_tokens=500,
-                temperature=0.7
-            )
-            
-            report = response.choices[0].message.content.strip()
+            report = await self._call_llm(prompt)
+            if not report:
+                report = f"Principais competências: {', '.join(top_names)}. Áreas de desenvolvimento: {', '.join(dev_names)}."
         except Exception as e:
             print(f"Erro na análise Comportamental: {e}")
             report = f"Principais competências: {', '.join(top_names)}. Áreas de desenvolvimento: {', '.join(dev_names)}."
