@@ -910,6 +910,22 @@ backend:
         agent: "testing"
         comment: "✅ TESTADO E APROVADO - Pipeline API funcionando perfeitamente: (1) GET /applications/job-001/pipeline retorna estrutura correta com job info (jobId: job-001, title: Desenvolvedor Full Stack, clientName: TechCorp, status: published), (2) Columns array com 9 estágios do pipeline, (3) Cards array com 6 candidaturas incluindo informações completas (applicationId, candidateName, candidateCity, scoreTotal, badges, currentStage), (4) Tenant-based access control funcionando corretamente (recruiter sem acesso ao tenant-techcorp-001 recebe 403, admin com acesso funciona normalmente), (5) Pipeline testado com sucesso usando admin credentials para job-001 e recruiter credentials para jobs do tenant correto. Sistema de autenticação e autorização funcionando como esperado."
 
+backend:
+  - task: "Complete Questionnaire Flow Testing"
+    implemented: true
+    working: true
+    file: "/app/backend/routes/questionnaires.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Questionnaire system implemented with DISC, Recognition, and Behavioral questionnaires. AI analysis integration via questionnaire_analyzer service."
+      - working: true
+        agent: "testing"
+        comment: "✅ COMPLETE QUESTIONNAIRE FLOW TESTED AND APPROVED - All 4 steps completed successfully: (1) Created test candidate testequest@test.com with access_token ✅, (2) Retrieved all 3 questionnaires (DISC: 28 questions, Recognition: 30 questions, Behavioral: 25 questions) ✅, (3) Submitted sample responses (value 4 for all questions) and received AI analyses (disc: 1574 chars, recognition: 1986 chars, behavioral: 1775 chars) ✅, (4) Verified assessments created with questionnaires_completed=true and 3 assessments (disc, recognition, behavioral) with proper structure (scores, data, summaries) ✅. AI analysis integration working perfectly. System 100% functional for candidate questionnaire workflow."
+
 test_plan:
   current_focus:
     - "Testar frontend: Carregar Kanban, drag & drop, modal contratação"
@@ -920,4 +936,5 @@ test_plan:
     - "Testar backend: GET /jobs-kanban/{job_id}/stage-history"
     - "Testar backend: Pipeline API com job-001 e credenciais recruiter/admin"
     - "Testar backend: Candidate signup endpoint com payload específico da review"
+    - "Complete Questionnaire Flow Testing - All 4 steps validated"
 
