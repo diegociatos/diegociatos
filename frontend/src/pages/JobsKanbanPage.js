@@ -566,6 +566,60 @@ const JobsKanbanPage = () => {
                   </div>
                 </div>
                 
+
+                {/* Candidatos */}
+                <div className="bg-white rounded-lg border border-gray-200 p-4">
+                  <h4 className="font-bold text-gray-800 mb-4 flex items-center text-lg">
+                    <span className="text-2xl mr-2">👥</span>
+                    Candidatos ({candidates.length})
+                  </h4>
+                  
+                  {loadingCandidates ? (
+                    <div className="text-center py-4">
+                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600 mx-auto"></div>
+                      <p className="mt-2 text-gray-600 text-xs">Carregando...</p>
+                    </div>
+                  ) : candidates.length === 0 ? (
+                    <div className="text-center py-6 text-gray-500">
+                      <svg className="mx-auto h-10 w-10 text-gray-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                      </svg>
+                      <p className="text-sm">Nenhum candidato ainda</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-2 max-h-[300px] overflow-y-auto">
+                      {candidates.slice(0, 10).map((candidate) => (
+                        <div key={candidate.id} className="flex items-center justify-between p-2 bg-gray-50 rounded border border-gray-200">
+                          <div className="flex-1">
+                            <p className="font-medium text-gray-900 text-sm">{candidate.candidate_name || 'Nome não disponível'}</p>
+                            <p className="text-xs text-gray-500">
+                              Fase: {candidate.currentStage === 'submitted' ? 'Inscrito' :
+                                     candidate.currentStage === 'screening' ? 'Triagem' :
+                                     candidate.currentStage === 'recruiter_interview' ? 'Entrevista Recrutador' :
+                                     candidate.currentStage === 'shortlisted' ? 'Pré-selecionado' :
+                                     candidate.currentStage === 'client_interview' ? 'Entrevista Cliente' :
+                                     candidate.currentStage === 'offer' ? 'Proposta' :
+                                     candidate.currentStage === 'hired' ? 'Contratado' :
+                                     candidate.currentStage === 'rejected' ? 'Rejeitado' : candidate.currentStage}
+                            </p>
+                          </div>
+                          <button
+                            onClick={() => navigate(`/applications/${candidate.id}`)}
+                            className="text-blue-600 hover:text-blue-800 text-xs font-medium"
+                          >
+                            Ver →
+                          </button>
+                        </div>
+                      ))}
+                      {candidates.length > 10 && (
+                        <p className="text-center text-xs text-gray-500 py-2">
+                          +{candidates.length - 10} candidatos. <button onClick={() => navigate(`/jobs/${selectedJob?.id}/pipeline`)} className="text-blue-600 font-medium">Ver todos</button>
+                        </p>
+                      )}
+                    </div>
+                  )}
+                </div>
+
                 {/* Botões de Ação */}
                 <div className="bg-blue-50 rounded-lg border border-blue-200 p-4">
                   <h4 className="font-bold text-gray-800 mb-3 flex items-center">
