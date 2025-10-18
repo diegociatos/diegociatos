@@ -455,15 +455,30 @@ const JobsKanbanPage = () => {
 
       {/* Modal de Notas/Comentários */}
       {showNotesModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[80vh] flex flex-col">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 overflow-y-auto">
+          <div className="bg-white rounded-xl shadow-2xl max-w-6xl w-full my-8">
             {/* Modal Header */}
-            <div className="p-6 border-b border-gray-200">
+            <div className="p-6 border-b border-gray-200 bg-gradient-to-r from-blue-600 to-indigo-600">
               <div className="flex items-center justify-between">
-                <h3 className="text-2xl font-bold text-gray-800 flex items-center">
-                  <span className="text-3xl mr-3">📝</span>
-                  Anotações do Processo Seletivo
-                </h3>
+                <div>
+                  <h3 className="text-2xl font-bold text-white">
+                    {selectedJob?.title}
+                  </h3>
+                  <div className="mt-2 flex items-center gap-3">
+                    <span className="px-3 py-1 bg-white bg-opacity-20 text-white text-sm rounded-full font-medium">
+                      {stageLabels[selectedJob?.recruitment_stage]}
+                    </span>
+                    <span className="px-3 py-1 bg-white bg-opacity-20 text-white text-sm rounded-full font-medium">
+                      {selectedJob?.status === 'draft' ? '📝 Rascunho' : 
+                       selectedJob?.status === 'published' ? '✅ Publicada' : 
+                       selectedJob?.status === 'closed' ? '🔒 Fechada' : 
+                       selectedJob?.status === 'paused' ? '⏸️ Pausada' : selectedJob?.status}
+                    </span>
+                    <span className="px-3 py-1 bg-white bg-opacity-20 text-white text-sm rounded-full font-medium">
+                      👥 {selectedJob?.applications_count || 0} candidatos
+                    </span>
+                  </div>
+                </div>
                 <button
                   onClick={() => {
                     setShowNotesModal(false);
@@ -471,148 +486,223 @@ const JobsKanbanPage = () => {
                     setNotes([]);
                     setNewNote('');
                   }}
-                  className="text-gray-400 hover:text-gray-600"
+                  className="text-white hover:text-gray-200"
                 >
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                   </svg>
                 </button>
               </div>
-              <div className="mt-2 text-sm text-gray-600">
-                Vaga: <strong>{selectedJob?.title}</strong>
-              </div>
-              <div className="mt-3 bg-blue-50 rounded-lg p-4 border border-blue-200">
-                <h4 className="font-semibold text-gray-800 mb-2">Informações da Vaga</h4>
-                <div className="grid grid-cols-2 gap-3 text-sm">
-                  <div>
-                    <span className="text-gray-600">Status:</span>
-                    <span className="ml-2 font-medium text-gray-900">
-                      {selectedJob?.status === 'draft' ? 'Rascunho' : 
-                       selectedJob?.status === 'published' ? 'Publicada' : 
-                       selectedJob?.status === 'closed' ? 'Fechada' : selectedJob?.status}
-                    </span>
-                  </div>
-                  <div>
-                    <span className="text-gray-600">Fase:</span>
-                    <span className="ml-2 font-medium text-gray-900">
-                      {stageLabels[selectedJob?.recruitment_stage] || 'N/A'}
-                    </span>
-                  </div>
-                  <div>
-                    <span className="text-gray-600">Candidatos:</span>
-                    <span className="ml-2 font-medium text-gray-900">{selectedJob?.applications_count || 0}</span>
-                  </div>
-                  <div>
-                    <span className="text-gray-600">Modo:</span>
-                    <span className="ml-2 font-medium text-gray-900">
-                      {selectedJob?.work_mode === 'presencial' ? 'Presencial' : 
-                       selectedJob?.work_mode === 'remoto' ? 'Remoto' : 
-                       selectedJob?.work_mode === 'hibrido' ? 'Híbrido' : 'N/A'}
-                    </span>
-                  </div>
-                </div>
-                {selectedJob?.description && (
-                  <div className="mt-3 pt-3 border-t border-blue-200">
-                    <span className="text-gray-600 font-medium">Descrição:</span>
-                    <p className="mt-1 text-gray-700 text-sm line-clamp-3">{selectedJob.description}</p>
-                  </div>
-                )}
-              </div>
             </div>
             
-            {/* Modal Body - Lista de Notas */}
-            <div className="flex-1 overflow-y-auto p-6">
-              <h4 className="font-semibold text-gray-800 mb-4 flex items-center">
-                <span className="text-xl mr-2">📝</span>
-                Anotações do Processo
-              </h4>
-              {loadingNotes ? (
-                <div className="text-center py-8">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-                  <p className="mt-2 text-gray-600">Carregando anotações...</p>
-                </div>
-              ) : notes.length === 0 ? (
-                <div className="text-center py-12 text-gray-500">
-                  <svg className="mx-auto h-12 w-12 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                  </svg>
-                  <p className="text-lg font-medium">Nenhuma anotação ainda</p>
-                  <p className="text-sm mt-2">Adicione sua primeira anotação abaixo</p>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {notes.map((note) => (
-                    <div key={note.id} className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-                      <div className="flex items-start justify-between mb-2">
-                        <div>
-                          <div className="font-semibold text-gray-900">
-                            {note.author?.full_name || 'Usuário'}
-                          </div>
-                          <div className="text-xs text-gray-500">
-                            {new Date(note.created_at).toLocaleString('pt-BR')}
-                          </div>
-                        </div>
-                        <button
-                          onClick={() => handleDeleteNote(note.id)}
-                          className="text-red-600 hover:text-red-800 text-sm"
-                          title="Deletar anotação"
-                        >
-                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                          </svg>
-                        </button>
+            {/* Modal Body - 2 Colunas */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 p-6 max-h-[600px] overflow-y-auto">
+              
+              {/* COLUNA ESQUERDA - Detalhes da Vaga */}
+              <div className="space-y-6">
+                {/* Informações Básicas */}
+                <div className="bg-white rounded-lg border border-gray-200 p-4">
+                  <h4 className="font-bold text-gray-800 mb-4 flex items-center text-lg">
+                    <span className="text-2xl mr-2">📋</span>
+                    Informações da Vaga
+                  </h4>
+                  
+                  <div className="space-y-3">
+                    {/* Descrição */}
+                    {selectedJob?.description && (
+                      <div>
+                        <label className="text-sm font-semibold text-gray-600">Descrição:</label>
+                        <p className="text-gray-700 text-sm mt-1 whitespace-pre-wrap">{selectedJob.description}</p>
                       </div>
-                      <p className="text-gray-700 whitespace-pre-wrap">{note.content}</p>
+                    )}
+                    
+                    {/* Tipo de Emprego */}
+                    {selectedJob?.employment_type && (
+                      <div>
+                        <label className="text-sm font-semibold text-gray-600">Tipo de Emprego:</label>
+                        <p className="text-gray-700 text-sm mt-1">{selectedJob.employment_type}</p>
+                      </div>
+                    )}
+                    
+                    {/* Jornada */}
+                    {selectedJob?.schedule && (
+                      <div>
+                        <label className="text-sm font-semibold text-gray-600">Jornada:</label>
+                        <p className="text-gray-700 text-sm mt-1">{selectedJob.schedule}</p>
+                      </div>
+                    )}
+                    
+                    {/* Localização */}
+                    <div>
+                      <label className="text-sm font-semibold text-gray-600">Localização:</label>
+                      <p className="text-gray-700 text-sm mt-1">
+                        📍 {selectedJob?.location_city || 'N/A'}, {selectedJob?.location_state || 'N/A'} - {selectedJob?.location_country || 'Brasil'}
+                      </p>
+                      <p className="text-gray-700 text-sm">
+                        {selectedJob?.work_mode === 'presencial' ? '🏢 Presencial' : 
+                         selectedJob?.work_mode === 'remoto' ? '🏠 Remoto' : 
+                         selectedJob?.work_mode === 'hibrido' ? '🔄 Híbrido' : ''}
+                      </p>
                     </div>
-                  ))}
+                    
+                    {/* Salário */}
+                    {(selectedJob?.salary_min || selectedJob?.salary_max) && (
+                      <div>
+                        <label className="text-sm font-semibold text-gray-600">Faixa Salarial:</label>
+                        <p className="text-gray-700 text-sm mt-1">
+                          💰 R$ {selectedJob.salary_min?.toLocaleString('pt-BR') || '0'} - R$ {selectedJob.salary_max?.toLocaleString('pt-BR') || '0'}
+                        </p>
+                      </div>
+                    )}
+                    
+                    {/* Benefícios */}
+                    {selectedJob?.benefits && (
+                      <div>
+                        <label className="text-sm font-semibold text-gray-600">Benefícios:</label>
+                        <p className="text-gray-700 text-sm mt-1 whitespace-pre-wrap">{selectedJob.benefits}</p>
+                      </div>
+                    )}
+                    
+                    {/* Datas */}
+                    <div className="pt-3 border-t border-gray-200">
+                      <p className="text-xs text-gray-500">
+                        Criada em: {selectedJob?.created_at ? new Date(selectedJob.created_at).toLocaleString('pt-BR') : 'N/A'}
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        Atualizada em: {selectedJob?.updated_at ? new Date(selectedJob.updated_at).toLocaleString('pt-BR') : 'N/A'}
+                      </p>
+                    </div>
+                  </div>
                 </div>
-              )}
+                
+                {/* Botões de Ação */}
+                <div className="bg-blue-50 rounded-lg border border-blue-200 p-4">
+                  <h4 className="font-bold text-gray-800 mb-3 flex items-center">
+                    <span className="text-xl mr-2">⚡</span>
+                    Ações Rápidas
+                  </h4>
+                  <div className="space-y-2">
+                    <button
+                      onClick={() => navigate(`/jobs/${selectedJob?.id}/edit`)}
+                      className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 text-sm font-medium flex items-center justify-center"
+                    >
+                      <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                      </svg>
+                      Editar Vaga Completa
+                    </button>
+                    <button
+                      onClick={() => navigate(`/jobs/${selectedJob?.id}/pipeline`)}
+                      className="w-full bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 text-sm font-medium flex items-center justify-center"
+                    >
+                      <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                      </svg>
+                      Ver Pipeline de Candidatos
+                    </button>
+                    {userRole === 'recruiter' && selectedJob?.recruitment_stage !== 'contratacao' && (
+                      <button
+                        onClick={handleMoveToNextStage}
+                        className="w-full bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 text-sm font-medium flex items-center justify-center"
+                      >
+                        <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                        </svg>
+                        Mover para Próxima Fase
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+              
+              {/* COLUNA DIREITA - Anotações */}
+              <div className="space-y-4">
+                <div className="bg-white rounded-lg border border-gray-200 p-4">
+                  <h4 className="font-bold text-gray-800 mb-4 flex items-center text-lg">
+                    <span className="text-2xl mr-2">📝</span>
+                    Anotações do Processo
+                  </h4>
+                  
+                  {/* Lista de Anotações */}
+                  <div className="space-y-3 mb-4 max-h-[300px] overflow-y-auto">
+                    {loadingNotes ? (
+                      <div className="text-center py-8">
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+                        <p className="mt-2 text-gray-600 text-sm">Carregando...</p>
+                      </div>
+                    ) : notes.length === 0 ? (
+                      <div className="text-center py-8 text-gray-500">
+                        <svg className="mx-auto h-10 w-10 text-gray-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        <p className="text-sm font-medium">Nenhuma anotação</p>
+                        <p className="text-xs mt-1">Adicione abaixo</p>
+                      </div>
+                    ) : (
+                      notes.map((note) => (
+                        <div key={note.id} className="bg-gray-50 rounded-lg p-3 border border-gray-200">
+                          <div className="flex items-start justify-between mb-2">
+                            <div>
+                              <div className="font-semibold text-gray-900 text-sm">
+                                {note.author?.full_name || 'Usuário'}
+                              </div>
+                              <div className="text-xs text-gray-500">
+                                {new Date(note.created_at).toLocaleString('pt-BR')}
+                              </div>
+                            </div>
+                            <button
+                              onClick={() => handleDeleteNote(note.id)}
+                              className="text-red-600 hover:text-red-800"
+                              title="Deletar"
+                            >
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                              </svg>
+                            </button>
+                          </div>
+                          <p className="text-gray-700 text-sm whitespace-pre-wrap">{note.content}</p>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                  
+                  {/* Nova Anotação */}
+                  <div className="border-t border-gray-200 pt-4">
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      Nova Anotação
+                    </label>
+                    <textarea
+                      value={newNote}
+                      onChange={(e) => setNewNote(e.target.value)}
+                      rows={3}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
+                      placeholder="Ex: Candidato João aprovado na triagem, Cliente pediu 3 finalistas até sexta..."
+                    />
+                    <button
+                      onClick={handleAddNote}
+                      disabled={!newNote.trim()}
+                      className="mt-2 w-full bg-blue-600 text-white py-2 px-4 rounded-lg font-medium hover:bg-blue-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed text-sm"
+                    >
+                      ➕ Adicionar Anotação
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
             
-            {/* Modal Footer - Nova Nota */}
-            <div className="p-6 bg-gray-50 border-t border-gray-200">
-              <div className="mb-3">
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Nova Anotação
-                </label>
-                <textarea
-                  value={newNote}
-                  onChange={(e) => setNewNote(e.target.value)}
-                  rows={3}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="Digite sua anotação sobre o processo seletivo..."
-                />
-              </div>
-              <div className="flex space-x-3 mb-3">
-                <button
-                  onClick={handleAddNote}
-                  disabled={!newNote.trim()}
-                  className="flex-1 bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
-                >
-                  ➕ Adicionar Anotação
-                </button>
-              </div>
-              <div className="flex space-x-3">
-                {userRole === 'recruiter' && selectedJob?.recruitment_stage !== 'contratacao' && (
-                  <button
-                    onClick={handleMoveToNextStage}
-                    className="flex-1 bg-green-600 text-white py-3 rounded-lg font-medium hover:bg-green-700 transition-colors"
-                  >
-                    ➡️ Mover para Próxima Fase
-                  </button>
-                )}
-                <button
-                  onClick={() => {
-                    setShowNotesModal(false);
-                    setSelectedJob(null);
-                    setNotes([]);
-                    setNewNote('');
-                  }}
-                  className="flex-1 bg-gray-300 text-gray-700 py-3 rounded-lg font-medium hover:bg-gray-400 transition-colors"
-                >
-                  Fechar
-                </button>
-              </div>
+            {/* Modal Footer */}
+            <div className="p-4 bg-gray-50 border-t border-gray-200 flex justify-end">
+              <button
+                onClick={() => {
+                  setShowNotesModal(false);
+                  setSelectedJob(null);
+                  setNotes([]);
+                  setNewNote('');
+                }}
+                className="px-6 py-2 bg-gray-600 text-white rounded-lg font-medium hover:bg-gray-700 transition-colors"
+              >
+                Fechar
+              </button>
             </div>
           </div>
         </div>
