@@ -52,6 +52,7 @@ export default function CandidateProfilePage() {
 
   useEffect(() => {
     loadProfile();
+    loadExperiences();
   }, []);
 
   const loadProfile = async () => {
