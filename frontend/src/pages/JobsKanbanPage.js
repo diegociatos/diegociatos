@@ -251,6 +251,25 @@ const JobsKanbanPage = () => {
         </div>
       </nav>
       
+      {/* Instrução de Como Usar (apenas para recrutador) */}
+      {userRole === 'recruiter' && (
+        <div className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-6 py-4">
+          <div className="max-w-7xl mx-auto flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <div className="bg-white bg-opacity-20 rounded-full p-2">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div>
+                <p className="font-semibold">Como mover vagas entre fases:</p>
+                <p className="text-sm text-blue-100">Clique e SEGURE no card da vaga, depois ARRASTE para a coluna desejada. Para adicionar anotações, apenas clique no card.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      
       {/* Kanban Board */}
       <div className="p-6 overflow-x-auto">
         <DragDropContext onDragEnd={handleDragEnd}>
