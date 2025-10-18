@@ -1743,6 +1743,177 @@ class BackendTester:
         except Exception as e:
             self.log_test("Pipeline - Existing Job Test", False, f"Request failed: {str(e)}")
 
+    def test_candidate_signup_review_request(self):
+        """Test candidate signup endpoint as requested in review"""
+        print("\n🎯 TESTING CANDIDATE SIGNUP - REVIEW REQUEST")
+        print("=" * 60)
+        
+        # Exact payload from review request
+        test_data = {
+            "email": "novocandidato@test.com",
+            "password": "senha123",
+            "full_name": "Novo Candidato Teste",
+            "phone": "11999887766"
+        }
+        
+        try:
+            # Test the signup endpoint
+            response = self.make_request("POST", "/auth/candidate/signup", test_data)
+            
+            if response.status_code in [200, 201]:
+                data = response.json()
+                
+                # Verify response structure
+                required_fields = ["access_token", "refresh_token", "user"]
+                if all(field in data for field in required_fields):
+                    user_data = data["user"]
+                    
+                    # Verify user data
+                    if (user_data.get("email") == test_data["email"] and 
+                        user_data.get("full_name") == test_data["full_name"]):
+                        
+                        # Store token for database verification
+                        candidate_token = data["access_token"]
+                        candidate_user_id = user_data["id"]
+                        
+                        self.log_test("Candidate Signup Response", True, 
+                                    f"✅ Signup successful - Status: {response.status_code}, User ID: {candidate_user_id}")
+                        
+                        # Now verify database records
+                        self.verify_candidate_database_records(candidate_user_id, test_data, candidate_token)
+                        
+                    else:
+                        self.log_test("Candidate Signup Response", False, 
+                                    "User data in response doesn't match input", user_data)
+                else:
+                    self.log_test("Candidate Signup Response", False, 
+                                "Missing required fields in response", data)
+            
+            elif response.status_code == 400 and "já cadastrado" in response.text:
+                self.log_test("Candidate Signup Response", True, 
+                            "✅ Email already exists validation working (expected if user already created)")
+                
+                # Try to login with existing user to get token for verification
+                login_data = {"email": test_data["email"], "password": test_data["password"]}
+                login_response = self.make_request("POST", "/auth/login", login_data)
+                
+                if login_response.status_code == 200:
+                    login_result = login_response.json()
+                    candidate_token = login_result["access_token"]
+                    candidate_user_id = login_result["user"]["id"]
+                    
+                    self.log_test("Existing User Login", True, "✅ Successfully logged in with existing candidate")
+                    self.verify_candidate_database_records(candidate_user_id, test_data, candidate_token)
+                else:
+                    self.log_test("Existing User Login", False, 
+                                f"Could not login with existing user: {login_response.status_code}")
+            
+            else:
+                self.log_test("Candidate Signup Response", False, 
+                            f"Unexpected status {response.status_code}", response.text)
+                
+        except Exception as e:
+            self.log_test("Candidate Signup Response", False, f"Request failed: {str(e)}")
+
+    def verify_candidate_database_records(self, user_id: str, original_data: dict, token: str):
+        """Verify that all required database records were created for candidate"""
+        
+        # Test 1: Verify user was created in users collection
+        try:
+            me_response = self.make_request("GET", "/auth/me", auth_token=token)
+            
+            if me_response.status_code == 200:
+                me_data = me_response.json()
+                user_info = me_data.get("user", {})
+                
+                if (user_info.get("id") == user_id and 
+                    user_info.get("email") == original_data["email"] and
+                    user_info.get("full_name") == original_data["full_name"]):
+                    
+                    self.log_test("User Created in Users Collection", True, 
+                                f"✅ User record verified in database - ID: {user_id}")
+                else:
+                    self.log_test("User Created in Users Collection", False, 
+                                "User data doesn't match expected values", user_info)
+            else:
+                self.log_test("User Created in Users Collection", False, 
+                            f"Could not verify user record: {me_response.status_code}")
+        except Exception as e:
+            self.log_test("User Created in Users Collection", False, f"Verification failed: {str(e)}")
+        
+        # Test 2: Verify candidate profile was created in candidates collection
+        try:
+            # Get candidate profile (assuming there's an endpoint for this)
+            candidates_response = self.make_request("GET", "/candidates/", auth_token=token)
+            
+            if candidates_response.status_code == 200:
+                candidates = candidates_response.json()
+                
+                # Find candidate with matching user_id
+                candidate_profile = None
+                if isinstance(candidates, list):
+                    candidate_profile = next((c for c in candidates if c.get("user_id") == user_id), None)
+                elif isinstance(candidates, dict) and candidates.get("user_id") == user_id:
+                    candidate_profile = candidates
+                
+                if candidate_profile:
+                    self.log_test("Candidate Profile Created", True, 
+                                f"✅ Candidate profile found in candidates collection - User ID: {user_id}")
+                else:
+                    self.log_test("Candidate Profile Created", False, 
+                                f"No candidate profile found for user_id: {user_id}")
+            else:
+                self.log_test("Candidate Profile Created", False, 
+                            f"Could not access candidates collection: {candidates_response.status_code}")
+        except Exception as e:
+            self.log_test("Candidate Profile Created", False, f"Verification failed: {str(e)}")
+        
+        # Test 3: Verify user has "candidate" role in user_org_roles
+        # We'll need to use admin token to check user roles
+        if "admin" not in self.tokens:
+            # Try to get admin token first
+            admin_creds = {"email": "admin@ciatos.com", "password": "admin123"}
+            try:
+                admin_response = self.make_request("POST", "/auth/login", admin_creds)
+                if admin_response.status_code == 200:
+                    self.tokens["admin"] = admin_response.json()["access_token"]
+            except:
+                pass
+        
+        if "admin" in self.tokens:
+            try:
+                # Get users list which should include roles
+                users_response = self.make_request("GET", "/users/", auth_token=self.tokens["admin"])
+                
+                if users_response.status_code == 200:
+                    users = users_response.json()
+                    
+                    # Find our candidate user
+                    candidate_user = next((u for u in users if u.get("id") == user_id), None)
+                    
+                    if candidate_user and "roles" in candidate_user:
+                        roles = candidate_user["roles"]
+                        
+                        # Check if user has candidate role
+                        has_candidate_role = any(role.get("role") == "candidate" for role in roles)
+                        
+                        if has_candidate_role:
+                            self.log_test("User Has Candidate Role", True, 
+                                        f"✅ User has 'candidate' role in user_org_roles - User ID: {user_id}")
+                        else:
+                            self.log_test("User Has Candidate Role", False, 
+                                        f"User does not have 'candidate' role. Roles found: {[r.get('role') for r in roles]}")
+                    else:
+                        self.log_test("User Has Candidate Role", False, 
+                                    f"Could not find user or roles data for user_id: {user_id}")
+                else:
+                    self.log_test("User Has Candidate Role", False, 
+                                f"Could not access users list: {users_response.status_code}")
+            except Exception as e:
+                self.log_test("User Has Candidate Role", False, f"Role verification failed: {str(e)}")
+        else:
+            self.log_test("User Has Candidate Role", False, "Admin token not available for role verification")
+
     def run_all_tests(self):
         """Run Pipeline functionality tests as requested in review"""
         print("🚀 Testing Pipeline Functionality")
