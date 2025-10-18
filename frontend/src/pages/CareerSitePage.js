@@ -197,13 +197,13 @@ export default function CareerSitePage() {
                       </div>
                     )}
 
-                    {/* Botão de Candidatura */}
+                    {/* Botão Ver Detalhes */}
                     <Button 
                       className="w-full btn-primary mt-4"
-                      onClick={() => handleApply(job.id)}
-                      data-testid={`apply-button-${job.id}`}
+                      onClick={() => navigate(`/vagas/${job.id}`)}
+                      data-testid={`view-details-button-${job.id}`}
                     >
-                      Candidatar-se
+                      Ver Detalhes
                       <ArrowRight className="w-4 h-4 ml-2" />
                     </Button>
                   </div>
