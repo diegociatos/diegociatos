@@ -46,6 +46,12 @@ class Candidate(BaseModel):
     model_config = ConfigDict(extra="ignore")
     id: str = Field(default_factory=generate_id)
     user_id: str
+    
+    # Contatos
+    phone: Optional[str] = None  # Telefone
+    whatsapp: Optional[str] = None  # WhatsApp
+    email: Optional[str] = None  # E-mail (pode ser diferente do login)
+    
     birthdate: Optional[datetime] = None
     location_city: Optional[str] = None
     location_state: Optional[str] = None
