@@ -71,6 +71,53 @@ export default function CandidateProfilePage() {
     }
   };
 
+
+  const handleAddressUpdate = async () => {
+    setLoading(true);
+    try {
+      await api.put('/candidates/profile/address', {
+        address_street: profile.address_street,
+        address_number: profile.address_number,
+        address_complement: profile.address_complement,
+        address_zip_code: profile.address_zip_code,
+        location_neighborhood: profile.location_neighborhood,
+        location_city: profile.location_city,
+        location_state: profile.location_state
+      });
+      toast.success('Endereço atualizado com sucesso!');
+    } catch (error) {
+      toast.error('Erro ao atualizar endereço');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleResumeUpload = async () => {
+    if (!resumeFile) {
+      toast.error('Selecione um arquivo');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const formData = new FormData();
+      formData.append('file', resumeFile);
+      
+      await api.post('/candidates/upload-resume', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      
+      toast.success('Currículo enviado com sucesso!');
+      setResumeFile(null);
+      loadProfile(); // Recarregar para mostrar novo currículo
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Erro ao enviar currículo');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
   const handleExperienceSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
