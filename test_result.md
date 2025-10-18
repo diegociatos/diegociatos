@@ -282,6 +282,21 @@ frontend:
         agent: "testing"
         comment: "✅ TESTADO E APROVADO: Candidate signup funcionando perfeitamente. Formulário carrega corretamente, todos os campos (full_name, email, phone, password, confirm_password) estão presentes e funcionais. Teste realizado com dados: Nome='Teste Completo Quest', Email='testecompleto@quest.com', Phone='11966665555', Password='senha123'. Após submissão, redirecionamento automático para /candidato/questionarios funciona corretamente. Integração com backend /api/auth/candidate/signup operacional."
 
+  - task: "Criar página CandidateQuestionnairesPage para questionários"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/CandidateQuestionnairesPage.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Página criada para candidatos responderem questionários DISC, Recognition e Behavioral"
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTADO E APROVADO - FLUXO COMPLETO DE QUESTIONÁRIOS: (1) Página carrega corretamente com 3 etapas (DISC, Recognition, Behavioral) ✅, (2) DISC: 28 questões carregam, progress bar funciona (0/28 → 28/28), botão 'Próximo' habilitado após completar todas ✅, (3) Recognition: 30 questões, navegação entre etapas funciona perfeitamente ✅, (4) Behavioral: 25 questões, interface responsiva e intuitiva ✅, (5) Validação: botão 'Finalizar' desabilitado quando questionários incompletos (comportamento correto) ✅, (6) UI/UX: progress indicators, step navigation, question rendering com botões de escala funcionando ✅. Sistema completo e funcional para candidatos."
+
   - task: "Criar página ChangePasswordPage para primeiro acesso"
     implemented: true
     working: "NA"
