@@ -708,11 +708,89 @@ backend:
         agent: "testing"
         comment: "✅ TESTADO E CORRIGIDO: KeyError: 'expires_at' resolvido completamente. Todos os testes passaram: (1) Login admin/cliente funcionando sem KeyError, (2) get_current_user funciona corretamente com expires_at, (3) GET /jobs/{job_id} retorna 200 OK, (4) PATCH /jobs/{job_id} funciona perfeitamente - Job Edit Page totalmente funcional. Credenciais funcionais: admin@ciatos.com/admin123, cliente@techcorp.com/client123"
 
+  - agent: "main"
+    message: |
+      ✨ NOVA FUNCIONALIDADE - Kanban de Vagas para Analista
+      
+      REQUISITO DO USUÁRIO:
+      - Melhorar painel do analista com apenas 4 cards: Vagas, Candidatos, Candidaturas, Relatórios
+      - Criar Kanban de VAGAS (não candidatos) com fases do processo de recrutamento
+      - Fases: Cadastro → Triagem → Entrevistas → Seleção → Envio Cliente → Contratação
+      - Contratação com resultado positivo/negativo (negativo volta para Entrevistas)
+      
+      IMPLEMENTAÇÃO BACKEND:
+      1. ✅ Modelo Job atualizado (/app/backend/models.py):
+         - Adicionado campo: recruitment_stage (6 fases)
+         - Adicionado campo: contratacao_result (positivo/negativo)
+      
+      2. ✅ Novo modelo JobStageHistory (/app/backend/models.py):
+         - Registra histórico de mudanças de fase
+         - Campos: job_id, from_stage, to_stage, changed_by, notes
+      
+      3. ✅ Novas rotas (/app/backend/routes/jobs_kanban.py):
+         - GET /jobs-kanban/kanban → Retorna vagas agrupadas por fase
+         - PATCH /jobs-kanban/{job_id}/stage → Move vaga entre fases
+         - PATCH /jobs-kanban/{job_id}/contratacao-result → Define resultado (positivo fecha vaga, negativo volta para entrevistas)
+         - GET /jobs-kanban/{job_id}/stage-history → Histórico de mudanças
+      
+      4. ✅ Script de migração executado:
+         - 6 vagas atualizadas com recruitment_stage baseado no status atual
+      
+      IMPLEMENTAÇÃO FRONTEND:
+      1. ✅ RecruiterDashboardPage redesenhado (/app/frontend/src/pages/RecruiterDashboardPage.js):
+         - Simplificado para 4 cards principais
+         - Card "Vagas" redireciona para /analista/vagas-kanban
+      
+      2. ✅ Nova página JobsKanbanPage (/app/frontend/src/pages/JobsKanbanPage.js):
+         - Kanban com 6 colunas (uma para cada fase)
+         - Drag & drop com react-beautiful-dnd
+         - Modal para resultado da contratação
+         - Cards mostram: título da vaga, nº de candidatos, modo de trabalho
+      
+      3. ✅ Instalado react-beautiful-dnd (yarn add)
+      
+      4. ✅ Rotas adicionadas em App.js:
+         - /recruiter → RecruiterDashboardPage
+         - /analista/vagas-kanban → JobsKanbanPage
+      
+      SERVIÇOS REINICIADOS:
+      - Backend: RUNNING ✅
+      - Frontend: RUNNING ✅
+      
+      PRÓXIMO PASSO:
+      - Testar backend (APIs do Kanban)
+      - Testar frontend (arrastar vagas, modal de contratação)
+
+backend:
+  - task: "Kanban de Vagas - Backend (recruitment_stage e APIs)"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/routes/jobs_kanban.py, /app/backend/models.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Implementado sistema de Kanban de Vagas com 6 fases. Modelo Job atualizado com recruitment_stage e contratacao_result. Criadas 4 APIs: listar kanban, mover vaga, definir resultado contratação, histórico."
+
+frontend:
+  - task: "Painel Analista Simplificado + Kanban de Vagas"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/pages/RecruiterDashboardPage.js, /app/frontend/src/pages/JobsKanbanPage.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Painel do Analista redesenhado com 4 cards. Nova página de Kanban de Vagas com drag & drop e modal de contratação. react-beautiful-dnd instalado."
+
 test_plan:
   current_focus:
-    - "Testar cadastro de candidato via /candidato/cadastro"
-    - "Testar login com Admin e verificar card de Usuários"
-    - "Testar criação de novo usuário pelo Admin com senha provisória"
-    - "Testar login com usuário novo e troca de senha obrigatória"
-    - "Verificar redirecionamentos baseados em role"
+    - "Testar backend: GET /jobs-kanban/kanban"
+    - "Testar backend: PATCH /jobs-kanban/{job_id}/stage"
+    - "Testar backend: PATCH /jobs-kanban/{job_id}/contratacao-result (positivo e negativo)"
+    - "Testar frontend: Carregar Kanban, drag & drop, modal contratação"
 
