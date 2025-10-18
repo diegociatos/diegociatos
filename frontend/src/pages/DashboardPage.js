@@ -69,8 +69,15 @@ export default function DashboardPage() {
 
       <div className="container mx-auto p-6">
         <div className="mb-8">
-          <h2 className="text-3xl font-bold mb-2" style={{ fontFamily: 'Space Grotesk' }}>Bem-vindo de volta!</h2>
-          <p className="text-gray-600">Gerencie suas vagas, candidatos e processos seletivos</p>
+          <h2 className="text-3xl font-bold mb-2" style={{ fontFamily: 'Space Grotesk' }}>
+            {isRecruiter ? 'Painel do Analista' : 'Bem-vindo de volta!'}
+          </h2>
+          <p className="text-gray-600">
+            {isRecruiter 
+              ? 'Gerencie vagas e candidatos do processo de recrutamento' 
+              : 'Gerencie suas vagas, candidatos e processos seletivos'
+            }
+          </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
