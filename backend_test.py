@@ -2227,6 +2227,195 @@ class BackendTester:
         except Exception as e:
             self.log_test("Admin User Existence Check", False, f"Check failed: {str(e)}")
 
+    def test_candidate_profile_data_saving(self):
+        """Test candidate profile data saving as requested in review"""
+        print("\n🎯 TESTING CANDIDATE PROFILE DATA SAVING - REVIEW REQUEST")
+        print("=" * 60)
+        
+        # Step 1: Login as candidate
+        candidate_credentials = {"email": "pedro@email.com", "password": "candidato123"}
+        
+        try:
+            # Try login first
+            login_response = self.make_request("POST", "/auth/login", candidate_credentials)
+            
+            if login_response.status_code != 200:
+                # Create candidate if doesn't exist
+                signup_data = {
+                    "email": "pedro@email.com",
+                    "password": "candidato123",
+                    "full_name": "Pedro Silva",
+                    "phone": "11987654321"
+                }
+                
+                signup_response = self.make_request("POST", "/auth/candidate/signup", signup_data)
+                
+                if signup_response.status_code == 200:
+                    signup_result = signup_response.json()
+                    candidate_token = signup_result["access_token"]
+                    self.log_test("Step 1: Create Candidate", True, "Candidate created successfully")
+                else:
+                    # Try login again in case candidate already exists
+                    login_response = self.make_request("POST", "/auth/login", candidate_credentials)
+                    if login_response.status_code == 200:
+                        login_result = login_response.json()
+                        candidate_token = login_result["access_token"]
+                        self.log_test("Step 1: Login Candidate", True, "Candidate login successful")
+                    else:
+                        self.log_test("Step 1: Login/Create Candidate", False, 
+                                    f"Could not login or create candidate: {login_response.status_code}")
+                        return
+            else:
+                login_result = login_response.json()
+                candidate_token = login_result["access_token"]
+                self.log_test("Step 1: Login Candidate", True, "Candidate login successful")
+            
+        except Exception as e:
+            self.log_test("Step 1: Login Candidate", False, f"Request failed: {str(e)}")
+            return
+        
+        # Step 2: Update profile with all fields
+        profile_data = {
+            "phone": "11987654321",
+            "whatsapp": "11987654321", 
+            "email": "pedro@test.com",
+            "birthdate": "1990-01-01",
+            "location_city": "São Paulo",
+            "location_state": "SP",
+            "location_neighborhood": "Centro",
+            "address_street": "Rua Teste",
+            "address_number": "123",
+            "address_complement": "Apto 45",
+            "address_zip_code": "01234-567",
+            "salary_expectation": 5000,
+            "availability": "Imediato"
+        }
+        
+        try:
+            profile_response = self.make_request("POST", "/candidates/profile", profile_data, 
+                                               auth_token=candidate_token)
+            
+            if profile_response.status_code == 200:
+                profile_result = profile_response.json()
+                
+                # Verify all fields are saved
+                all_fields_saved = True
+                missing_fields = []
+                
+                for field, expected_value in profile_data.items():
+                    if field not in profile_result or profile_result[field] != expected_value:
+                        all_fields_saved = False
+                        missing_fields.append(f"{field}: expected {expected_value}, got {profile_result.get(field)}")
+                
+                if all_fields_saved:
+                    self.log_test("Step 2: Update Profile", True, "All profile fields saved correctly")
+                else:
+                    self.log_test("Step 2: Update Profile", False, 
+                                f"Some fields not saved correctly: {missing_fields}")
+            else:
+                self.log_test("Step 2: Update Profile", False, 
+                            f"Profile update failed: {profile_response.status_code}", profile_response.text)
+                return
+                
+        except Exception as e:
+            self.log_test("Step 2: Update Profile", False, f"Request failed: {str(e)}")
+            return
+        
+        # Step 3: Verify data was saved - GET profile
+        try:
+            get_response = self.make_request("GET", "/candidates/profile", auth_token=candidate_token)
+            
+            if get_response.status_code == 200:
+                retrieved_profile = get_response.json()
+                
+                # Check if all required fields are present
+                required_fields = ["phone", "whatsapp", "email", "address_street", "address_number", 
+                                 "address_complement", "address_zip_code", "location_city", 
+                                 "location_state", "location_neighborhood", "birthdate", 
+                                 "salary_expectation", "availability"]
+                
+                all_fields_present = True
+                missing_fields = []
+                
+                for field in required_fields:
+                    if field not in retrieved_profile:
+                        all_fields_present = False
+                        missing_fields.append(field)
+                
+                if all_fields_present:
+                    # Verify values match
+                    values_match = True
+                    incorrect_values = []
+                    
+                    for field, expected_value in profile_data.items():
+                        if retrieved_profile.get(field) != expected_value:
+                            values_match = False
+                            incorrect_values.append(f"{field}: expected {expected_value}, got {retrieved_profile.get(field)}")
+                    
+                    if values_match:
+                        self.log_test("Step 3: Verify Data Saved", True, 
+                                    "All fields returned correctly from GET /candidates/profile")
+                    else:
+                        self.log_test("Step 3: Verify Data Saved", False, 
+                                    f"Field values don't match: {incorrect_values}")
+                else:
+                    self.log_test("Step 3: Verify Data Saved", False, 
+                                f"Missing fields in response: {missing_fields}")
+            else:
+                self.log_test("Step 3: Verify Data Saved", False, 
+                            f"GET profile failed: {get_response.status_code}", get_response.text)
+                return
+                
+        except Exception as e:
+            self.log_test("Step 3: Verify Data Saved", False, f"Request failed: {str(e)}")
+            return
+        
+        # Step 4: Update address separately
+        address_update_data = {
+            "address_street": "Rua Nova Atualizada",
+            "address_number": "456",
+            "address_complement": "Casa",
+            "address_zip_code": "98765-432",
+            "location_neighborhood": "Vila Nova",
+            "location_city": "Rio de Janeiro",
+            "location_state": "RJ"
+        }
+        
+        try:
+            address_response = self.make_request("PUT", "/candidates/profile/address", 
+                                               address_update_data, auth_token=candidate_token)
+            
+            if address_response.status_code == 200:
+                # Verify address update worked by getting profile again
+                verify_response = self.make_request("GET", "/candidates/profile", auth_token=candidate_token)
+                
+                if verify_response.status_code == 200:
+                    updated_profile = verify_response.json()
+                    
+                    # Check if address fields were updated
+                    address_updated = True
+                    incorrect_address_fields = []
+                    
+                    for field, expected_value in address_update_data.items():
+                        if updated_profile.get(field) != expected_value:
+                            address_updated = False
+                            incorrect_address_fields.append(f"{field}: expected {expected_value}, got {updated_profile.get(field)}")
+                    
+                    if address_updated:
+                        self.log_test("Step 4: Update Address Separately", True, 
+                                    "Address fields updated correctly via PUT /candidates/profile/address")
+                    else:
+                        self.log_test("Step 4: Update Address Separately", False, 
+                                    f"Address fields not updated correctly: {incorrect_address_fields}")
+                else:
+                    self.log_test("Step 4: Update Address Separately", False, 
+                                f"Could not verify address update: {verify_response.status_code}")
+            else:
+                self.log_test("Step 4: Update Address Separately", False, 
+                            f"Address update failed: {address_response.status_code}", address_response.text)
+                
+        except Exception as e:
+            self.log_test("Step 4: Update Address Separately", False, f"Request failed: {str(e)}")
     def run_all_tests(self):
         """Run admin login test as requested in review"""
         print("🚀 Testing Admin Login Credentials")
