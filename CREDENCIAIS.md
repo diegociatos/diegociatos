@@ -1,83 +1,45 @@
-# Credenciais do Sistema Ciatos Recrutamento
+# 🔐 Credenciais de Teste - Ciatos Recrutamento
 
-## Usuários Principais
+## Usuários do Sistema
 
-### Administrador
+### 👨‍💼 Admin
 - **Email:** admin@ciatos.com
 - **Senha:** admin123
-- **Papel:** Administrador do sistema
-- **Acesso:** Dashboard Admin, Gerenciamento de Usuários, Gerenciamento de Organizações
+- **Acesso:** Todos os recursos (Vagas, Candidatos, Candidaturas, Relatórios, Organizações, Gerenciar Usuários)
 
-### Recrutador/Analista
+### 👔 Analista/Recrutador
 - **Email:** recrutador@ciatos.com
 - **Senha:** recruiter123
-- **Papel:** Analista de Recrutamento
-- **Acesso:** Dashboard do Analista, Pipeline Kanban, Agendamento de Entrevistas
+- **Acesso:** APENAS Vagas (Kanban) e Candidatos
 
-### Cliente
+### 🏢 Cliente
 - **Email:** cliente@techcorp.com
 - **Senha:** client123
-- **Papel:** Cliente (TechCorp)
-- **Acesso:** Dashboard do Cliente, Visualização de Vagas
-
-### Bruno (Usuário Personalizado)
-- **Email:** bruno@grupociatos.com.br
-- **Senha:** Bruno24
-- **Papel:** (verificar roles no sistema)
+- **Acesso:** Visualizar vagas da sua empresa e candidatos
 
 ---
 
-## Outras Credenciais de Teste
+## ✅ Testado e Funcionando
 
-### Candidatos
-- candidato1@email.com (Ana Silva)
-- candidato2@email.com (Carlos Santos)
-- candidato3@email.com (Fernanda Lima)
-- candidato4@email.com (Rafael Costa)
-- candidato5@email.com (Juliana Souza)
-- candidato6@email.com (Pedro Oliveira)
+### Painel do Analista
+- Login como: **recrutador@ciatos.com / recruiter123**
+- Visualiza APENAS 2 cards:
+  1. **Vagas** → Abre Kanban de Vagas (estilo Trello)
+  2. **Candidatos** → Lista de candidatos
+- SEM acesso a: Relatórios, Organizações, Gerenciar Usuários
 
-**Nota:** As senhas dos candidatos foram geradas automaticamente durante o seed. Se necessário, podem ser resetadas pelo administrador.
-
----
-
-## Informações Importantes
-
-### Tenants (Organizações)
-1. **TechCorp** - ID: tenant-techcorp-001
-2. **AlphaFoods** - ID: tenant-alpha-002
-
-### Como Trocar Senha
-1. Fazer login com as credenciais fornecidas
-2. Se o sistema pedir para trocar senha, usar a página `/change-password`
-3. A nova senha deve ter pelo menos 1 caractere
-
-### Resetar Senha de Qualquer Usuário
-O administrador pode resetar a senha de qualquer usuário através de:
-- Dashboard Admin → Gerenciamento de Usuários → Botão "Alterar Senha"
+### Kanban de Vagas (Estilo Trello)
+- 6 Fases:
+  1. 📋 Cadastro da Vaga
+  2. 🔍 Triagem de Currículos
+  3. 💬 Entrevistas
+  4. ⭐ Seleção
+  5. 📤 Envio do Cliente para Entrevista
+  6. ✅ Contratação
+- Drag & drop entre fases
+- Resultado positivo → fecha vaga
+- Resultado negativo → volta para Entrevistas
 
 ---
 
-## Problemas Conhecidos Resolvidos
-
-✅ **Login do Admin:** Corrigido - `admin@ciatos.com / admin123`
-✅ **Login do Bruno:** Corrigido - `bruno@grupociatos.com.br / Bruno24`
-✅ **Troca de senha:** Sistema permite que usuário mantenha ou troque senha após login
-✅ **requires_password_change:** Definido como `false` para permitir login direto
-
----
-
-## Acesso Rápido
-
-### URLs Importantes
-- Login: https://jobsift.preview.emergentagent.com/login
-- Dashboard Admin: https://jobsift.preview.emergentagent.com/admin/usuarios
-- Dashboard Analista: https://jobsift.preview.emergentagent.com/recruiter/dashboard
-- Kanban: https://jobsift.preview.emergentagent.com/jobs/{jobId}/pipeline
-- Calendário Entrevistas: https://jobsift.preview.emergentagent.com/interviews-calendar
-- Notificações: https://jobsift.preview.emergentagent.com/notifications
-
----
-
-**Última atualização:** 2025-01-16
-**Status:** Todos os logins testados e funcionando ✅
+**Última atualização:** $(date '+%Y-%m-%d %H:%M:%S')
