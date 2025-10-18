@@ -14,6 +14,7 @@ import CandidatesPage from './pages/CandidatesPage';
 import CareerSitePage from './pages/CareerSitePage';
 import CandidateProfilePage from './pages/CandidateProfilePage';
 import CandidateSignupPage from './pages/CandidateSignupPage';
+import CandidateQuestionnairesPage from './pages/CandidateQuestionnairesPage';
 import ChangePasswordPage from './pages/ChangePasswordPage';
 import AdminUserManagementPage from './pages/AdminUserManagementPage';
 import AdminOrganizationsPage from './pages/AdminOrganizationsPage';
