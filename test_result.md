@@ -919,4 +919,5 @@ test_plan:
     - "Testar backend: PATCH /jobs-kanban/{job_id}/contratacao-result (positivo e negativo)"
     - "Testar backend: GET /jobs-kanban/{job_id}/stage-history"
     - "Testar backend: Pipeline API com job-001 e credenciais recruiter/admin"
+    - "Testar backend: Candidate signup endpoint com payload específico da review"
 
