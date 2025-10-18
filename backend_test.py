@@ -1908,6 +1908,70 @@ class BackendTester:
         else:
             self.log_test("User Has Candidate Role", False, "Admin token not available for role verification")
 
+    def test_candidate_signup_validation(self):
+        """Test candidate signup validation scenarios"""
+        print("\n🔍 TESTING CANDIDATE SIGNUP VALIDATION")
+        print("=" * 60)
+        
+        # Test 1: Missing required fields
+        try:
+            incomplete_data = {
+                "email": "incomplete@test.com",
+                "password": "senha123"
+                # Missing full_name
+            }
+            
+            response = self.make_request("POST", "/auth/candidate/signup", incomplete_data)
+            
+            if response.status_code == 422:  # Validation error
+                self.log_test("Missing Required Fields Validation", True, 
+                            "✅ Properly rejected signup with missing full_name")
+            else:
+                self.log_test("Missing Required Fields Validation", False, 
+                            f"Expected 422 validation error, got {response.status_code}")
+        except Exception as e:
+            self.log_test("Missing Required Fields Validation", False, f"Request failed: {str(e)}")
+        
+        # Test 2: Invalid email format
+        try:
+            invalid_email_data = {
+                "email": "invalid-email-format",
+                "password": "senha123",
+                "full_name": "Test User",
+                "phone": "11999999999"
+            }
+            
+            response = self.make_request("POST", "/auth/candidate/signup", invalid_email_data)
+            
+            if response.status_code == 422:  # Validation error
+                self.log_test("Invalid Email Format Validation", True, 
+                            "✅ Properly rejected signup with invalid email format")
+            else:
+                self.log_test("Invalid Email Format Validation", False, 
+                            f"Expected 422 validation error, got {response.status_code}")
+        except Exception as e:
+            self.log_test("Invalid Email Format Validation", False, f"Request failed: {str(e)}")
+        
+        # Test 3: Duplicate email (should return 400)
+        try:
+            duplicate_data = {
+                "email": "novocandidato@test.com",  # Same email from main test
+                "password": "outrasenha123",
+                "full_name": "Outro Candidato",
+                "phone": "11888888888"
+            }
+            
+            response = self.make_request("POST", "/auth/candidate/signup", duplicate_data)
+            
+            if response.status_code == 400 and "já cadastrado" in response.text:
+                self.log_test("Duplicate Email Validation", True, 
+                            "✅ Properly rejected signup with duplicate email")
+            else:
+                self.log_test("Duplicate Email Validation", False, 
+                            f"Expected 400 with 'já cadastrado' message, got {response.status_code}: {response.text}")
+        except Exception as e:
+            self.log_test("Duplicate Email Validation", False, f"Request failed: {str(e)}")
+
     def run_all_tests(self):
         """Run Candidate Signup test as requested in review"""
         print("🚀 Testing Candidate Signup Endpoint")
