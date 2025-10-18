@@ -380,3 +380,14 @@ class JobStageHistory(BaseModel):
     changed_at: datetime = Field(default_factory=lambda: datetime.now())
     notes: Optional[str] = None
 
+
+class JobNote(BaseModel):
+    """Anotações do analista sobre o processo seletivo da vaga"""
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=generate_id)
+    job_id: str
+    author_id: str  # ID do usuário que criou a nota
+    content: str
+    created_at: datetime = Field(default_factory=lambda: datetime.now())
+    updated_at: datetime = Field(default_factory=lambda: datetime.now())
+
