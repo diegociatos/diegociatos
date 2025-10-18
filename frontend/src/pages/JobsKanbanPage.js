@@ -313,19 +313,22 @@ const JobsKanbanPage = () => {
                             <div
                               ref={provided.innerRef}
                               {...provided.draggableProps}
-                              {...provided.dragHandleProps}
-                              onClick={() => handleCardClick(job, stageKey)}
-                              className={`bg-white rounded-lg shadow-sm hover:shadow-md transition-all ${
-                                userRole === 'client' ? 'cursor-pointer' : 'cursor-grab active:cursor-grabbing'
-                              } border border-gray-200 ${
+                              className={`bg-white rounded-lg shadow-sm hover:shadow-md transition-all border border-gray-200 ${
                                 snapshot.isDragging ? 'shadow-2xl rotate-3 scale-105' : ''
                               }`}
                             >
                               {/* Card Content */}
                               <div className="p-4">
-                                <h4 className="font-semibold text-gray-900 mb-3 text-sm leading-tight">
-                                  {job.title}
-                                </h4>
+                                <div className="flex items-start justify-between mb-2" {...provided.dragHandleProps}>
+                                  <h4 className="font-semibold text-gray-900 text-sm leading-tight flex-1">
+                                    {job.title}
+                                  </h4>
+                                  {userRole === 'recruiter' && (
+                                    <div className="text-gray-400 ml-2" title="Arraste para mover">
+                                      ⋮⋮
+                                    </div>
+                                  )}
+                                </div>
                                 
                                 {/* Card Details */}
                                 <div className="space-y-2">
