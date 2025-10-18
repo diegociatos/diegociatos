@@ -1843,8 +1843,8 @@ class BackendTester:
         
         # Test 2: Verify candidate profile was created in candidates collection
         try:
-            # Get candidate profile (assuming there's an endpoint for this)
-            candidates_response = self.make_request("GET", "/candidates/", auth_token=token)
+            # Get candidate profile using the correct endpoint
+            candidates_response = self.make_request("GET", "/candidates/profile", auth_token=token)
             
             if candidates_response.status_code == 200:
                 candidates = candidates_response.json()
