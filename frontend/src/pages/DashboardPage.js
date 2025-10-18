@@ -10,12 +10,14 @@ export default function DashboardPage() {
   const { user, logout, getUserRole, userRoles } = useAuth();
   const navigate = useNavigate();
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isRecruiter, setIsRecruiter] = useState(false);
 
   useEffect(() => {
     // Verificar role quando userRoles mudar
     if (userRoles && userRoles.length > 0) {
       const role = getUserRole();
       setIsAdmin(role === 'admin');
+      setIsRecruiter(role === 'recruiter');
     }
   }, [userRoles, getUserRole]);
 
@@ -25,7 +27,8 @@ export default function DashboardPage() {
     navigate('/login');
   };
 
-  const cards = [
+  // Cards para Admin
+  const adminCards = [
     { title: 'Vagas', description: 'Gerenciar vagas e publicações', icon: Briefcase, link: '/jobs', color: '#10b981', testId: 'card-jobs' },
     { title: 'Candidatos', description: 'Buscar e gerenciar candidatos', icon: Users, link: '/candidates', color: '#3b82f6', testId: 'card-candidates' },
     { title: 'Candidaturas', description: 'Pipeline e avaliações', icon: FileText, link: '/applications', color: '#8b5cf6', testId: 'card-applications' },
@@ -33,6 +36,15 @@ export default function DashboardPage() {
     { title: 'Organizações', description: 'Cadastrar empresas clientes', icon: UserCog, link: '/admin/organizacoes', color: '#06b6d4', testId: 'card-organizations' },
     { title: 'Gerenciar Usuários', description: 'Criar e gerenciar usuários', icon: UserCog, link: '/admin/usuarios', color: '#ec4899', testId: 'card-users' }
   ];
+
+  // Cards APENAS para Analista/Recruiter
+  const recruiterCards = [
+    { title: 'Vagas', description: 'Gerenciar vagas por fase', icon: Briefcase, link: '/analista/vagas-kanban', color: '#10b981', testId: 'card-jobs' },
+    { title: 'Candidatos', description: 'Visualizar todos os candidatos', icon: Users, link: '/candidates', color: '#3b82f6', testId: 'card-candidates' }
+  ];
+
+  // Escolher cards baseado no role
+  const cards = isRecruiter ? recruiterCards : adminCards;
 
   return (
     <div className="min-h-screen" style={{ background: 'linear-gradient(135deg, #f5f7fa 0%, #e8f0f5 100%)' }}>
