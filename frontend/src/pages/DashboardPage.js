@@ -92,60 +92,59 @@ export default function DashboardPage() {
           })}
         </div>
 
-        <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <Card className="glass-card">
-            <CardHeader>
-              <CardTitle>Atalhos Rápidos</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              <Link to="/jobs/new">
-                <Button variant="outline" className="w-full justify-start" data-testid="quick-new-job">
-                  <Briefcase className="w-4 h-4 mr-2" />
-                  Criar Nova Vaga
-                </Button>
-              </Link>
-              <Link to="/candidates/search">
-                <Button variant="outline" className="w-full justify-start" data-testid="quick-search-candidates">
-                  <Users className="w-4 h-4 mr-2" />
-                  Buscar Candidatos
-                </Button>
-              </Link>
-              {isAdmin && (
-                <>
-                  <Link to="/admin/organizacoes">
-                    <Button variant="outline" className="w-full justify-start" data-testid="quick-manage-orgs">
-                      <UserCog className="w-4 h-4 mr-2" />
-                      Gerenciar Organizações
-                    </Button>
-                  </Link>
-                  <Link to="/admin/usuarios">
-                    <Button variant="outline" className="w-full justify-start" data-testid="quick-manage-users">
-                      <UserCog className="w-4 h-4 mr-2" />
-                      Gerenciar Usuários
-                    </Button>
-                  </Link>
-                </>
-              )}
-            </CardContent>
-          </Card>
+        {/* Atalhos e Informações apenas para Admin */}
+        {isAdmin && (
+          <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <Card className="glass-card">
+              <CardHeader>
+                <CardTitle>Atalhos Rápidos</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <Link to="/jobs/new">
+                  <Button variant="outline" className="w-full justify-start" data-testid="quick-new-job">
+                    <Briefcase className="w-4 h-4 mr-2" />
+                    Criar Nova Vaga
+                  </Button>
+                </Link>
+                <Link to="/candidates/search">
+                  <Button variant="outline" className="w-full justify-start" data-testid="quick-search-candidates">
+                    <Users className="w-4 h-4 mr-2" />
+                    Buscar Candidatos
+                  </Button>
+                </Link>
+                <Link to="/admin/organizacoes">
+                  <Button variant="outline" className="w-full justify-start" data-testid="quick-manage-orgs">
+                    <UserCog className="w-4 h-4 mr-2" />
+                    Gerenciar Organizações
+                  </Button>
+                </Link>
+                <Link to="/admin/usuarios">
+                  <Button variant="outline" className="w-full justify-start" data-testid="quick-manage-users">
+                    <UserCog className="w-4 h-4 mr-2" />
+                    Gerenciar Usuários
+                  </Button>
+                </Link>
+              </CardContent>
+            </Card>
 
-          <Card className="glass-card">
-            <CardHeader>
-              <CardTitle>Informações do Perfil</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-gray-600 mb-2">
-                <strong>Perfil:</strong> {getUserRole() || 'Carregando...'}
-              </p>
-              <p className="text-sm text-gray-600 mb-2">
-                <strong>É Admin?</strong> {isAdmin ? 'Sim' : 'Não'}
-              </p>
-              <p className="text-sm text-gray-600">
-                <strong>Total de Cards:</strong> {cards.length}
-              </p>
-            </CardContent>
-          </Card>
-        </div>
+            <Card className="glass-card">
+              <CardHeader>
+                <CardTitle>Informações do Perfil</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-gray-600 mb-2">
+                  <strong>Perfil:</strong> {getUserRole() || 'Carregando...'}
+                </p>
+                <p className="text-sm text-gray-600 mb-2">
+                  <strong>É Admin?</strong> {isAdmin ? 'Sim' : 'Não'}
+                </p>
+                <p className="text-sm text-gray-600">
+                  <strong>Total de Cards:</strong> {cards.length}
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        )}
       </div>
     </div>
   );
