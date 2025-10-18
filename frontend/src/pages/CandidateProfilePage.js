@@ -260,6 +260,107 @@ export default function CandidateProfilePage() {
                     />
                   </div>
 
+                  {/* Endereço Completo */}
+                  <div className="border-t pt-4 mt-6">
+                    <h3 className="text-lg font-semibold mb-4">Endereço Completo</h3>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                      <div>
+                        <Label>CEP</Label>
+                        <Input
+                          placeholder="00000-000"
+                          value={profile.address_zip_code}
+                          onChange={(e) => setProfile({ ...profile, address_zip_code: e.target.value })}
+                        />
+                      </div>
+                      <div>
+                        <Label>Bairro</Label>
+                        <Input
+                          placeholder="Nome do bairro"
+                          value={profile.location_neighborhood}
+                          onChange={(e) => setProfile({ ...profile, location_neighborhood: e.target.value })}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="mb-4">
+                      <Label>Rua/Avenida</Label>
+                      <Input
+                        placeholder="Nome da rua"
+                        value={profile.address_street}
+                        onChange={(e) => setProfile({ ...profile, address_street: e.target.value })}
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                      <div>
+                        <Label>Número</Label>
+                        <Input
+                          placeholder="123"
+                          value={profile.address_number}
+                          onChange={(e) => setProfile({ ...profile, address_number: e.target.value })}
+                        />
+                      </div>
+                      <div>
+                        <Label>Complemento</Label>
+                        <Input
+                          placeholder="Apto, bloco, etc"
+                          value={profile.address_complement}
+                          onChange={(e) => setProfile({ ...profile, address_complement: e.target.value })}
+                        />
+                      </div>
+                    </div>
+
+                    <Button 
+                      type="button" 
+                      onClick={handleAddressUpdate} 
+                      variant="outline"
+                      disabled={loading}
+                    >
+                      Atualizar Endereço
+                    </Button>
+                  </div>
+
+                  {/* Upload de Currículo */}
+                  <div className="border-t pt-4 mt-6">
+                    <h3 className="text-lg font-semibold mb-4">Currículo</h3>
+                    
+                    {profile.resume_filename && (
+                      <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+                        <p className="text-sm text-green-800">
+                          ✓ Currículo atual: <strong>{profile.resume_filename}</strong>
+                        </p>
+                        {profile.resume_uploaded_at && (
+                          <p className="text-xs text-green-600 mt-1">
+                            Enviado em: {new Date(profile.resume_uploaded_at).toLocaleString('pt-BR')}
+                          </p>
+                        )}
+                      </div>
+                    )}
+
+                    <div className="space-y-3">
+                      <Label>Enviar novo currículo (PDF, DOC ou DOCX)</Label>
+                      <Input
+                        type="file"
+                        accept=".pdf,.doc,.docx"
+                        onChange={(e) => setResumeFile(e.target.files[0])}
+                      />
+                      {resumeFile && (
+                        <p className="text-sm text-blue-600">
+                          ✓ {resumeFile.name} selecionado ({(resumeFile.size / 1024 / 1024).toFixed(2)} MB)
+                        </p>
+                      )}
+                      <Button 
+                        type="button" 
+                        onClick={handleResumeUpload}
+                        variant="outline"
+                        disabled={!resumeFile || loading}
+                      >
+                        {loading ? 'Enviando...' : 'Enviar Currículo'}
+                      </Button>
+                    </div>
+                  </div>
+
                   <Button type="submit" className="btn-primary" data-testid="save-profile-button" disabled={loading}>
                     {loading ? 'Salvando...' : 'Salvar Perfil'}
                   </Button>
