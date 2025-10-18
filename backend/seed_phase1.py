@@ -278,9 +278,10 @@ async def seed_phase1(db):
             interview_type="recruiter" if app.current_stage == "recruiter_interview" else "client",
             starts_at=datetime.now(timezone.utc) + timedelta(days=random.randint(1, 7)),
             ends_at=datetime.now(timezone.utc) + timedelta(days=random.randint(1, 7), hours=1),
-            location="Remoto",
+            location={"type": "video_call", "details": "Google Meet"},
             interviewer_user_id="user-recruiter",
-            status="scheduled"
+            status="scheduled",
+            created_by="user-recruiter"
         )
         await db.interviews.insert_one(interview.model_dump())
         print(f"  ✓ Interview {idx+1}")
