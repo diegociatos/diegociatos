@@ -156,6 +156,7 @@ const JobsKanbanPage = () => {
       setSelectedJob(job);
       loadJobDetails(job.id);
       loadNotes(job.id);
+      loadCandidates(job.id);
       setShowNotesModal(true);
     }
   };
@@ -166,6 +167,18 @@ const JobsKanbanPage = () => {
       setSelectedJob(res.data);
     } catch (err) {
       console.error('Erro ao carregar detalhes da vaga:', err);
+    }
+  };
+  
+  const loadCandidates = async (jobId) => {
+    try {
+      setLoadingCandidates(true);
+      const res = await api.get(`/applications?job_id=${jobId}`);
+      setCandidates(res.data || []);
+    } catch (err) {
+      console.error('Erro ao carregar candidatos:', err);
+    } finally {
+      setLoadingCandidates(false);
     }
   };
   
