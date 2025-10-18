@@ -16,6 +16,7 @@ export default function CandidateProfilePage() {
   const { logout } = useAuth();
   const [loading, setLoading] = useState(false);
   const [resumeFile, setResumeFile] = useState(null);
+  const [experiences, setExperiences] = useState([]);
   const [profile, setProfile] = useState({
     phone: '',
     whatsapp: '',
