@@ -210,6 +210,40 @@ export default function CandidateProfilePage() {
               </CardHeader>
               <CardContent>
                 <form onSubmit={handleProfileSubmit} className="space-y-4">
+                  {/* Contatos */}
+                  <div className="border-b pb-4 mb-4">
+                    <h3 className="text-lg font-semibold mb-4">Contatos</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div>
+                        <Label>Telefone</Label>
+                        <Input
+                          type="tel"
+                          placeholder="(11) 99999-9999"
+                          value={profile.phone}
+                          onChange={(e) => setProfile({ ...profile, phone: e.target.value })}
+                        />
+                      </div>
+                      <div>
+                        <Label>WhatsApp</Label>
+                        <Input
+                          type="tel"
+                          placeholder="(11) 99999-9999"
+                          value={profile.whatsapp}
+                          onChange={(e) => setProfile({ ...profile, whatsapp: e.target.value })}
+                        />
+                      </div>
+                      <div>
+                        <Label>E-mail</Label>
+                        <Input
+                          type="email"
+                          placeholder="seu@email.com"
+                          value={profile.email}
+                          onChange={(e) => setProfile({ ...profile, email: e.target.value })}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <Label>Data de Nascimento</Label>
