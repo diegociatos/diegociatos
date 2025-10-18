@@ -441,10 +441,51 @@ const JobsKanbanPage = () => {
               <div className="mt-2 text-sm text-gray-600">
                 Vaga: <strong>{selectedJob?.title}</strong>
               </div>
+              <div className="mt-3 bg-blue-50 rounded-lg p-4 border border-blue-200">
+                <h4 className="font-semibold text-gray-800 mb-2">Informações da Vaga</h4>
+                <div className="grid grid-cols-2 gap-3 text-sm">
+                  <div>
+                    <span className="text-gray-600">Status:</span>
+                    <span className="ml-2 font-medium text-gray-900">
+                      {selectedJob?.status === 'draft' ? 'Rascunho' : 
+                       selectedJob?.status === 'published' ? 'Publicada' : 
+                       selectedJob?.status === 'closed' ? 'Fechada' : selectedJob?.status}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-gray-600">Fase:</span>
+                    <span className="ml-2 font-medium text-gray-900">
+                      {stageLabels[selectedJob?.recruitment_stage] || 'N/A'}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-gray-600">Candidatos:</span>
+                    <span className="ml-2 font-medium text-gray-900">{selectedJob?.applications_count || 0}</span>
+                  </div>
+                  <div>
+                    <span className="text-gray-600">Modo:</span>
+                    <span className="ml-2 font-medium text-gray-900">
+                      {selectedJob?.work_mode === 'presencial' ? 'Presencial' : 
+                       selectedJob?.work_mode === 'remoto' ? 'Remoto' : 
+                       selectedJob?.work_mode === 'hibrido' ? 'Híbrido' : 'N/A'}
+                    </span>
+                  </div>
+                </div>
+                {selectedJob?.description && (
+                  <div className="mt-3 pt-3 border-t border-blue-200">
+                    <span className="text-gray-600 font-medium">Descrição:</span>
+                    <p className="mt-1 text-gray-700 text-sm line-clamp-3">{selectedJob.description}</p>
+                  </div>
+                )}
+              </div>
             </div>
             
             {/* Modal Body - Lista de Notas */}
             <div className="flex-1 overflow-y-auto p-6">
+              <h4 className="font-semibold text-gray-800 mb-4 flex items-center">
+                <span className="text-xl mr-2">📝</span>
+                Anotações do Processo
+              </h4>
               {loadingNotes ? (
                 <div className="text-center py-8">
                   <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
