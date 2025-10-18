@@ -1972,21 +1972,188 @@ class BackendTester:
         except Exception as e:
             self.log_test("Duplicate Email Validation", False, f"Request failed: {str(e)}")
 
-    def run_all_tests(self):
-        """Run Candidate Signup test as requested in review"""
-        print("🚀 Testing Candidate Signup Endpoint")
-        print("🔍 FOCUS: Test candidate signup with exact payload from review request")
+    def test_questionnaire_flow_complete(self):
+        """Test complete questionnaire flow as requested in review"""
+        print("\n🎯 TESTING COMPLETE QUESTIONNAIRE FLOW")
         print("=" * 60)
         
-        # PRIORITY: Review request test - Candidate Signup
-        self.test_candidate_signup_review_request()
+        # Step 1: Create a test candidate
+        candidate_data = {
+            "email": "testequest@test.com",
+            "password": "senha123",
+            "full_name": "Teste Questionário",
+            "phone": "11999999999"
+        }
         
-        # Additional validation tests
-        self.test_candidate_signup_validation()
+        try:
+            signup_response = self.make_request("POST", "/auth/candidate/signup", candidate_data)
+            
+            if signup_response.status_code == 200:
+                signup_data = signup_response.json()
+                candidate_token = signup_data["access_token"]
+                self.log_test("Step 1: Create Test Candidate", True, 
+                            f"Candidate created successfully: {candidate_data['email']}")
+            elif signup_response.status_code == 400 and "já cadastrado" in signup_response.text:
+                # Try to login with existing candidate
+                login_response = self.make_request("POST", "/auth/login", {
+                    "email": candidate_data["email"],
+                    "password": candidate_data["password"]
+                })
+                if login_response.status_code == 200:
+                    candidate_token = login_response.json()["access_token"]
+                    self.log_test("Step 1: Create Test Candidate", True, 
+                                "Using existing candidate (already registered)")
+                else:
+                    self.log_test("Step 1: Create Test Candidate", False, 
+                                "Could not create or login with candidate", signup_response.text)
+                    return
+            else:
+                self.log_test("Step 1: Create Test Candidate", False, 
+                            f"Candidate signup failed: {signup_response.status_code}", signup_response.text)
+                return
+        except Exception as e:
+            self.log_test("Step 1: Create Test Candidate", False, f"Request failed: {str(e)}")
+            return
+        
+        # Step 2: Get the 3 questionnaires
+        questionnaires = {}
+        questionnaire_keys = ["disc", "recognition", "behavioral"]
+        
+        for key in questionnaire_keys:
+            try:
+                response = self.make_request("GET", f"/questionnaires/{key}")
+                
+                if response.status_code == 200:
+                    questionnaire_data = response.json()
+                    
+                    # Verify structure
+                    if ("id" in questionnaire_data and 
+                        "questions" in questionnaire_data and 
+                        len(questionnaire_data["questions"]) > 0):
+                        
+                        questionnaires[key] = questionnaire_data
+                        self.log_test(f"Step 2: Get {key.upper()} Questionnaire", True, 
+                                    f"Retrieved {len(questionnaire_data['questions'])} questions")
+                    else:
+                        self.log_test(f"Step 2: Get {key.upper()} Questionnaire", False, 
+                                    "Invalid questionnaire structure", questionnaire_data)
+                        return
+                else:
+                    self.log_test(f"Step 2: Get {key.upper()} Questionnaire", False, 
+                                f"Failed to get questionnaire: {response.status_code}", response.text)
+                    return
+            except Exception as e:
+                self.log_test(f"Step 2: Get {key.upper()} Questionnaire", False, f"Request failed: {str(e)}")
+                return
+        
+        # Step 3: Submit sample responses (value 4 for all questions)
+        sample_responses = {}
+        
+        for key, questionnaire in questionnaires.items():
+            responses = []
+            for question in questionnaire["questions"]:
+                responses.append({
+                    "question_id": question["id"],
+                    "value": 4  # Sample value as requested
+                })
+            sample_responses[key] = responses
+        
+        try:
+            submit_response = self.make_request("POST", "/questionnaires/candidate/submit-all", 
+                                              sample_responses, auth_token=candidate_token)
+            
+            if submit_response.status_code == 200:
+                submit_data = submit_response.json()
+                
+                # Verify response contains analyses
+                if ("success" in submit_data and 
+                    "analyses" in submit_data and 
+                    all(analysis_key in submit_data["analyses"] for analysis_key in ["disc", "recognition", "behavioral"])):
+                    
+                    self.log_test("Step 3: Submit Sample Responses", True, 
+                                "All questionnaires submitted and analyzed successfully")
+                    
+                    # Check for AI analysis content
+                    analyses = submit_data["analyses"]
+                    analysis_details = []
+                    
+                    for analysis_key, analysis_data in analyses.items():
+                        if "report" in analysis_data and analysis_data["report"]:
+                            analysis_details.append(f"{analysis_key}: {len(analysis_data['report'])} chars")
+                        else:
+                            analysis_details.append(f"{analysis_key}: NO REPORT")
+                    
+                    self.log_test("Step 3: AI Analysis Content", True, 
+                                f"Analysis generated: {', '.join(analysis_details)}")
+                else:
+                    self.log_test("Step 3: Submit Sample Responses", False, 
+                                "Missing required fields in response", submit_data)
+                    return
+            else:
+                self.log_test("Step 3: Submit Sample Responses", False, 
+                            f"Submission failed: {submit_response.status_code}", submit_response.text)
+                return
+        except Exception as e:
+            self.log_test("Step 3: Submit Sample Responses", False, f"Request failed: {str(e)}")
+            return
+        
+        # Step 4: Verify assessments were created
+        try:
+            assessments_response = self.make_request("GET", "/questionnaires/candidate/assessments", 
+                                                   auth_token=candidate_token)
+            
+            if assessments_response.status_code == 200:
+                assessments_data = assessments_response.json()
+                
+                # Verify questionnaires_completed is true
+                if assessments_data.get("questionnaires_completed") == True:
+                    self.log_test("Step 4: Questionnaires Completed Flag", True, 
+                                "questionnaires_completed = true")
+                else:
+                    self.log_test("Step 4: Questionnaires Completed Flag", False, 
+                                f"questionnaires_completed = {assessments_data.get('questionnaires_completed')}")
+                
+                # Verify 3 assessments exist
+                assessments = assessments_data.get("assessments", [])
+                assessment_kinds = [a.get("kind") for a in assessments]
+                
+                if len(assessments) == 3 and all(kind in assessment_kinds for kind in ["disc", "recognition", "behavioral"]):
+                    self.log_test("Step 4: Verify 3 Assessments", True, 
+                                f"All 3 assessments created: {', '.join(assessment_kinds)}")
+                    
+                    # Check assessment details
+                    assessment_details = []
+                    for assessment in assessments:
+                        kind = assessment.get("kind")
+                        score = assessment.get("score")
+                        has_data = bool(assessment.get("data"))
+                        has_summary = bool(assessment.get("summary"))
+                        
+                        assessment_details.append(f"{kind}: score={score}, data={has_data}, summary={has_summary}")
+                    
+                    self.log_test("Step 4: Assessment Details", True, 
+                                f"Assessment structure: {'; '.join(assessment_details)}")
+                else:
+                    self.log_test("Step 4: Verify 3 Assessments", False, 
+                                f"Expected 3 assessments (disc, recognition, behavioral), got {len(assessments)}: {assessment_kinds}")
+            else:
+                self.log_test("Step 4: Verify Assessments", False, 
+                            f"Failed to get assessments: {assessments_response.status_code}", assessments_response.text)
+        except Exception as e:
+            self.log_test("Step 4: Verify Assessments", False, f"Request failed: {str(e)}")
+
+    def run_all_tests(self):
+        """Run questionnaire flow test as requested in review"""
+        print("🚀 Testing Complete Questionnaire Flow")
+        print("🔍 FOCUS: Test complete questionnaire flow from review request")
+        print("=" * 60)
+        
+        # PRIORITY: Review request test - Complete Questionnaire Flow
+        self.test_questionnaire_flow_complete()
         
         # Summary
         print("\n" + "=" * 60)
-        print("📊 CANDIDATE SIGNUP TEST SUMMARY")
+        print("📊 QUESTIONNAIRE FLOW TEST SUMMARY")
         print("=" * 60)
         
         passed = sum(1 for result in self.test_results if result["success"])
@@ -2002,7 +2169,7 @@ class BackendTester:
                 if not result["success"]:
                     print(f"  - {result['test']}: {result['message']}")
         else:
-            print("\n🎉 ALL JOBS KANBAN TESTS PASSED!")
+            print("\n🎉 ALL QUESTIONNAIRE TESTS PASSED!")
         
         return passed == total
 
