@@ -669,15 +669,38 @@ const JobsKanbanPage = () => {
                       Ver Pipeline de Candidatos
                     </button>
                     {userRole === 'recruiter' && selectedJob?.recruitment_stage !== 'contratacao' && (
-                      <button
-                        onClick={handleMoveToNextStage}
-                        className="w-full bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 text-sm font-medium flex items-center justify-center"
-                      >
-                        <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                        </svg>
-                        Mover para Próxima Fase
-                      </button>
+                      <div className="space-y-2">
+                        <label className="block text-sm font-semibold text-gray-700">
+                          Mover Vaga para Fase:
+                        </label>
+                        <select
+                          value={selectedStageToMove}
+                          onChange={(e) => setSelectedStageToMove(e.target.value)}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-sm"
+                        >
+                          <option value="">Selecione uma fase...</option>
+                          {Object.keys(stageLabels).map((stageKey) => (
+                            <option 
+                              key={stageKey} 
+                              value={stageKey}
+                              disabled={stageKey === selectedJob?.recruitment_stage}
+                            >
+                              {stageIcons[stageKey]} {stageLabels[stageKey]}
+                              {stageKey === selectedJob?.recruitment_stage ? ' (Atual)' : ''}
+                            </option>
+                          ))}
+                        </select>
+                        <button
+                          onClick={handleMoveToSelectedStage}
+                          disabled={!selectedStageToMove || selectedStageToMove === selectedJob?.recruitment_stage}
+                          className="w-full bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 text-sm font-medium flex items-center justify-center disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+                        >
+                          <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                          </svg>
+                          Mover para Fase Selecionada
+                        </button>
+                      </div>
                     )}
                   </div>
                 </div>
