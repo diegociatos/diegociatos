@@ -12,9 +12,23 @@ router = APIRouter()
 
 
 class CandidateCreate(BaseModel):
+    # Contatos
+    phone: Optional[str] = None
+    whatsapp: Optional[str] = None
+    email: Optional[str] = None
+    
+    # Dados pessoais
     birthdate: Optional[str] = None
     location_city: Optional[str] = None
     location_state: Optional[str] = None
+    location_neighborhood: Optional[str] = None
+    
+    # Endereço completo
+    address_street: Optional[str] = None
+    address_number: Optional[str] = None
+    address_complement: Optional[str] = None
+    address_zip_code: Optional[str] = None
+    
     salary_expectation: Optional[float] = None
     availability: Optional[str] = None
 
