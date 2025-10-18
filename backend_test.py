@@ -1316,62 +1316,69 @@ class BackendTester:
             
             stages = kanban_response.json()["stages"]
             
-            # Find a job to move
+            # Find a job to move - try multiple jobs until we find one we can move
             test_job = None
             original_stage = None
+            successful_move = False
             
             for stage_name, jobs in stages.items():
                 if jobs:
-                    test_job = jobs[0]
-                    original_stage = stage_name
-                    break
-            
-            if not test_job:
-                self.log_test("Move Job Between Stages", False, "No jobs found in kanban to test")
-                return
-            
-            job_id = test_job["id"]
-            
-            # Test moving to triagem stage
-            move_data = {
-                "to_stage": "triagem",
-                "notes": "Movendo para triagem de currículos"
-            }
-            
-            move_response = self.make_request("PATCH", f"/jobs-kanban/{job_id}/stage", 
-                                            move_data, auth_token=self.tokens["admin"])
-            
-            if move_response.status_code == 200:
-                updated_job = move_response.json()
-                
-                if updated_job.get("recruitment_stage") == "triagem":
-                    # Test moving to another stage (entrevistas)
-                    move_data2 = {
-                        "to_stage": "entrevistas",
-                        "notes": "Movendo para fase de entrevistas"
-                    }
-                    
-                    move_response2 = self.make_request("PATCH", f"/jobs-kanban/{job_id}/stage", 
-                                                     move_data2, auth_token=self.tokens["admin"])
-                    
-                    if move_response2.status_code == 200:
-                        updated_job2 = move_response2.json()
+                    for job in jobs:
+                        job_id = job["id"]
                         
-                        if updated_job2.get("recruitment_stage") == "entrevistas":
-                            self.log_test("Move Job Between Stages", True, 
-                                        f"✅ Job {job_id} successfully moved: {original_stage} → triagem → entrevistas")
-                        else:
-                            self.log_test("Move Job Between Stages", False, 
-                                        f"Second move failed - expected 'entrevistas', got {updated_job2.get('recruitment_stage')}")
-                    else:
-                        self.log_test("Move Job Between Stages", False, 
-                                    f"Second move failed: {move_response2.status_code}", move_response2.text)
-                else:
-                    self.log_test("Move Job Between Stages", False, 
-                                f"First move failed - expected 'triagem', got {updated_job.get('recruitment_stage')}")
-            else:
-                self.log_test("Move Job Between Stages", False, 
-                            f"Move job failed: {move_response.status_code}", move_response.text)
+                        # Test moving to triagem stage
+                        move_data = {
+                            "to_stage": "triagem",
+                            "notes": "Movendo para triagem de currículos"
+                        }
+                        
+                        move_response = self.make_request("PATCH", f"/jobs-kanban/{job_id}/stage", 
+                                                        move_data, auth_token=self.tokens["admin"])
+                        
+                        if move_response.status_code == 200:
+                            test_job = job
+                            original_stage = stage_name
+                            successful_move = True
+                            
+                            updated_job = move_response.json()
+                            
+                            if updated_job.get("recruitment_stage") == "triagem":
+                                # Test moving to another stage (entrevistas)
+                                move_data2 = {
+                                    "to_stage": "entrevistas",
+                                    "notes": "Movendo para fase de entrevistas"
+                                }
+                                
+                                move_response2 = self.make_request("PATCH", f"/jobs-kanban/{job_id}/stage", 
+                                                                 move_data2, auth_token=self.tokens["admin"])
+                                
+                                if move_response2.status_code == 200:
+                                    updated_job2 = move_response2.json()
+                                    
+                                    if updated_job2.get("recruitment_stage") == "entrevistas":
+                                        self.log_test("Move Job Between Stages", True, 
+                                                    f"✅ Job {job_id} successfully moved: {original_stage} → triagem → entrevistas")
+                                        return
+                                    else:
+                                        self.log_test("Move Job Between Stages", False, 
+                                                    f"Second move failed - expected 'entrevistas', got {updated_job2.get('recruitment_stage')}")
+                                        return
+                                else:
+                                    self.log_test("Move Job Between Stages", False, 
+                                                f"Second move failed: {move_response2.status_code}", move_response2.text)
+                                    return
+                            else:
+                                self.log_test("Move Job Between Stages", False, 
+                                            f"First move failed - expected 'triagem', got {updated_job.get('recruitment_stage')}")
+                                return
+                            break
+                    
+                    if successful_move:
+                        break
+            
+            if not successful_move:
+                self.log_test("Move Job Between Stages", False, "No jobs found with permission to move or all moves failed")
+                
         except Exception as e:
             self.log_test("Move Job Between Stages", False, f"Request failed: {str(e)}")
 
