@@ -40,7 +40,7 @@ const CandidateSignupPage = () => {
     setLoading(true);
 
     try {
-      const response = await api.post('/api/auth/candidate/signup', {
+      const response = await api.post('/auth/candidate/signup', {
         email: formData.email,
         password: formData.password,
         full_name: formData.full_name,
