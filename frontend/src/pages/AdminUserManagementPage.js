@@ -272,82 +272,86 @@ const AdminUserManagementPage = () => {
         )}
 
         {/* Users Table */}
-        <div className="bg-white rounded-lg shadow overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
-                  Nome
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
-                  Papel
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
-                  Email
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
-                  Telefone
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
-                  Status
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
-                  Ações
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {users.map((user) => {
-                // Função para formatar o papel/role
-                const getRoleLabel = (roles) => {
-                  if (!roles || roles.length === 0) return '-';
-                  const roleMap = {
-                    'admin': 'Administrador',
-                    'recruiter': 'Analista/Recrutador',
-                    'client': 'Cliente',
-                    'candidate': 'Candidato'
+        <div className="bg-white rounded-lg shadow">
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                    Nome
+                  </th>
+                  <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                    Papel
+                  </th>
+                  <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                    Email
+                  </th>
+                  <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                    Telefone
+                  </th>
+                  <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                    Status
+                  </th>
+                  <th className="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                    Ações
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {users.map((user) => {
+                  // Função para formatar o papel/role
+                  const getRoleLabel = (roles) => {
+                    if (!roles || roles.length === 0) return '-';
+                    const roleMap = {
+                      'admin': 'Admin',
+                      'recruiter': 'Analista',
+                      'client': 'Cliente',
+                      'candidate': 'Candidato'
+                    };
+                    return roles.map(r => roleMap[r.role] || r.role).join(', ');
                   };
-                  return roles.map(r => roleMap[r.role] || r.role).join(', ');
-                };
 
-                return (
-                <tr key={user.id}>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-gray-900">{user.full_name}</div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-700 font-medium">{getRoleLabel(user.roles)}</div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-500">{user.email}</div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-500">{user.phone || '-'}</div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                      user.is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                    }`}>
-                      {user.is_active ? 'Ativo' : 'Inativo'}
-                    </span>
-                    {user.requires_password_change && (
-                      <span className="ml-2 px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
-                        Trocar senha
-                      </span>
-                    )}
-                  </td>
-                  <td className="px-4 py-4 text-sm">
-                    <div className="flex flex-col gap-1.5 min-w-[140px]">
-                      <button
-                        onClick={() => handleEditUser(user)}
-                        className="inline-flex items-center justify-center px-3 py-1.5 bg-blue-100 text-blue-700 rounded-md text-xs font-medium hover:bg-blue-200 transition-colors w-full"
-                        title="Editar usuário"
-                      >
-                        <svg className="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                        </svg>
-                        Editar
-                      </button>
+                  return (
+                  <tr key={user.id} className="hover:bg-gray-50">
+                    <td className="px-3 py-3">
+                      <div className="text-sm font-medium text-gray-900 max-w-[150px] truncate" title={user.full_name}>
+                        {user.full_name}
+                      </div>
+                    </td>
+                    <td className="px-3 py-3">
+                      <div className="text-xs text-gray-700 font-medium">{getRoleLabel(user.roles)}</div>
+                    </td>
+                    <td className="px-3 py-3">
+                      <div className="text-xs text-gray-500 max-w-[180px] truncate" title={user.email}>
+                        {user.email}
+                      </div>
+                    </td>
+                    <td className="px-3 py-3">
+                      <div className="text-xs text-gray-500">{user.phone || '-'}</div>
+                    </td>
+                    <td className="px-3 py-3">
+                      <div className="flex flex-col gap-1">
+                        <span className={`px-2 py-0.5 inline-flex text-xs font-semibold rounded-full w-fit ${
+                          user.is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                        }`}>
+                          {user.is_active ? 'Ativo' : 'Inativo'}
+                        </span>
+                        {user.requires_password_change && (
+                          <span className="px-2 py-0.5 inline-flex text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800 w-fit">
+                            Trocar senha
+                          </span>
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-3 py-3">
+                      <div className="flex gap-1">
+                        <button
+                          onClick={() => handleEditUser(user)}
+                          className="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs font-medium hover:bg-blue-200 transition-colors"
+                          title="Editar usuário"
+                        >
+                          Editar
+                        </button>
                       <button
                         onClick={() => handleOpenChangePassword(user)}
                         className="inline-flex items-center justify-center px-3 py-1.5 bg-orange-100 text-orange-700 rounded-md text-xs font-medium hover:bg-orange-200 transition-colors w-full"
