@@ -174,10 +174,18 @@ export default function ClientDashboardPage() {
         {/* Jobs Section */}
         <div className="mb-6 flex justify-between items-center">
           <h3 className="text-2xl font-bold text-gray-800">Suas Vagas em Aberto</h3>
-          <Button onClick={() => navigate('/jobs/new')} className="bg-blue-600 hover:bg-blue-700">
-            <Plus className="w-4 h-4 mr-2" />
-            Nova Vaga
-          </Button>
+          <div className="flex gap-3">
+            <Button 
+              onClick={() => navigate('/analista/vagas-kanban')} 
+              className="bg-green-600 hover:bg-green-700"
+            >
+              📊 Ver Kanban
+            </Button>
+            <Button onClick={() => navigate('/jobs/new')} className="bg-blue-600 hover:bg-blue-700">
+              <Plus className="w-4 h-4 mr-2" />
+              Nova Vaga
+            </Button>
+          </div>
         </div>
 
         {jobs.length === 0 ? (
