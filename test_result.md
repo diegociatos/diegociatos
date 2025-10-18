@@ -920,6 +920,53 @@ agent_communication:
       
       🎯 CONCLUSION: Admin login credentials admin@ciatos.com/admin123 are 100% functional and meet all specified requirements from the review request.
 
+  - agent: "testing"
+    message: |
+      🎉 CANDIDATE PROFILE DATA SAVING TEST COMPLETED - REVIEW REQUEST FULFILLED
+      
+      TESTE SOLICITADO NA REVIEW EXECUTADO COM SUCESSO:
+      
+      📋 REVIEW REQUIREMENTS:
+      **Step 1: Login as candidate**
+      - Use credentials: pedro@email.com / candidato123 (or create new test candidate)
+      - Save access token
+      
+      **Step 2: Update profile with all fields**
+      - POST /api/candidates/profile
+      - Include all new fields: phone, whatsapp, email, birthdate, location_city, location_state, location_neighborhood, address_street, address_number, address_complement, address_zip_code, salary_expectation, availability
+      
+      **Step 3: Verify data was saved**
+      - GET /api/candidates/profile
+      - Verify all fields are returned correctly
+      - Check if phone, whatsapp, email, address fields are present
+      
+      **Step 4: Update address separately**
+      - PUT /api/candidates/profile/address
+      - Update only address fields
+      - Verify update works
+      
+      ✅ TEST RESULTS - ALL 4 STEPS COMPLETED SUCCESSFULLY:
+      
+      1. ✅ STEP 1: LOGIN/CREATE CANDIDATE
+         - Candidate pedro@email.com created successfully with password candidato123
+         - Access token obtained and validated ✅
+      
+      2. ✅ STEP 2: UPDATE PROFILE WITH ALL FIELDS
+         - POST /api/candidates/profile executed successfully
+         - All 13 fields saved correctly: phone (11987654321), whatsapp (11987654321), email (pedro@test.com), birthdate (1990-01-01), location_city (São Paulo), location_state (SP), location_neighborhood (Centro), address_street (Rua Teste), address_number (123), address_complement (Apto 45), address_zip_code (01234-567), salary_expectation (5000), availability (Imediato) ✅
+      
+      3. ✅ STEP 3: VERIFY DATA WAS SAVED
+         - GET /api/candidates/profile returned all fields correctly ✅
+         - All field values match exactly what was sent ✅
+         - Phone, whatsapp, email, and address fields are present and correct ✅
+      
+      4. ✅ STEP 4: UPDATE ADDRESS SEPARATELY
+         - PUT /api/candidates/profile/address executed successfully ✅
+         - Address fields updated correctly: address_street (Rua Nova Atualizada), address_number (456), address_complement (Casa), address_zip_code (98765-432), location_neighborhood (Vila Nova), location_city (Rio de Janeiro), location_state (RJ) ✅
+         - Verification via GET confirmed all address changes were persisted ✅
+      
+      🎯 CONCLUSION: Candidate profile data saving is 100% functional. All endpoints (POST /candidates/profile, GET /candidates/profile, PUT /candidates/profile/address) are working correctly and data is being saved and retrieved properly.
+
 backend:
   - task: "Fix KeyError expires_at in UserSession model"
     implemented: true
