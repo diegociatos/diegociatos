@@ -814,6 +814,22 @@ frontend:
         agent: "main"
         comment: "Painel do Analista redesenhado com 4 cards. Nova página de Kanban de Vagas com drag & drop e modal de contratação. react-beautiful-dnd instalado."
 
+backend:
+  - task: "Pipeline API functionality with job-001"
+    implemented: true
+    working: true
+    file: "/app/backend/routes/pipeline.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Pipeline API implemented with GET /applications/{job_id}/pipeline endpoint"
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTADO E APROVADO - Pipeline API funcionando perfeitamente: (1) GET /applications/job-001/pipeline retorna estrutura correta com job info (jobId: job-001, title: Desenvolvedor Full Stack, clientName: TechCorp, status: published), (2) Columns array com 9 estágios do pipeline, (3) Cards array com 6 candidaturas incluindo informações completas (applicationId, candidateName, candidateCity, scoreTotal, badges, currentStage), (4) Tenant-based access control funcionando corretamente (recruiter sem acesso ao tenant-techcorp-001 recebe 403, admin com acesso funciona normalmente), (5) Pipeline testado com sucesso usando admin credentials para job-001 e recruiter credentials para jobs do tenant correto. Sistema de autenticação e autorização funcionando como esperado."
+
 test_plan:
   current_focus:
     - "Testar frontend: Carregar Kanban, drag & drop, modal contratação"
@@ -822,4 +838,5 @@ test_plan:
     - "Testar backend: PATCH /jobs-kanban/{job_id}/stage"
     - "Testar backend: PATCH /jobs-kanban/{job_id}/contratacao-result (positivo e negativo)"
     - "Testar backend: GET /jobs-kanban/{job_id}/stage-history"
+    - "Testar backend: Pipeline API com job-001 e credenciais recruiter/admin"
 
