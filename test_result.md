@@ -1097,4 +1097,5 @@ test_plan:
     - "Complete Questionnaire Flow Testing - All 4 steps validated"
     - "Complete Candidate Questionnaire Frontend Flow - All steps tested and working"
     - "Admin Login Credentials Test - Review request fulfilled"
+    - "Candidate Profile Data Saving Test - Review request fulfilled"
 
