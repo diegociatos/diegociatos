@@ -89,6 +89,7 @@ async def login(data: LoginRequest, response: Response):
         "access_token": access_token,
         "refresh_token": refresh_token,
         "token_type": "bearer",
+        "session_token": access_token,  # Adicionar para compatibilidade
         "user": {
             "id": user["id"], 
             "email": user["email"], 
