@@ -1240,25 +1240,382 @@ class BackendTester:
             self.log_test("Client Login and Job Access", False, 
                         "Could not login with any known client credentials")
 
+    def test_jobs_kanban_get(self):
+        """Test GET /jobs-kanban/kanban - High Priority"""
+        if "admin" not in self.tokens:
+            self.log_test("Get Jobs Kanban", False, "Admin token not available")
+            return
+        
+        try:
+            response = self.make_request("GET", "/jobs-kanban/kanban", auth_token=self.tokens["admin"])
+            
+            if response.status_code == 200:
+                data = response.json()
+                
+                # Verify response has "stages" object
+                if "stages" in data:
+                    stages = data["stages"]
+                    
+                    # Verify all 6 required stages exist
+                    required_stages = ["cadastro", "triagem", "entrevistas", "selecao", "envio_cliente", "contratacao"]
+                    
+                    if all(stage in stages for stage in required_stages):
+                        # Verify each stage has an array
+                        all_arrays = all(isinstance(stages[stage], list) for stage in required_stages)
+                        
+                        if all_arrays:
+                            # Check if jobs have required fields
+                            total_jobs = sum(len(stages[stage]) for stage in required_stages)
+                            
+                            if total_jobs > 0:
+                                # Check first job structure
+                                first_job = None
+                                for stage in required_stages:
+                                    if stages[stage]:
+                                        first_job = stages[stage][0]
+                                        break
+                                
+                                if first_job and all(field in first_job for field in ["id", "title", "recruitment_stage", "applications_count"]):
+                                    self.log_test("Get Jobs Kanban", True, 
+                                                f"✅ Kanban API working - {total_jobs} jobs across 6 stages with correct structure")
+                                else:
+                                    self.log_test("Get Jobs Kanban", False, 
+                                                "Jobs missing required fields (id, title, recruitment_stage, applications_count)", first_job)
+                            else:
+                                self.log_test("Get Jobs Kanban", True, 
+                                            "✅ Kanban API working - All 6 stages present (no jobs found)")
+                        else:
+                            self.log_test("Get Jobs Kanban", False, 
+                                        "Some stages are not arrays", stages)
+                    else:
+                        missing_stages = [s for s in required_stages if s not in stages]
+                        self.log_test("Get Jobs Kanban", False, 
+                                    f"Missing required stages: {missing_stages}", stages)
+                else:
+                    self.log_test("Get Jobs Kanban", False, 
+                                "Response missing 'stages' object", data)
+            else:
+                self.log_test("Get Jobs Kanban", False, 
+                            f"Failed to get kanban: {response.status_code}", response.text)
+        except Exception as e:
+            self.log_test("Get Jobs Kanban", False, f"Request failed: {str(e)}")
+
+    def test_move_job_between_stages(self):
+        """Test PATCH /jobs-kanban/{job_id}/stage - High Priority"""
+        if "admin" not in self.tokens:
+            self.log_test("Move Job Between Stages", False, "Admin token not available")
+            return
+        
+        # First get a job from kanban
+        try:
+            kanban_response = self.make_request("GET", "/jobs-kanban/kanban", auth_token=self.tokens["admin"])
+            
+            if kanban_response.status_code != 200:
+                self.log_test("Move Job Between Stages", False, "Could not get kanban data")
+                return
+            
+            stages = kanban_response.json()["stages"]
+            
+            # Find a job to move
+            test_job = None
+            original_stage = None
+            
+            for stage_name, jobs in stages.items():
+                if jobs:
+                    test_job = jobs[0]
+                    original_stage = stage_name
+                    break
+            
+            if not test_job:
+                self.log_test("Move Job Between Stages", False, "No jobs found in kanban to test")
+                return
+            
+            job_id = test_job["id"]
+            
+            # Test moving to triagem stage
+            move_data = {
+                "to_stage": "triagem",
+                "notes": "Movendo para triagem de currículos"
+            }
+            
+            move_response = self.make_request("PATCH", f"/jobs-kanban/{job_id}/stage", 
+                                            move_data, auth_token=self.tokens["admin"])
+            
+            if move_response.status_code == 200:
+                updated_job = move_response.json()
+                
+                if updated_job.get("recruitment_stage") == "triagem":
+                    # Test moving to another stage (entrevistas)
+                    move_data2 = {
+                        "to_stage": "entrevistas",
+                        "notes": "Movendo para fase de entrevistas"
+                    }
+                    
+                    move_response2 = self.make_request("PATCH", f"/jobs-kanban/{job_id}/stage", 
+                                                     move_data2, auth_token=self.tokens["admin"])
+                    
+                    if move_response2.status_code == 200:
+                        updated_job2 = move_response2.json()
+                        
+                        if updated_job2.get("recruitment_stage") == "entrevistas":
+                            self.log_test("Move Job Between Stages", True, 
+                                        f"✅ Job {job_id} successfully moved: {original_stage} → triagem → entrevistas")
+                        else:
+                            self.log_test("Move Job Between Stages", False, 
+                                        f"Second move failed - expected 'entrevistas', got {updated_job2.get('recruitment_stage')}")
+                    else:
+                        self.log_test("Move Job Between Stages", False, 
+                                    f"Second move failed: {move_response2.status_code}", move_response2.text)
+                else:
+                    self.log_test("Move Job Between Stages", False, 
+                                f"First move failed - expected 'triagem', got {updated_job.get('recruitment_stage')}")
+            else:
+                self.log_test("Move Job Between Stages", False, 
+                            f"Move job failed: {move_response.status_code}", move_response.text)
+        except Exception as e:
+            self.log_test("Move Job Between Stages", False, f"Request failed: {str(e)}")
+
+    def test_contratacao_positivo(self):
+        """Test PATCH /jobs-kanban/{job_id}/contratacao-result with positivo - High Priority"""
+        if "admin" not in self.tokens:
+            self.log_test("Contratação Positivo", False, "Admin token not available")
+            return
+        
+        # First get a job and move it to contratacao stage
+        try:
+            kanban_response = self.make_request("GET", "/jobs-kanban/kanban", auth_token=self.tokens["admin"])
+            
+            if kanban_response.status_code != 200:
+                self.log_test("Contratação Positivo", False, "Could not get kanban data")
+                return
+            
+            stages = kanban_response.json()["stages"]
+            
+            # Find a job to test (prefer one not in contratacao already)
+            test_job = None
+            
+            for stage_name, jobs in stages.items():
+                if jobs and stage_name != "contratacao":
+                    test_job = jobs[0]
+                    break
+            
+            if not test_job:
+                # Try contratacao stage if no other jobs
+                if stages.get("contratacao"):
+                    test_job = stages["contratacao"][0]
+            
+            if not test_job:
+                self.log_test("Contratação Positivo", False, "No jobs found to test")
+                return
+            
+            job_id = test_job["id"]
+            
+            # Move to contratacao stage first if not already there
+            if test_job.get("recruitment_stage") != "contratacao":
+                move_data = {
+                    "to_stage": "contratacao",
+                    "notes": "Movendo para fase de contratação"
+                }
+                
+                move_response = self.make_request("PATCH", f"/jobs-kanban/{job_id}/stage", 
+                                                move_data, auth_token=self.tokens["admin"])
+                
+                if move_response.status_code != 200:
+                    self.log_test("Contratação Positivo", False, 
+                                f"Could not move job to contratacao: {move_response.status_code}")
+                    return
+            
+            # Now test contratacao positivo
+            result_data = {
+                "result": "positivo",
+                "notes": "Candidato contratado com sucesso"
+            }
+            
+            result_response = self.make_request("PATCH", f"/jobs-kanban/{job_id}/contratacao-result", 
+                                              result_data, auth_token=self.tokens["admin"])
+            
+            if result_response.status_code == 200:
+                updated_job = result_response.json()
+                
+                # Verify job status changed to closed and contratacao_result is positivo
+                if (updated_job.get("status") == "closed" and 
+                    updated_job.get("contratacao_result") == "positivo"):
+                    self.log_test("Contratação Positivo", True, 
+                                f"✅ Job {job_id} closed successfully with positive result")
+                else:
+                    self.log_test("Contratação Positivo", False, 
+                                f"Expected status='closed' and contratacao_result='positivo', got status='{updated_job.get('status')}', result='{updated_job.get('contratacao_result')}'")
+            else:
+                self.log_test("Contratação Positivo", False, 
+                            f"Contratacao result failed: {result_response.status_code}", result_response.text)
+        except Exception as e:
+            self.log_test("Contratação Positivo", False, f"Request failed: {str(e)}")
+
+    def test_contratacao_negativo_auto_return(self):
+        """Test PATCH /jobs-kanban/{job_id}/contratacao-result with negativo - High Priority"""
+        if "admin" not in self.tokens:
+            self.log_test("Contratação Negativo Auto Return", False, "Admin token not available")
+            return
+        
+        # First get a job and move it to contratacao stage
+        try:
+            kanban_response = self.make_request("GET", "/jobs-kanban/kanban", auth_token=self.tokens["admin"])
+            
+            if kanban_response.status_code != 200:
+                self.log_test("Contratação Negativo Auto Return", False, "Could not get kanban data")
+                return
+            
+            stages = kanban_response.json()["stages"]
+            
+            # Find a job to test (prefer one not in contratacao already)
+            test_job = None
+            
+            for stage_name, jobs in stages.items():
+                if jobs and stage_name != "contratacao":
+                    test_job = jobs[0]
+                    break
+            
+            if not test_job:
+                # Try contratacao stage if no other jobs
+                if stages.get("contratacao"):
+                    test_job = stages["contratacao"][0]
+            
+            if not test_job:
+                self.log_test("Contratação Negativo Auto Return", False, "No jobs found to test")
+                return
+            
+            job_id = test_job["id"]
+            
+            # Move to contratacao stage first if not already there
+            if test_job.get("recruitment_stage") != "contratacao":
+                move_data = {
+                    "to_stage": "contratacao",
+                    "notes": "Movendo para fase de contratação"
+                }
+                
+                move_response = self.make_request("PATCH", f"/jobs-kanban/{job_id}/stage", 
+                                                move_data, auth_token=self.tokens["admin"])
+                
+                if move_response.status_code != 200:
+                    self.log_test("Contratação Negativo Auto Return", False, 
+                                f"Could not move job to contratacao: {move_response.status_code}")
+                    return
+            
+            # Now test contratacao negativo
+            result_data = {
+                "result": "negativo",
+                "notes": "Candidato recusou proposta"
+            }
+            
+            result_response = self.make_request("PATCH", f"/jobs-kanban/{job_id}/contratacao-result", 
+                                              result_data, auth_token=self.tokens["admin"])
+            
+            if result_response.status_code == 200:
+                updated_job = result_response.json()
+                
+                # Verify job automatically returned to entrevistas and contratacao_result is negativo
+                if (updated_job.get("recruitment_stage") == "entrevistas" and 
+                    updated_job.get("contratacao_result") == "negativo"):
+                    self.log_test("Contratação Negativo Auto Return", True, 
+                                f"✅ Job {job_id} automatically returned to entrevistas with negative result")
+                else:
+                    self.log_test("Contratação Negativo Auto Return", False, 
+                                f"Expected recruitment_stage='entrevistas' and contratacao_result='negativo', got stage='{updated_job.get('recruitment_stage')}', result='{updated_job.get('contratacao_result')}'")
+            else:
+                self.log_test("Contratação Negativo Auto Return", False, 
+                            f"Contratacao result failed: {result_response.status_code}", result_response.text)
+        except Exception as e:
+            self.log_test("Contratação Negativo Auto Return", False, f"Request failed: {str(e)}")
+
+    def test_get_stage_history(self):
+        """Test GET /jobs-kanban/{job_id}/stage-history - Medium Priority"""
+        if "admin" not in self.tokens:
+            self.log_test("Get Stage History", False, "Admin token not available")
+            return
+        
+        # Get a job that should have some history
+        try:
+            kanban_response = self.make_request("GET", "/jobs-kanban/kanban", auth_token=self.tokens["admin"])
+            
+            if kanban_response.status_code != 200:
+                self.log_test("Get Stage History", False, "Could not get kanban data")
+                return
+            
+            stages = kanban_response.json()["stages"]
+            
+            # Find any job to test
+            test_job = None
+            
+            for stage_name, jobs in stages.items():
+                if jobs:
+                    test_job = jobs[0]
+                    break
+            
+            if not test_job:
+                self.log_test("Get Stage History", False, "No jobs found to test")
+                return
+            
+            job_id = test_job["id"]
+            
+            # Get stage history
+            history_response = self.make_request("GET", f"/jobs-kanban/{job_id}/stage-history", 
+                                               auth_token=self.tokens["admin"])
+            
+            if history_response.status_code == 200:
+                data = history_response.json()
+                
+                if "history" in data:
+                    history = data["history"]
+                    
+                    if isinstance(history, list):
+                        if len(history) > 0:
+                            # Check structure of first history item
+                            first_item = history[0]
+                            required_fields = ["from_stage", "to_stage", "changed_by", "changed_at"]
+                            
+                            if all(field in first_item for field in required_fields):
+                                self.log_test("Get Stage History", True, 
+                                            f"✅ Stage history working - {len(history)} history items with correct structure")
+                            else:
+                                missing_fields = [f for f in required_fields if f not in first_item]
+                                self.log_test("Get Stage History", False, 
+                                            f"History items missing required fields: {missing_fields}", first_item)
+                        else:
+                            self.log_test("Get Stage History", True, 
+                                        "✅ Stage history API working - no history found (expected for new jobs)")
+                    else:
+                        self.log_test("Get Stage History", False, 
+                                    "History is not an array", history)
+                else:
+                    self.log_test("Get Stage History", False, 
+                                "Response missing 'history' field", data)
+            else:
+                self.log_test("Get Stage History", False, 
+                            f"Get stage history failed: {history_response.status_code}", history_response.text)
+        except Exception as e:
+            self.log_test("Get Stage History", False, f"Request failed: {str(e)}")
+
     def run_all_tests(self):
-        """Run focused tests for authentication and job editing after UserSession fix"""
-        print("🚀 Testing Authentication and Job Editing After UserSession Fix")
-        print("🔍 FOCUS: Verify KeyError: 'expires_at' is resolved")
+        """Run Jobs Kanban functionality tests"""
+        print("🚀 Testing Jobs Kanban Functionality")
+        print("🔍 FOCUS: Verify all Kanban APIs work correctly")
         print("=" * 60)
         
-        # Core authentication tests
-        self.test_authentication_after_usersession_fix()
-        self.test_session_expiration_check()
-        self.test_recruiter_login_and_job_access()
+        # Login first
+        self.test_login_with_requires_password_change()
         
-        # Job editing functionality tests
-        self.test_job_get_endpoint()
-        self.test_job_update_endpoint()
-        self.test_comprehensive_job_edit_flow()
+        # Jobs Kanban tests (High Priority)
+        self.test_jobs_kanban_get()
+        self.test_move_job_between_stages()
+        self.test_contratacao_positivo()
+        self.test_contratacao_negativo_auto_return()
+        
+        # Stage History test (Medium Priority)
+        self.test_get_stage_history()
         
         # Summary
         print("\n" + "=" * 60)
-        print("📊 TEST SUMMARY")
+        print("📊 JOBS KANBAN TEST SUMMARY")
         print("=" * 60)
         
         passed = sum(1 for result in self.test_results if result["success"])
@@ -1273,6 +1630,8 @@ class BackendTester:
             for result in self.test_results:
                 if not result["success"]:
                     print(f"  - {result['test']}: {result['message']}")
+        else:
+            print("\n🎉 ALL JOBS KANBAN TESTS PASSED!")
         
         return passed == total
 
