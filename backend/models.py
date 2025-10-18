@@ -126,6 +126,8 @@ class Job(BaseModel):
     salary_min: Optional[float] = None
     salary_max: Optional[float] = None
     status: Literal["draft", "in_review", "published", "paused", "closed"] = "draft"
+    recruitment_stage: Literal["cadastro", "triagem", "entrevistas", "selecao", "envio_cliente", "contratacao"] = "cadastro"
+    contratacao_result: Optional[Literal["positivo", "negativo"]] = None
     ideal_profile: Optional[Dict[str, Any]] = None
     blind_review: bool = False
     created_by: str
