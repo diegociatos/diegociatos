@@ -357,3 +357,14 @@ class DataSubjectRequest(BaseModel):
     created_at: datetime = Field(default_factory=lambda: datetime.now())
     resolved_at: Optional[datetime] = None
 
+
+class JobStageHistory(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=generate_id)
+    job_id: str
+    from_stage: Optional[str] = None
+    to_stage: str
+    changed_by: str
+    changed_at: datetime = Field(default_factory=lambda: datetime.now())
+    notes: Optional[str] = None
+
