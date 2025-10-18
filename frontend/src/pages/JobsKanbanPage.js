@@ -136,8 +136,51 @@ const JobsKanbanPage = () => {
       setSelectedJob(job);
       setShowContratacaoModal(true);
     } else {
-      // Abrir página de edição da vaga
-      navigate(`/jobs/${job.id}/edit`);
+      // Abrir modal de notas/comentários
+      setSelectedJob(job);
+      loadNotes(job.id);
+      setShowNotesModal(true);
+    }
+  };
+  
+  const loadNotes = async (jobId) => {
+    try {
+      setLoadingNotes(true);
+      const res = await api.get(`/jobs-kanban/${jobId}/notes`);
+      setNotes(res.data.notes || []);
+    } catch (err) {
+      console.error('Erro ao carregar notas:', err);
+    } finally {
+      setLoadingNotes(false);
+    }
+  };
+  
+  const handleAddNote = async () => {
+    if (!newNote.trim() || !selectedJob) return;
+    
+    try {
+      await api.post(`/jobs-kanban/${selectedJob.id}/notes`, {
+        content: newNote
+      });
+      setNewNote('');
+      loadNotes(selectedJob.id);
+      alert('Anotação adicionada com sucesso!');
+    } catch (err) {
+      console.error('Erro ao adicionar nota:', err);
+      alert('Erro ao adicionar anotação');
+    }
+  };
+  
+  const handleDeleteNote = async (noteId) => {
+    if (!confirm('Deseja realmente deletar esta anotação?')) return;
+    
+    try {
+      await api.delete(`/jobs-kanban/${selectedJob.id}/notes/${noteId}`);
+      loadNotes(selectedJob.id);
+      alert('Anotação deletada com sucesso!');
+    } catch (err) {
+      console.error('Erro ao deletar nota:', err);
+      alert('Erro ao deletar anotação');
     }
   };
   
