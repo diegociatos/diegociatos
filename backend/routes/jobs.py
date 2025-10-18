@@ -89,6 +89,9 @@ async def list_public_jobs(city: Optional[str] = None, work_mode: Optional[str] 
     if work_mode:
         query["work_mode"] = work_mode
     
+    # Excluir vagas de teste/seed (created_by começa com "user-" ou "job-")
+    query["created_by"] = {"$not": {"$regex": "^(user-|job-)"}}
+    
     jobs = await db.jobs.find(query, {"_id": 0}).to_list(1000)
     return jobs
 
