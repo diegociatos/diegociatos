@@ -254,6 +254,27 @@ const JobsKanbanPage = () => {
     }
   };
   
+  const handleMoveToSelectedStage = async () => {
+    if (!selectedJob || !selectedStageToMove) return;
+    
+    if (!confirm(`Mover vaga para: ${stageLabels[selectedStageToMove]}?`)) return;
+    
+    try {
+      await api.patch(`/jobs-kanban/${selectedJob.id}/stage`, {
+        to_stage: selectedStageToMove
+      });
+      
+      setShowNotesModal(false);
+      setSelectedJob(null);
+      setSelectedStageToMove('');
+      loadKanban();
+      alert(`Vaga movida para: ${stageLabels[selectedStageToMove]}`);
+    } catch (err) {
+      console.error('Erro ao mover vaga:', err);
+      alert('Erro ao mover vaga');
+    }
+  };
+  
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
