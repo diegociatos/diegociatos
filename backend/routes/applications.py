@@ -29,13 +29,29 @@ async def create_application(data: ApplicationCreate, request: Request, session_
     if not candidate:
         raise HTTPException(status_code=400, detail="Complete seu perfil antes de se candidatar")
     
+    # Validar dados obrigatórios
+    required_fields = ['phone', 'email', 'location_city', 'address_zip_code']
+    missing_fields = [field for field in required_fields if not candidate.get(field)]
+    
+    if missing_fields or not candidate.get('resume_url'):
+        raise HTTPException(
+            status_code=400, 
+            detail="Complete todos os dados pessoais (Contatos, Endereço) e anexe seu currículo antes de se candidatar"
+        )
+    
+    # Buscar job para pegar tenant_id
+    job = await db.jobs.find_one({"id": data.job_id})
+    if not job:
+        raise HTTPException(status_code=404, detail="Vaga não encontrada")
+    
     existing = await db.applications.find_one({"job_id": data.job_id, "candidate_id": candidate["id"]})
     if existing:
         raise HTTPException(status_code=400, detail="Você já se candidatou a esta vaga")
     
     application = Application(
         job_id=data.job_id,
-        candidate_id=candidate["id"]
+        candidate_id=candidate["id"],
+        tenant_id=job["organization_id"]
     )
     await db.applications.insert_one(application.model_dump())
     
