@@ -217,3 +217,115 @@ async def get_job_stage_history(
             item["changed_by_user"] = user_doc
     
     return {"history": history}
+
+
+@router.post("/{job_id}/notes")
+async def create_job_note(
+    job_id: str,
+    data: CreateJobNoteRequest,
+    request: Request,
+    session_token: Optional[str] = Cookie(None)
+):
+    """
+    Cria uma nova anotação para a vaga (controle do analista)
+    """
+    user = await get_current_user(request, session_token)
+    
+    # Buscar vaga
+    job = await db.jobs.find_one({"id": job_id})
+    if not job:
+        raise HTTPException(status_code=404, detail="Vaga não encontrada")
+    
+    # Verificar permissão
+    roles = await get_user_roles(user["id"], job["organization_id"])
+    if not any(r["role"] in ["admin", "recruiter"] for r in roles):
+        raise HTTPException(status_code=403, detail="Permissão negada")
+    
+    # Criar nota
+    note = JobNote(
+        job_id=job_id,
+        author_id=user["id"],
+        content=data.content
+    )
+    await db.job_notes.insert_one(note.model_dump())
+    
+    # Buscar informações do autor
+    note_dict = note.model_dump()
+    author = await db.users.find_one(
+        {"id": user["id"]},
+        {"_id": 0, "id": 1, "full_name": 1, "email": 1}
+    )
+    note_dict["author"] = author
+    
+    return note_dict
+
+
+@router.get("/{job_id}/notes")
+async def get_job_notes(
+    job_id: str,
+    request: Request,
+    session_token: Optional[str] = Cookie(None)
+):
+    """
+    Retorna todas as anotações de uma vaga
+    """
+    user = await get_current_user(request, session_token)
+    
+    # Buscar vaga
+    job = await db.jobs.find_one({"id": job_id})
+    if not job:
+        raise HTTPException(status_code=404, detail="Vaga não encontrada")
+    
+    # Buscar notas
+    notes = await db.job_notes.find(
+        {"job_id": job_id},
+        {"_id": 0}
+    ).sort("created_at", -1).to_list(None)
+    
+    # Buscar informações dos autores
+    for note in notes:
+        author = await db.users.find_one(
+            {"id": note["author_id"]},
+            {"_id": 0, "id": 1, "full_name": 1, "email": 1}
+        )
+        if author:
+            note["author"] = author
+    
+    return {"notes": notes}
+
+
+@router.delete("/{job_id}/notes/{note_id}")
+async def delete_job_note(
+    job_id: str,
+    note_id: str,
+    request: Request,
+    session_token: Optional[str] = Cookie(None)
+):
+    """
+    Deleta uma anotação (somente o autor ou admin pode deletar)
+    """
+    user = await get_current_user(request, session_token)
+    
+    # Buscar nota
+    note = await db.job_notes.find_one({"id": note_id, "job_id": job_id})
+    if not note:
+        raise HTTPException(status_code=404, detail="Anotação não encontrada")
+    
+    # Buscar vaga para verificar permissão
+    job = await db.jobs.find_one({"id": job_id})
+    if not job:
+        raise HTTPException(status_code=404, detail="Vaga não encontrada")
+    
+    # Verificar se é o autor ou admin
+    roles = await get_user_roles(user["id"], job["organization_id"])
+    is_admin = any(r["role"] == "admin" for r in roles)
+    is_author = note["author_id"] == user["id"]
+    
+    if not (is_admin or is_author):
+        raise HTTPException(status_code=403, detail="Apenas o autor ou admin pode deletar esta anotação")
+    
+    # Deletar
+    await db.job_notes.delete_one({"id": note_id})
+    
+    return {"message": "Anotação deletada com sucesso"}
+
