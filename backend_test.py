@@ -1592,6 +1592,157 @@ class BackendTester:
         except Exception as e:
             self.log_test("Get Stage History", False, f"Request failed: {str(e)}")
 
+    def test_pipeline_functionality(self):
+        """Test pipeline functionality as requested in review"""
+        print("\n🔍 TESTING PIPELINE FUNCTIONALITY")
+        print("=" * 60)
+        
+        # Step 1: Login with recruiter credentials
+        recruiter_creds = {"email": "recrutador@ciatos.com", "password": "recruiter123"}
+        
+        try:
+            login_response = self.make_request("POST", "/auth/login", recruiter_creds)
+            
+            if login_response.status_code == 200:
+                login_data = login_response.json()
+                recruiter_token = login_data["access_token"]
+                self.log_test("Pipeline - Recruiter Login", True, "Recruiter login successful")
+                
+                # Step 2: Test pipeline API with job-001
+                job_id = "job-001"
+                pipeline_response = self.make_request("GET", f"/applications/{job_id}/pipeline", 
+                                                   auth_token=recruiter_token)
+                
+                if pipeline_response.status_code == 200:
+                    pipeline_data = pipeline_response.json()
+                    
+                    # Verify response structure
+                    required_fields = ["job", "columns", "cards"]
+                    if all(field in pipeline_data for field in required_fields):
+                        
+                        # Verify job information structure
+                        job_info = pipeline_data["job"]
+                        job_required_fields = ["jobId", "title", "clientName", "status"]
+                        
+                        if all(field in job_info for field in job_required_fields):
+                            
+                            # Verify columns array
+                            columns = pipeline_data["columns"]
+                            if isinstance(columns, list) and len(columns) > 0:
+                                
+                                # Verify cards array
+                                cards = pipeline_data["cards"]
+                                if isinstance(cards, list):
+                                    
+                                    self.log_test("Pipeline API - GET /applications/job-001/pipeline", True, 
+                                                f"Pipeline data retrieved successfully. Job: {job_info.get('title')}, "
+                                                f"Columns: {len(columns)}, Applications: {len(cards)}")
+                                    
+                                    # Additional verification for job-001 specific data
+                                    if job_info.get("jobId") == job_id:
+                                        self.log_test("Pipeline API - Job ID Verification", True, 
+                                                    f"Correct job ID returned: {job_id}")
+                                    else:
+                                        self.log_test("Pipeline API - Job ID Verification", False, 
+                                                    f"Expected job-001, got {job_info.get('jobId')}")
+                                    
+                                    # Check if there are applications in the pipeline
+                                    if len(cards) > 0:
+                                        # Verify card structure
+                                        first_card = cards[0]
+                                        card_required_fields = ["applicationId", "candidateName", "currentStage"]
+                                        
+                                        if all(field in first_card for field in card_required_fields):
+                                            self.log_test("Pipeline API - Card Structure", True, 
+                                                        "Application cards have correct structure")
+                                        else:
+                                            self.log_test("Pipeline API - Card Structure", False, 
+                                                        "Application cards missing required fields", first_card)
+                                    else:
+                                        self.log_test("Pipeline API - Applications", True, 
+                                                    "No applications found for job-001 (this may be expected)")
+                                    
+                                else:
+                                    self.log_test("Pipeline API - Cards Array", False, 
+                                                "Cards field is not an array", cards)
+                            else:
+                                self.log_test("Pipeline API - Columns Array", False, 
+                                            "Columns field is not a valid array", columns)
+                        else:
+                            self.log_test("Pipeline API - Job Structure", False, 
+                                        "Job information missing required fields", job_info)
+                    else:
+                        self.log_test("Pipeline API - Response Structure", False, 
+                                    "Response missing required fields", pipeline_data)
+                        
+                elif pipeline_response.status_code == 404:
+                    self.log_test("Pipeline API - GET /applications/job-001/pipeline", False, 
+                                "Job job-001 not found. Check if job exists or use different job ID", 
+                                pipeline_response.text)
+                elif pipeline_response.status_code == 403:
+                    self.log_test("Pipeline API - GET /applications/job-001/pipeline", False, 
+                                "Access denied. Check tenant_id matching or recruiter permissions", 
+                                pipeline_response.text)
+                else:
+                    self.log_test("Pipeline API - GET /applications/job-001/pipeline", False, 
+                                f"Pipeline API failed with status {pipeline_response.status_code}", 
+                                pipeline_response.text)
+                    
+            else:
+                self.log_test("Pipeline - Recruiter Login", False, 
+                            f"Recruiter login failed with status {login_response.status_code}", 
+                            login_response.text)
+                
+        except Exception as e:
+            self.log_test("Pipeline Functionality Test", False, f"Request failed: {str(e)}")
+
+    def test_pipeline_with_existing_job(self):
+        """Test pipeline functionality with any existing job if job-001 doesn't exist"""
+        if "admin" not in self.tokens:
+            self.log_test("Pipeline - Existing Job Test", False, "Admin token not available")
+            return
+        
+        try:
+            # Get list of jobs first
+            jobs_response = self.make_request("GET", "/jobs/", auth_token=self.tokens["admin"])
+            
+            if jobs_response.status_code == 200:
+                jobs = jobs_response.json()
+                
+                if isinstance(jobs, list) and len(jobs) > 0:
+                    # Use the first available job
+                    test_job = jobs[0]
+                    job_id = test_job["id"]
+                    
+                    # Test pipeline with this job
+                    pipeline_response = self.make_request("GET", f"/applications/{job_id}/pipeline", 
+                                                       auth_token=self.tokens["admin"])
+                    
+                    if pipeline_response.status_code == 200:
+                        pipeline_data = pipeline_response.json()
+                        
+                        # Verify basic structure
+                        if all(field in pipeline_data for field in ["job", "columns", "cards"]):
+                            job_info = pipeline_data["job"]
+                            
+                            self.log_test("Pipeline - Existing Job Test", True, 
+                                        f"Pipeline working with existing job: {job_info.get('title')} (ID: {job_id})")
+                        else:
+                            self.log_test("Pipeline - Existing Job Test", False, 
+                                        "Pipeline response structure invalid", pipeline_data)
+                    else:
+                        self.log_test("Pipeline - Existing Job Test", False, 
+                                    f"Pipeline API failed for job {job_id}: {pipeline_response.status_code}", 
+                                    pipeline_response.text)
+                else:
+                    self.log_test("Pipeline - Existing Job Test", False, "No jobs available for testing")
+            else:
+                self.log_test("Pipeline - Existing Job Test", False, 
+                            f"Failed to get jobs list: {jobs_response.status_code}")
+                
+        except Exception as e:
+            self.log_test("Pipeline - Existing Job Test", False, f"Request failed: {str(e)}")
+
     def run_all_tests(self):
         """Run Jobs Kanban functionality tests"""
         print("🚀 Testing Jobs Kanban Functionality")
