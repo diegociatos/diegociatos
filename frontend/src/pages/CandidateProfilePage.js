@@ -14,12 +14,20 @@ import { useAuth } from '../contexts/AuthContext';
 export default function CandidateProfilePage() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [resumeFile, setResumeFile] = useState(null);
   const [profile, setProfile] = useState({
     birthdate: '',
     location_city: '',
     location_state: '',
+    location_neighborhood: '',
+    address_street: '',
+    address_number: '',
+    address_complement: '',
+    address_zip_code: '',
     salary_expectation: '',
-    availability: ''
+    availability: '',
+    resume_filename: '',
+    resume_uploaded_at: ''
   });
   const [experience, setExperience] = useState({
     company: '',
