@@ -6,58 +6,36 @@ import NotificationBell from '../components/NotificationBell';
 const RecruiterDashboardPage = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [kpis, setKpis] = useState(null);
-  const [jobs, setJobs] = useState([]);
-  const [selectedTenant, setSelectedTenant] = useState('tenant-techcorp-001'); // Default tenant
+  const [stats, setStats] = useState({
+    totalJobs: 0,
+    totalCandidates: 0,
+    totalApplications: 0
+  });
   
   useEffect(() => {
-    loadDashboardData();
-  }, [selectedTenant]);
+    loadStats();
+  }, []);
   
-  const loadDashboardData = async () => {
+  const loadStats = async () => {
     try {
       setLoading(true);
-      setError('');
       
-      // Buscar KPIs
-      const kpisRes = await api.get(`/recruiter/dashboard/kpis?tenant_id=${selectedTenant}`);
-      setKpis(kpisRes.data);
+      // Buscar estatísticas
+      const jobsRes = await api.get('/jobs?page=1&page_size=1000');
+      const candidatesRes = await api.get('/candidates?page=1&page_size=1000');
+      const applicationsRes = await api.get('/applications?page=1&page_size=1000');
       
-      // Buscar lista de vagas
-      const jobsRes = await api.get(`/recruiter/dashboard/jobs?tenant_id=${selectedTenant}&page=1&page_size=20`);
-      setJobs(jobsRes.data);
+      setStats({
+        totalJobs: jobsRes.data?.length || 0,
+        totalCandidates: candidatesRes.data?.length || 0,
+        totalApplications: applicationsRes.data?.length || 0
+      });
       
     } catch (err) {
-      console.error('Erro ao carregar dashboard:', err);
-      setError(err.response?.data?.detail || 'Erro ao carregar dados do dashboard');
+      console.error('Erro ao carregar estatísticas:', err);
     } finally {
       setLoading(false);
     }
-  };
-  
-  const getStatusBadge = (status) => {
-    const badges = {
-      'published': 'bg-green-100 text-green-800',
-      'in_review': 'bg-yellow-100 text-yellow-800',
-      'paused': 'bg-gray-100 text-gray-800',
-      'closed': 'bg-red-100 text-red-800',
-      'draft': 'bg-blue-100 text-blue-800'
-    };
-    
-    const labels = {
-      'published': 'Publicada',
-      'in_review': 'Em Revisão',
-      'paused': 'Pausada',
-      'closed': 'Fechada',
-      'draft': 'Rascunho'
-    };
-    
-    return (
-      <span className={`px-2 py-1 rounded-full text-xs font-medium ${badges[status] || 'bg-gray-100 text-gray-800'}`}>
-        {labels[status] || status}
-      </span>
-    );
   };
   
   const handleLogout = async () => {
@@ -67,7 +45,54 @@ const RecruiterDashboardPage = () => {
       navigate('/login');
     } catch (err) {
       console.error('Erro ao fazer logout:', err);
+      localStorage.removeItem('token');
+      navigate('/login');
     }
+  };
+  
+  const cards = [
+    {
+      title: 'Vagas',
+      description: 'Gerenciar vagas por fase',
+      icon: '💼',
+      count: stats.totalJobs,
+      color: 'blue',
+      onClick: () => navigate('/analista/vagas-kanban')
+    },
+    {
+      title: 'Candidatos',
+      description: 'Visualizar todos os candidatos',
+      icon: '👥',
+      count: stats.totalCandidates,
+      color: 'green',
+      onClick: () => navigate('/candidates')
+    },
+    {
+      title: 'Candidaturas',
+      description: 'Todas as candidaturas',
+      icon: '📄',
+      count: stats.totalApplications,
+      color: 'purple',
+      onClick: () => navigate('/applications')
+    },
+    {
+      title: 'Relatórios',
+      description: 'Análises e relatórios',
+      icon: '📊',
+      count: '-',
+      color: 'orange',
+      onClick: () => alert('Funcionalidade de relatórios em desenvolvimento')
+    }
+  ];
+  
+  const getColorClasses = (color) => {
+    const colors = {
+      blue: 'bg-blue-50 border-blue-200 hover:bg-blue-100',
+      green: 'bg-green-50 border-green-200 hover:bg-green-100',
+      purple: 'bg-purple-50 border-purple-200 hover:bg-purple-100',
+      orange: 'bg-orange-50 border-orange-200 hover:bg-orange-100'
+    };
+    return colors[color] || colors.blue;
   };
   
   if (loading) {
@@ -94,10 +119,44 @@ const RecruiterDashboardPage = () => {
             <div className="flex items-center space-x-4">
               <NotificationBell />
               <button
-                onClick={() => navigate('/notification-preferences')}
-                className="text-gray-600 hover:text-gray-800"
-                title="Preferências de Notificação"
+                onClick={handleLogout}
+                className="text-gray-600 hover:text-gray-800 text-sm font-medium"
               >
+                Sair
+              </button>
+            </div>
+          </div>
+        </div>
+      </nav>
+      
+      {/* Content */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="mb-8">
+          <h2 className="text-3xl font-bold text-gray-800">Painel do Analista</h2>
+          <p className="mt-2 text-gray-600">Gerencie vagas, candidatos e processos de recrutamento</p>
+        </div>
+        
+        {/* Cards Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {cards.map((card, index) => (
+            <button
+              key={index}
+              onClick={card.onClick}
+              className={`p-6 rounded-lg border-2 transition-all duration-200 transform hover:scale-105 ${getColorClasses(card.color)}`}
+            >
+              <div className="text-5xl mb-4">{card.icon}</div>
+              <h3 className="text-xl font-bold text-gray-800 mb-2">{card.title}</h3>
+              <p className="text-gray-600 text-sm mb-4">{card.description}</p>
+              <div className="text-3xl font-bold text-gray-800">{card.count}</div>
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default RecruiterDashboardPage;
                 ⚙️
               </button>
               <button
