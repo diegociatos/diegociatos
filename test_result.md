@@ -1025,6 +1025,22 @@ backend:
         agent: "testing"
         comment: "✅ COMPLETE QUESTIONNAIRE FLOW TESTED AND APPROVED - All 4 steps completed successfully: (1) Created test candidate testequest@test.com with access_token ✅, (2) Retrieved all 3 questionnaires (DISC: 28 questions, Recognition: 30 questions, Behavioral: 25 questions) ✅, (3) Submitted sample responses (value 4 for all questions) and received AI analyses (disc: 1574 chars, recognition: 1986 chars, behavioral: 1775 chars) ✅, (4) Verified assessments created with questionnaires_completed=true and 3 assessments (disc, recognition, behavioral) with proper structure (scores, data, summaries) ✅. AI analysis integration working perfectly. System 100% functional for candidate questionnaire workflow."
 
+backend:
+  - task: "Admin Login Credentials Test"
+    implemented: true
+    working: true
+    file: "/app/backend/routes/auth.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "user"
+        comment: "Review request: Test admin login credentials - Email: admin@ciatos.com, Password: admin123. Expected: 200 status, access_token, refresh_token, user object with admin role"
+      - working: true
+        agent: "testing"
+        comment: "✅ ADMIN LOGIN TEST PASSED - ALL REQUIREMENTS MET: (1) Status Code: 200 OK ✅, (2) Response contains access_token: eyJhbGciOiJIUzI1NiIs... ✅, (3) Response contains refresh_token: eyJhbGciOiJIUzI1NiIs... ✅, (4) User object present with email: admin@ciatos.com ✅, (5) Admin role confirmed ✅. Login credentials admin@ciatos.com/admin123 are fully functional and meet all specified requirements."
+
 test_plan:
   current_focus:
     - "Testar frontend: Carregar Kanban, drag & drop, modal contratação"
@@ -1037,4 +1053,5 @@ test_plan:
     - "Testar backend: Candidate signup endpoint com payload específico da review"
     - "Complete Questionnaire Flow Testing - All 4 steps validated"
     - "Complete Candidate Questionnaire Frontend Flow - All steps tested and working"
+    - "Admin Login Credentials Test - Review request fulfilled"
 
