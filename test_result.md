@@ -792,8 +792,10 @@ frontend:
 
 test_plan:
   current_focus:
+    - "Testar frontend: Carregar Kanban, drag & drop, modal contratação"
+  completed_tests:
     - "Testar backend: GET /jobs-kanban/kanban"
     - "Testar backend: PATCH /jobs-kanban/{job_id}/stage"
     - "Testar backend: PATCH /jobs-kanban/{job_id}/contratacao-result (positivo e negativo)"
-    - "Testar frontend: Carregar Kanban, drag & drop, modal contratação"
+    - "Testar backend: GET /jobs-kanban/{job_id}/stage-history"
 
