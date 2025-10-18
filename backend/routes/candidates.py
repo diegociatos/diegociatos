@@ -1,9 +1,12 @@
-from fastapi import APIRouter, HTTPException, Depends, Request, Cookie
+from fastapi import APIRouter, HTTPException, Depends, Request, Cookie, UploadFile, File
 from pydantic import BaseModel
 from typing import Optional, List
 from server import db
 from models import Candidate, CandidateSkill, Experience, Education
 from utils.auth import get_current_user
+from datetime import datetime, timezone
+import os
+import uuid
 
 router = APIRouter()
 
