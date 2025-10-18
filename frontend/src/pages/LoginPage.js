@@ -6,6 +6,7 @@ import { Input } from '../components/ui/input';
 import { Card, CardHeader, CardContent, CardTitle, CardDescription } from '../components/ui/card';
 import { Label } from '../components/ui/label';
 import { toast } from 'sonner';
+import '../ciatos-design-system.css';
 
 const AUTH_REDIRECT_URL = `${window.location.origin}/dashboard`;
 const GOOGLE_AUTH_URL = `https://auth.emergentagent.com/?redirect=${encodeURIComponent(AUTH_REDIRECT_URL)}`;
