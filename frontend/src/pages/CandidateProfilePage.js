@@ -63,6 +63,15 @@ export default function CandidateProfilePage() {
     }
   };
 
+  const loadExperiences = async () => {
+    try {
+      const res = await api.get('/candidates/profile/experiences');
+      setExperiences(res.data || []);
+    } catch (error) {
+      console.error('Erro ao carregar experiências:', error);
+    }
+  };
+
   const handleProfileSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
