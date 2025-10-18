@@ -1915,30 +1915,17 @@ class BackendTester:
             self.log_test("User Has Candidate Role", False, "Admin token not available for role verification")
 
     def run_all_tests(self):
-        """Run Pipeline functionality tests as requested in review"""
-        print("🚀 Testing Pipeline Functionality")
-        print("🔍 FOCUS: Test pipeline API with job-001 and recruiter credentials")
+        """Run Candidate Signup test as requested in review"""
+        print("🚀 Testing Candidate Signup Endpoint")
+        print("🔍 FOCUS: Test candidate signup with exact payload from review request")
         print("=" * 60)
         
-        # Login first
-        self.test_login_with_requires_password_change()
-        
-        # Pipeline tests (High Priority - as requested in review)
-        self.test_pipeline_functionality()
-        self.test_pipeline_with_existing_job()
-        
-        # Jobs Kanban tests (Medium Priority)
-        self.test_jobs_kanban_get()
-        self.test_move_job_between_stages()
-        self.test_contratacao_positivo()
-        self.test_contratacao_negativo_auto_return()
-        
-        # Stage History test (Low Priority)
-        self.test_get_stage_history()
+        # PRIORITY: Review request test - Candidate Signup
+        self.test_candidate_signup_review_request()
         
         # Summary
         print("\n" + "=" * 60)
-        print("📊 PIPELINE & KANBAN TEST SUMMARY")
+        print("📊 CANDIDATE SIGNUP TEST SUMMARY")
         print("=" * 60)
         
         passed = sum(1 for result in self.test_results if result["success"])
