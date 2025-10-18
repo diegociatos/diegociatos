@@ -13,6 +13,7 @@ import { useAuth } from '../contexts/AuthContext';
 
 export default function CandidateProfilePage() {
   const navigate = useNavigate();
+  const { logout } = useAuth();
   const [loading, setLoading] = useState(false);
   const [resumeFile, setResumeFile] = useState(null);
   const [profile, setProfile] = useState({
