@@ -11,8 +11,16 @@ const CandidateSignupPage = () => {
     email: '',
     password: '',
     confirm_password: '',
-    phone: ''
+    phone: '',
+    address_street: '',
+    address_number: '',
+    address_complement: '',
+    address_zip_code: '',
+    location_neighborhood: '',
+    location_city: '',
+    location_state: ''
   });
+  const [resumeFile, setResumeFile] = useState(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
