@@ -12,6 +12,12 @@ const JobsKanbanPage = () => {
   const [contratacaoResult, setContratacaoResult] = useState('positivo');
   const [contratacaoNotes, setContratacaoNotes] = useState('');
   
+  // Estados para comentários
+  const [showNotesModal, setShowNotesModal] = useState(false);
+  const [notes, setNotes] = useState([]);
+  const [newNote, setNewNote] = useState('');
+  const [loadingNotes, setLoadingNotes] = useState(false);
+  
   const stageLabels = {
     cadastro: 'Cadastro da Vaga',
     triagem: 'Triagem de Currículos',
