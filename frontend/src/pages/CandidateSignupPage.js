@@ -49,7 +49,7 @@ const CandidateSignupPage = () => {
 
       const { access_token, user } = response.data;
       login(access_token, user);
-      navigate('/carreiras');
+      navigate('/candidato/questionarios');
     } catch (err) {
       setError(err.response?.data?.detail || 'Erro ao criar conta');
     } finally {
