@@ -1546,30 +1546,10 @@ class BackendTester:
             self.log_test("Get Stage History", False, "Admin token not available")
             return
         
-        # Get a job that should have some history
+        # Use the job we've been testing (382e0834-2eff-4ccc-ac6c-b36227a9333e) which should have history now
+        job_id = "382e0834-2eff-4ccc-ac6c-b36227a9333e"
+        
         try:
-            kanban_response = self.make_request("GET", "/jobs-kanban/kanban", auth_token=self.tokens["admin"])
-            
-            if kanban_response.status_code != 200:
-                self.log_test("Get Stage History", False, "Could not get kanban data")
-                return
-            
-            stages = kanban_response.json()["stages"]
-            
-            # Find any job to test
-            test_job = None
-            
-            for stage_name, jobs in stages.items():
-                if jobs:
-                    test_job = jobs[0]
-                    break
-            
-            if not test_job:
-                self.log_test("Get Stage History", False, "No jobs found to test")
-                return
-            
-            job_id = test_job["id"]
-            
             # Get stage history
             history_response = self.make_request("GET", f"/jobs-kanban/{job_id}/stage-history", 
                                                auth_token=self.tokens["admin"])
@@ -1587,15 +1567,19 @@ class BackendTester:
                             required_fields = ["from_stage", "to_stage", "changed_by", "changed_at"]
                             
                             if all(field in first_item for field in required_fields):
+                                # Check if we have user information
+                                has_user_info = "changed_by_user" in first_item
+                                user_info_msg = " with user details" if has_user_info else ""
+                                
                                 self.log_test("Get Stage History", True, 
-                                            f"✅ Stage history working - {len(history)} history items with correct structure")
+                                            f"✅ Stage history working - {len(history)} history items with correct structure{user_info_msg}")
                             else:
                                 missing_fields = [f for f in required_fields if f not in first_item]
                                 self.log_test("Get Stage History", False, 
                                             f"History items missing required fields: {missing_fields}", first_item)
                         else:
                             self.log_test("Get Stage History", True, 
-                                        "✅ Stage history API working - no history found (expected for new jobs)")
+                                        "✅ Stage history API working - no history found")
                     else:
                         self.log_test("Get Stage History", False, 
                                     "History is not an array", history)
