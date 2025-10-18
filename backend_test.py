@@ -1847,21 +1847,15 @@ class BackendTester:
             candidates_response = self.make_request("GET", "/candidates/profile", auth_token=token)
             
             if candidates_response.status_code == 200:
-                candidates = candidates_response.json()
+                candidate_profile = candidates_response.json()
                 
-                # Find candidate with matching user_id
-                candidate_profile = None
-                if isinstance(candidates, list):
-                    candidate_profile = next((c for c in candidates if c.get("user_id") == user_id), None)
-                elif isinstance(candidates, dict) and candidates.get("user_id") == user_id:
-                    candidate_profile = candidates
-                
-                if candidate_profile:
+                # Verify the candidate profile belongs to the correct user
+                if candidate_profile.get("user_id") == user_id:
                     self.log_test("Candidate Profile Created", True, 
                                 f"✅ Candidate profile found in candidates collection - User ID: {user_id}")
                 else:
                     self.log_test("Candidate Profile Created", False, 
-                                f"No candidate profile found for user_id: {user_id}")
+                                f"Candidate profile user_id mismatch. Expected: {user_id}, Got: {candidate_profile.get('user_id')}")
             else:
                 self.log_test("Candidate Profile Created", False, 
                             f"Could not access candidates collection: {candidates_response.status_code}")
