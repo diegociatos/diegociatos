@@ -12,6 +12,7 @@ const JobsKanbanPage = () => {
   const [contratacaoResult, setContratacaoResult] = useState('positivo');
   const [contratacaoNotes, setContratacaoNotes] = useState('');
   const [userRole, setUserRole] = useState(null); // Para detectar se é cliente ou recrutador
+  const [selectedStageToMove, setSelectedStageToMove] = useState(''); // Para seletor de fase
   
   // Estados para comentários
   const [showNotesModal, setShowNotesModal] = useState(false);
