@@ -198,6 +198,36 @@ const JobsKanbanPage = () => {
     }
   };
   
+  const handleMoveToNextStage = async () => {
+    if (!selectedJob) return;
+    
+    const stageOrder = ['cadastro', 'triagem', 'entrevistas', 'selecao', 'envio_cliente', 'contratacao'];
+    const currentStageIndex = stageOrder.indexOf(selectedJob.recruitment_stage);
+    
+    if (currentStageIndex === -1 || currentStageIndex >= stageOrder.length - 1) {
+      alert('Esta vaga já está na última fase ou precisa definir resultado de contratação');
+      return;
+    }
+    
+    const nextStage = stageOrder[currentStageIndex + 1];
+    
+    if (!confirm(`Mover vaga para: ${stageLabels[nextStage]}?`)) return;
+    
+    try {
+      await api.patch(`/jobs-kanban/${selectedJob.id}/stage`, {
+        to_stage: nextStage
+      });
+      
+      setShowNotesModal(false);
+      setSelectedJob(null);
+      loadKanban();
+      alert(`Vaga movida para: ${stageLabels[nextStage]}`);
+    } catch (err) {
+      console.error('Erro ao mover vaga:', err);
+      alert('Erro ao mover vaga');
+    }
+  };
+  
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
