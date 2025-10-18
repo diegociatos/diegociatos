@@ -269,15 +269,18 @@ backend:
 frontend:
   - task: "Criar página CandidateSignupPage para auto-cadastro"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/frontend/src/pages/CandidateSignupPage.js"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Página criada com formulário completo de cadastro para candidatos"
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTADO E APROVADO: Candidate signup funcionando perfeitamente. Formulário carrega corretamente, todos os campos (full_name, email, phone, password, confirm_password) estão presentes e funcionais. Teste realizado com dados: Nome='Teste Completo Quest', Email='testecompleto@quest.com', Phone='11966665555', Password='senha123'. Após submissão, redirecionamento automático para /candidato/questionarios funciona corretamente. Integração com backend /api/auth/candidate/signup operacional."
 
   - task: "Criar página ChangePasswordPage para primeiro acesso"
     implemented: true
