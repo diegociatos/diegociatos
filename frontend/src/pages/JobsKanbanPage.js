@@ -147,25 +147,32 @@ const JobsKanbanPage = () => {
   }
   
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50">
       {/* Header */}
-      <nav className="bg-white shadow-sm border-b">
-        <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8">
+      <nav className="bg-white shadow-sm border-b sticky top-0 z-10">
+        <div className="max-w-full mx-auto px-6">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-4">
               <button
                 onClick={() => navigate('/recruiter')}
-                className="text-gray-600 hover:text-gray-800"
+                className="text-gray-600 hover:text-gray-800 flex items-center"
               >
-                ← Voltar
+                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                Voltar
               </button>
-              <h1 className="text-xl font-bold text-gray-800">Kanban de Vagas</h1>
+              <div className="h-8 w-px bg-gray-300"></div>
+              <h1 className="text-2xl font-bold text-gray-800">📊 Kanban de Vagas</h1>
             </div>
             <button
               onClick={loadKanban}
-              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+              className="flex items-center space-x-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
             >
-              🔄 Atualizar
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+              <span>Atualizar</span>
             </button>
           </div>
         </div>
@@ -174,51 +181,80 @@ const JobsKanbanPage = () => {
       {/* Kanban Board */}
       <div className="p-6 overflow-x-auto">
         <DragDropContext onDragEnd={handleDragEnd}>
-          <div className="flex space-x-4 min-w-max">
+          <div className="flex space-x-4 min-w-max pb-6">
             {Object.keys(stageLabels).map((stageKey) => (
               <div key={stageKey} className="flex-shrink-0 w-80">
-                <div className={`rounded-lg border-2 ${stageColors[stageKey]} p-4 h-full`}>
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="font-bold text-gray-800">{stageLabels[stageKey]}</h3>
-                    <span className="bg-white px-2 py-1 rounded-full text-sm font-medium text-gray-700">
+                {/* Column Header - Estilo Trello */}
+                <div 
+                  className="rounded-t-xl p-4 mb-2"
+                  style={{ backgroundColor: stageColors[stageKey] }}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <span className="text-2xl">{stageIcons[stageKey]}</span>
+                      <h3 className="font-bold text-gray-800 text-sm">{stageLabels[stageKey]}</h3>
+                    </div>
+                    <span className="bg-white bg-opacity-80 px-2.5 py-1 rounded-full text-xs font-bold text-gray-700">
                       {stages[stageKey]?.length || 0}
                     </span>
                   </div>
-                  
-                  <Droppable droppableId={stageKey}>
-                    {(provided, snapshot) => (
-                      <div
-                        ref={provided.innerRef}
-                        {...provided.droppableProps}
-                        className={`space-y-3 min-h-[200px] ${
-                          snapshot.isDraggingOver ? 'bg-blue-100 rounded-lg' : ''
-                        }`}
-                      >
-                        {stages[stageKey]?.map((job, index) => (
-                          <Draggable key={job.id} draggableId={job.id} index={index}>
-                            {(provided, snapshot) => (
-                              <div
-                                ref={provided.innerRef}
-                                {...provided.draggableProps}
-                                {...provided.dragHandleProps}
-                                onClick={() => handleCardClick(job, stageKey)}
-                                className={`bg-white p-4 rounded-lg shadow cursor-pointer hover:shadow-lg transition-shadow ${
-                                  snapshot.isDragging ? 'rotate-3' : ''
-                                }`}
-                              >
-                                <h4 className="font-semibold text-gray-800 mb-2">{job.title}</h4>
-                                <div className="text-sm text-gray-600 space-y-1">
-                                  <div className="flex items-center space-x-2">
-                                    <span>👥</span>
-                                    <span>{job.applications_count || 0} candidatos</span>
+                </div>
+                
+                {/* Cards Container */}
+                <Droppable droppableId={stageKey}>
+                  {(provided, snapshot) => (
+                    <div
+                      ref={provided.innerRef}
+                      {...provided.droppableProps}
+                      className={`space-y-3 min-h-[400px] p-2 rounded-b-xl transition-colors ${
+                        snapshot.isDraggingOver ? 'bg-blue-100 bg-opacity-50' : 'bg-transparent'
+                      }`}
+                    >
+                      {stages[stageKey]?.map((job, index) => (
+                        <Draggable key={job.id} draggableId={job.id} index={index}>
+                          {(provided, snapshot) => (
+                            <div
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              {...provided.dragHandleProps}
+                              onClick={() => handleCardClick(job, stageKey)}
+                              className={`bg-white rounded-lg shadow-sm hover:shadow-md transition-all cursor-pointer border border-gray-200 ${
+                                snapshot.isDragging ? 'shadow-2xl rotate-3 scale-105' : ''
+                              }`}
+                            >
+                              {/* Card Content */}
+                              <div className="p-4">
+                                <h4 className="font-semibold text-gray-900 mb-3 text-sm leading-tight">
+                                  {job.title}
+                                </h4>
+                                
+                                {/* Card Details */}
+                                <div className="space-y-2">
+                                  {/* Candidatos */}
+                                  <div className="flex items-center text-xs text-gray-600">
+                                    <svg className="w-4 h-4 mr-1.5" fill="currentColor" viewBox="0 0 20 20">
+                                      <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
+                                    </svg>
+                                    <span className="font-medium">{job.applications_count || 0}</span>
+                                    <span className="ml-1">candidatos</span>
                                   </div>
-                                  <div className="flex items-center space-x-2">
-                                    <span>📍</span>
-                                    <span>{job.work_mode || 'N/A'}</span>
+                                  
+                                  {/* Modo de Trabalho */}
+                                  <div className="flex items-center">
+                                    <span className="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-gray-100 text-gray-700">
+                                      <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
+                                      </svg>
+                                      {job.work_mode === 'presencial' ? 'Presencial' : 
+                                       job.work_mode === 'remoto' ? 'Remoto' : 
+                                       job.work_mode === 'hibrido' ? 'Híbrido' : 'N/A'}
+                                    </span>
                                   </div>
+                                  
+                                  {/* Resultado da Contratação */}
                                   {job.contratacao_result && (
-                                    <div className="mt-2">
-                                      <span className={`px-2 py-1 rounded text-xs font-medium ${
+                                    <div className="mt-2 pt-2 border-t border-gray-100">
+                                      <span className={`inline-flex items-center px-2 py-1 rounded text-xs font-bold ${
                                         job.contratacao_result === 'positivo' 
                                           ? 'bg-green-100 text-green-800' 
                                           : 'bg-red-100 text-red-800'
@@ -229,14 +265,37 @@ const JobsKanbanPage = () => {
                                   )}
                                 </div>
                               </div>
-                            )}
-                          </Draggable>
-                        ))}
-                        {provided.placeholder}
-                      </div>
-                    )}
-                  </Droppable>
-                </div>
+                              
+                              {/* Card Footer */}
+                              <div className="px-4 py-2 bg-gray-50 border-t border-gray-100 rounded-b-lg">
+                                <div className="flex items-center justify-between text-xs text-gray-500">
+                                  <span className="flex items-center">
+                                    <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
+                                    </svg>
+                                    {job.updated_at ? new Date(job.updated_at).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' }) : '-'}
+                                  </span>
+                                  <span className="text-blue-600 font-medium hover:underline">Ver detalhes →</span>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                        </Draggable>
+                      ))}
+                      {provided.placeholder}
+                      
+                      {/* Empty State */}
+                      {(!stages[stageKey] || stages[stageKey].length === 0) && !snapshot.isDraggingOver && (
+                        <div className="text-center py-8 text-gray-400">
+                          <svg className="w-12 h-12 mx-auto mb-2 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                          </svg>
+                          <p className="text-sm">Nenhuma vaga</p>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </Droppable>
               </div>
             ))}
           </div>
@@ -245,62 +304,109 @@ const JobsKanbanPage = () => {
       
       {/* Modal de Contratação */}
       {showContratacaoModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
-            <h3 className="text-xl font-bold text-gray-800 mb-4">
-              Resultado da Contratação
-            </h3>
-            
-            <div className="mb-4">
-              <p className="text-gray-600 mb-2">
-                Vaga: <strong>{selectedJob?.title}</strong>
-              </p>
-            </div>
-            
-            <div className="mb-4">
-              <label className="block text-gray-700 font-medium mb-2">
-                Resultado *
-              </label>
-              <div className="space-y-2">
-                <label className="flex items-center space-x-2 cursor-pointer">
-                  <input
-                    type="radio"
-                    name="result"
-                    value="positivo"
-                    checked={contratacaoResult === 'positivo'}
-                    onChange={(e) => setContratacaoResult(e.target.value)}
-                    className="w-4 h-4"
-                  />
-                  <span className="text-green-700">✅ Positivo (Vaga será fechada)</span>
-                </label>
-                <label className="flex items-center space-x-2 cursor-pointer">
-                  <input
-                    type="radio"
-                    name="result"
-                    value="negativo"
-                    checked={contratacaoResult === 'negativo'}
-                    onChange={(e) => setContratacaoResult(e.target.value)}
-                    className="w-4 h-4"
-                  />
-                  <span className="text-red-700">❌ Negativo (Vaga volta para Entrevistas)</span>
-                </label>
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-2xl max-w-lg w-full">
+            {/* Modal Header */}
+            <div className="p-6 border-b border-gray-200">
+              <div className="flex items-center justify-between">
+                <h3 className="text-2xl font-bold text-gray-800 flex items-center">
+                  <span className="text-3xl mr-3">🎯</span>
+                  Resultado da Contratação
+                </h3>
+                <button
+                  onClick={() => {
+                    setShowContratacaoModal(false);
+                    setSelectedJob(null);
+                    setContratacaoNotes('');
+                    setContratacaoResult('positivo');
+                  }}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
               </div>
             </div>
             
-            <div className="mb-4">
-              <label className="block text-gray-700 font-medium mb-2">
-                Observações
-              </label>
-              <textarea
-                value={contratacaoNotes}
-                onChange={(e) => setContratacaoNotes(e.target.value)}
-                rows={3}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Adicione observações sobre o resultado..."
-              />
+            {/* Modal Body */}
+            <div className="p-6 space-y-6">
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <p className="text-sm text-gray-600 mb-1">Vaga:</p>
+                <p className="font-bold text-gray-900 text-lg">{selectedJob?.title}</p>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-3">
+                  Qual foi o resultado? *
+                </label>
+                <div className="space-y-3">
+                  <label 
+                    className={`flex items-center p-4 border-2 rounded-lg cursor-pointer transition-all ${
+                      contratacaoResult === 'positivo' 
+                        ? 'border-green-500 bg-green-50' 
+                        : 'border-gray-200 hover:border-green-300'
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="result"
+                      value="positivo"
+                      checked={contratacaoResult === 'positivo'}
+                      onChange={(e) => setContratacaoResult(e.target.value)}
+                      className="w-5 h-5 text-green-600"
+                    />
+                    <div className="ml-3">
+                      <div className="flex items-center">
+                        <span className="text-2xl mr-2">✅</span>
+                        <span className="font-bold text-green-700">Positivo</span>
+                      </div>
+                      <p className="text-sm text-gray-600 mt-1">Candidato foi contratado (vaga será fechada)</p>
+                    </div>
+                  </label>
+                  
+                  <label 
+                    className={`flex items-center p-4 border-2 rounded-lg cursor-pointer transition-all ${
+                      contratacaoResult === 'negativo' 
+                        ? 'border-red-500 bg-red-50' 
+                        : 'border-gray-200 hover:border-red-300'
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="result"
+                      value="negativo"
+                      checked={contratacaoResult === 'negativo'}
+                      onChange={(e) => setContratacaoResult(e.target.value)}
+                      className="w-5 h-5 text-red-600"
+                    />
+                    <div className="ml-3">
+                      <div className="flex items-center">
+                        <span className="text-2xl mr-2">❌</span>
+                        <span className="font-bold text-red-700">Negativo</span>
+                      </div>
+                      <p className="text-sm text-gray-600 mt-1">Candidato recusou/não aprovado (vaga volta para Entrevistas)</p>
+                    </div>
+                  </label>
+                </div>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Observações
+                </label>
+                <textarea
+                  value={contratacaoNotes}
+                  onChange={(e) => setContratacaoNotes(e.target.value)}
+                  rows={4}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Adicione observações sobre o resultado da contratação..."
+                />
+              </div>
             </div>
             
-            <div className="flex space-x-3">
+            {/* Modal Footer */}
+            <div className="p-6 bg-gray-50 border-t border-gray-200 rounded-b-xl flex space-x-3">
               <button
                 onClick={() => {
                   setShowContratacaoModal(false);
@@ -308,15 +414,19 @@ const JobsKanbanPage = () => {
                   setContratacaoNotes('');
                   setContratacaoResult('positivo');
                 }}
-                className="flex-1 bg-gray-300 text-gray-700 py-2 rounded-lg hover:bg-gray-400"
+                className="flex-1 px-6 py-3 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium transition-colors"
               >
                 Cancelar
               </button>
               <button
                 onClick={handleContratacaoSubmit}
-                className="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
+                className={`flex-1 px-6 py-3 rounded-lg font-medium text-white transition-colors ${
+                  contratacaoResult === 'positivo'
+                    ? 'bg-green-600 hover:bg-green-700'
+                    : 'bg-red-600 hover:bg-red-700'
+                }`}
               >
-                Confirmar
+                Confirmar Resultado
               </button>
             </div>
           </div>
