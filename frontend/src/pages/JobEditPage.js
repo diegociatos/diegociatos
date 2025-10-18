@@ -395,22 +395,33 @@ const JobEditPage = () => {
               
               <div className="space-y-2">
                 <button
-                  onClick={() => navigate(`/jobs/${jobId}/pipeline`)}
-                  className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 text-sm"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    console.log('Navegando para pipeline:', `/jobs/${jobId}/pipeline`);
+                    navigate(`/jobs/${jobId}/pipeline`);
+                  }}
+                  className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 text-sm font-medium transition-colors"
                 >
                   Ver Pipeline Kanban
                 </button>
                 
                 <button
-                  onClick={() => navigate(`/interviews-calendar`)}
-                  className="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 text-sm"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    console.log('Navegando para entrevistas');
+                    navigate(`/interviews-calendar`);
+                  }}
+                  className="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 text-sm font-medium transition-colors"
                 >
                   Ver Entrevistas
                 </button>
                 
                 <button
-                  onClick={() => alert('Funcionalidade de relatórios em desenvolvimento')}
-                  className="w-full bg-purple-600 text-white py-2 rounded-lg hover:bg-purple-700 text-sm"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    alert('Funcionalidade de relatórios em desenvolvimento');
+                  }}
+                  className="w-full bg-purple-600 text-white py-2 rounded-lg hover:bg-purple-700 text-sm font-medium transition-colors"
                 >
                   Gerar Relatório
                 </button>
