@@ -744,6 +744,7 @@ const JobsKanbanPage = () => {
                   setSelectedJob(null);
                   setNotes([]);
                   setNewNote('');
+                  setCandidates([]);
                 }}
                 className="px-6 py-2 bg-gray-600 text-white rounded-lg font-medium hover:bg-gray-700 transition-colors"
               >
