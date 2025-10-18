@@ -148,6 +148,17 @@ h3 {
   box-shadow: var(--shadow-md);
 }
 
+/* Button Sizes */
+.btn-sm {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+}
+
+.btn-lg {
+  padding: 1rem 2.5rem;
+  font-size: 1.125rem;
+}
+
 /* Cards Premium */
 .card {
   background: var(--ciatos-bg-primary);
