@@ -175,6 +175,9 @@ backend:
       - working: true
         agent: "testing"
         comment: "✅ TESTADO: Rota /candidate/signup funcionando. Cria usuário, role de candidato e perfil automaticamente. Retorna token válido e requires_password_change=false"
+      - working: true
+        agent: "testing"
+        comment: "✅ RE-TESTADO COM PAYLOAD ESPECÍFICO: Endpoint POST /api/auth/candidate/signup testado com payload exato da review (email: novocandidato@test.com, password: senha123, full_name: Novo Candidato Teste, phone: 11999887766). TODOS OS REQUISITOS ATENDIDOS: (1) Response 200 com access_token, refresh_token, user object ✅, (2) Usuário criado na collection users ✅, (3) Perfil de candidato criado na collection candidates ✅, (4) Role 'candidate' criada em user_org_roles ✅. VALIDAÇÕES FUNCIONANDO: email duplicado (400), campos obrigatórios (422), formato email inválido (422). Sistema 100% funcional."
 
   - task: "Criar rota /admin/create-user para Admin criar usuários"
     implemented: true
