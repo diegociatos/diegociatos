@@ -1,0 +1,304 @@
+/* 
+  ====================================
+  CIATOS RECRUTAMENTO - DESIGN SYSTEM
+  Grupo Ciatos Reestruturações Empresariais
+  ====================================
+*/
+
+:root {
+  /* Cores Principais - Bordô */
+  --ciatos-primary: #5B0E0E;
+  --ciatos-primary-hover: #7A1313;
+  --ciatos-primary-light: #8B2020;
+  --ciatos-primary-dark: #3D0909;
+  
+  /* Cores Neutras */
+  --ciatos-black: #1A1A1A;
+  --ciatos-graphite: #2D2D2D;
+  --ciatos-gray-dark: #4A4A4A;
+  --ciatos-gray: #6B6B6B;
+  --ciatos-gray-light: #A0A0A0;
+  --ciatos-gray-lighter: #D1D1D1;
+  
+  /* Cores de Fundo */
+  --ciatos-bg-primary: #FFFFFF;
+  --ciatos-bg-secondary: #F5F3F0;
+  --ciatos-bg-tertiary: #E8E6E3;
+  --ciatos-bg-dark: #1A1A1A;
+  
+  /* Cores de Acento */
+  --ciatos-success: #2E7D32;
+  --ciatos-warning: #ED6C02;
+  --ciatos-error: #D32F2F;
+  --ciatos-info: #0288D1;
+  
+  /* Sombras */
+  --shadow-sm: 0 1px 3px rgba(27, 10, 10, 0.08);
+  --shadow-md: 0 4px 12px rgba(27, 10, 10, 0.12);
+  --shadow-lg: 0 8px 24px rgba(27, 10, 10, 0.15);
+  --shadow-xl: 0 16px 48px rgba(27, 10, 10, 0.18);
+  
+  /* Bordas */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  
+  /* Espaçamentos */
+  --space-xs: 0.5rem;
+  --space-sm: 1rem;
+  --space-md: 1.5rem;
+  --space-lg: 2rem;
+  --space-xl: 3rem;
+  --space-2xl: 4rem;
+  
+  /* Tipografia */
+  --font-serif: 'Bookman Old Style', 'Palatino', 'Georgia', serif;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  
+  /* Transições */
+  --transition-fast: 150ms ease-in-out;
+  --transition-base: 250ms ease-in-out;
+  --transition-slow: 400ms ease-in-out;
+}
+
+/* Reset e Base */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-sans);
+  color: var(--ciatos-graphite);
+  background-color: var(--ciatos-bg-secondary);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Tipografia Premium */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  color: var(--ciatos-black);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+h1 {
+  font-size: 2.5rem;
+  margin-bottom: var(--space-md);
+}
+
+h2 {
+  font-size: 2rem;
+  margin-bottom: var(--space-md);
+}
+
+h3 {
+  font-size: 1.5rem;
+  margin-bottom: var(--space-sm);
+}
+
+/* Botões Premium */
+.btn-primary {
+  background: linear-gradient(135deg, var(--ciatos-primary) 0%, var(--ciatos-primary-light) 100%);
+  color: white;
+  border: none;
+  padding: 0.875rem 2rem;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  box-shadow: var(--shadow-md);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+  background: linear-gradient(135deg, var(--ciatos-primary-hover) 0%, var(--ciatos-primary-light) 100%);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-secondary {
+  background: white;
+  color: var(--ciatos-primary);
+  border: 2px solid var(--ciatos-primary);
+  padding: 0.875rem 2rem;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.btn-secondary:hover {
+  background: var(--ciatos-primary);
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Cards Premium */
+.card {
+  background: var(--ciatos-bg-primary);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-base);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-4px);
+}
+
+.card-elevated {
+  box-shadow: var(--shadow-md);
+}
+
+.card-elevated:hover {
+  box-shadow: var(--shadow-lg);
+}
+
+/* Inputs Premium */
+.input-group {
+  margin-bottom: var(--space-md);
+}
+
+.input-label {
+  display: block;
+  font-weight: 600;
+  color: var(--ciatos-graphite);
+  margin-bottom: var(--space-xs);
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.input-field {
+  width: 100%;
+  padding: 0.875rem 1rem;
+  border: 2px solid var(--ciatos-gray-lighter);
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+  transition: all var(--transition-base);
+  background: white;
+  color: var(--ciatos-graphite);
+}
+
+.input-field:focus {
+  outline: none;
+  border-color: var(--ciatos-primary);
+  box-shadow: 0 0 0 4px rgba(91, 14, 14, 0.1);
+}
+
+.input-field::placeholder {
+  color: var(--ciatos-gray-light);
+}
+
+/* Gradientes e Backgrounds Premium */
+.bg-gradient-primary {
+  background: linear-gradient(135deg, var(--ciatos-primary) 0%, var(--ciatos-primary-light) 100%);
+}
+
+.bg-gradient-dark {
+  background: linear-gradient(135deg, var(--ciatos-black) 0%, var(--ciatos-graphite) 100%);
+}
+
+.bg-texture-light {
+  background-image: 
+    linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(245, 243, 240, 0.98) 100%),
+    url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.02'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+
+/* Logo Container */
+.ciatos-logo {
+  max-width: 200px;
+  height: auto;
+}
+
+.ciatos-logo-lg {
+  max-width: 280px;
+}
+
+/* Utilidades */
+.text-center {
+  text-align: center;
+}
+
+.text-primary {
+  color: var(--ciatos-primary);
+}
+
+.text-muted {
+  color: var(--ciatos-gray);
+}
+
+.mt-auto {
+  margin-top: auto;
+}
+
+.mb-sm {
+  margin-bottom: var(--space-sm);
+}
+
+.mb-md {
+  margin-bottom: var(--space-md);
+}
+
+/* Animações Sutis */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.6s ease-out forwards;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-slide-in {
+  animation: slideIn 0.5s ease-out forwards;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  h1 {
+    font-size: 2rem;
+  }
+  
+  h2 {
+    font-size: 1.5rem;
+  }
+  
+  .card {
+    padding: var(--space-md);
+  }
+}
