@@ -573,7 +573,7 @@ const JobsKanbanPage = () => {
                   placeholder="Digite sua anotação sobre o processo seletivo..."
                 />
               </div>
-              <div className="flex space-x-3">
+              <div className="flex space-x-3 mb-3">
                 <button
                   onClick={handleAddNote}
                   disabled={!newNote.trim()}
@@ -581,6 +581,16 @@ const JobsKanbanPage = () => {
                 >
                   ➕ Adicionar Anotação
                 </button>
+              </div>
+              <div className="flex space-x-3">
+                {userRole === 'recruiter' && selectedJob?.recruitment_stage !== 'contratacao' && (
+                  <button
+                    onClick={handleMoveToNextStage}
+                    className="flex-1 bg-green-600 text-white py-3 rounded-lg font-medium hover:bg-green-700 transition-colors"
+                  >
+                    ➡️ Mover para Próxima Fase
+                  </button>
+                )}
                 <button
                   onClick={() => {
                     setShowNotesModal(false);
@@ -588,7 +598,7 @@ const JobsKanbanPage = () => {
                     setNotes([]);
                     setNewNote('');
                   }}
-                  className="px-6 bg-gray-300 text-gray-700 py-3 rounded-lg font-medium hover:bg-gray-400 transition-colors"
+                  className="flex-1 bg-gray-300 text-gray-700 py-3 rounded-lg font-medium hover:bg-gray-400 transition-colors"
                 >
                   Fechar
                 </button>
