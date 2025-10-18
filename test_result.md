@@ -764,15 +764,18 @@ backend:
 backend:
   - task: "Kanban de Vagas - Backend (recruitment_stage e APIs)"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/routes/jobs_kanban.py, /app/backend/models.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Implementado sistema de Kanban de Vagas com 6 fases. Modelo Job atualizado com recruitment_stage e contratacao_result. Criadas 4 APIs: listar kanban, mover vaga, definir resultado contratação, histórico."
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTADO E APROVADO - Todas as APIs do Kanban funcionando perfeitamente: (1) GET /jobs-kanban/kanban retorna 6 jobs em 6 fases com estrutura correta (id, title, recruitment_stage, applications_count), (2) PATCH /jobs-kanban/{job_id}/stage move jobs entre fases (testado: entrevistas → triagem → entrevistas), (3) PATCH /jobs-kanban/{job_id}/contratacao-result com 'positivo' fecha vaga (status=closed), (4) PATCH /jobs-kanban/{job_id}/contratacao-result com 'negativo' retorna automaticamente para entrevistas, (5) GET /jobs-kanban/{job_id}/stage-history retorna 15 itens de histórico com estrutura correta e detalhes do usuário. Credenciais funcionais: admin@ciatos.com/admin123. Sistema Kanban 100% operacional!"
 
 frontend:
   - task: "Painel Analista Simplificado + Kanban de Vagas"
