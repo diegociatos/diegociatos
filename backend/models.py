@@ -52,6 +52,17 @@ class Candidate(BaseModel):
     location_neighborhood: Optional[str] = None  # Bairro
     location_country: str = "Brasil"
     
+    # Endereço completo
+    address_street: Optional[str] = None  # Rua/Avenida
+    address_number: Optional[str] = None  # Número
+    address_complement: Optional[str] = None  # Complemento (apto, bloco, etc)
+    address_zip_code: Optional[str] = None  # CEP
+    
+    # Currículo
+    resume_url: Optional[str] = None  # URL ou path do currículo
+    resume_filename: Optional[str] = None  # Nome original do arquivo
+    resume_uploaded_at: Optional[datetime] = None  # Data do upload
+    
     # Formação
     education_level: Optional[Literal["ensino_medio", "graduacao", "pos_graduacao", "mestrado", "doutorado"]] = None
     education_area: Optional[str] = None  # Área de formação (ex: Engenharia, Administração)
