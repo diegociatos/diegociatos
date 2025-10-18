@@ -16,6 +16,9 @@ export default function CandidateProfilePage() {
   const [loading, setLoading] = useState(false);
   const [resumeFile, setResumeFile] = useState(null);
   const [profile, setProfile] = useState({
+    phone: '',
+    whatsapp: '',
+    email: '',
     birthdate: '',
     location_city: '',
     location_state: '',
