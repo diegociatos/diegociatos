@@ -75,6 +75,22 @@ function AppRoutes() {
         }
       />
       <Route
+        path="/recruiter"
+        element={
+          <PrivateRoute>
+            <RecruiterDashboardPage />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/analista/vagas-kanban"
+        element={
+          <PrivateRoute>
+            <JobsKanbanPage />
+          </PrivateRoute>
+        }
+      />
+      <Route
         path="/jobs/:jobId/pipeline"
         element={
           <PrivateRoute>
