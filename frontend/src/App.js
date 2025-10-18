@@ -57,6 +57,7 @@ function AppRoutes() {
     <Routes>
       <Route path="/login" element={<LoginPage />} />
       <Route path="/carreiras" element={<CareerSitePage />} />
+      <Route path="/vagas/:jobId" element={<JobDetailsPage />} />
       <Route path="/candidato/cadastro" element={<CandidateSignupPage />} />
       <Route path="/candidato/questionarios" element={<CandidateQuestionnairesPage />} />
       <Route 
