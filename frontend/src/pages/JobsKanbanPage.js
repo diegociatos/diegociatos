@@ -338,7 +338,7 @@ const JobsKanbanPage = () => {
                           key={job.id} 
                           draggableId={job.id} 
                           index={index}
-                          isDragDisabled={userRole === 'client'}
+                          isDragDisabled={Boolean(userRole === 'client')}
                         >
                           {(provided, snapshot) => (
                             <div
