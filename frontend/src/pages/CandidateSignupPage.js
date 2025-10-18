@@ -40,7 +40,6 @@ const CandidateSignupPage = () => {
     setLoading(true);
 
     try {
-      // 1. Criar conta
       const response = await api.post('/auth/candidate/signup', {
         email: formData.email,
         password: formData.password,
@@ -50,37 +49,6 @@ const CandidateSignupPage = () => {
 
       const { access_token, user } = response.data;
       login(access_token, user);
-
-      // 2. Atualizar endereço se fornecido
-      if (formData.address_zip_code || formData.location_city) {
-        try {
-          await api.put('/candidates/profile/address', {
-            address_street: formData.address_street,
-            address_number: formData.address_number,
-            address_complement: formData.address_complement,
-            address_zip_code: formData.address_zip_code,
-            location_neighborhood: formData.location_neighborhood,
-            location_city: formData.location_city,
-            location_state: formData.location_state
-          });
-        } catch (err) {
-          console.error('Erro ao salvar endereço:', err);
-        }
-      }
-
-      // 3. Upload do currículo se fornecido
-      if (resumeFile) {
-        try {
-          const formDataFile = new FormData();
-          formDataFile.append('file', resumeFile);
-          await api.post('/candidates/upload-resume', formDataFile, {
-            headers: { 'Content-Type': 'multipart/form-data' }
-          });
-        } catch (err) {
-          console.error('Erro ao enviar currículo:', err);
-        }
-      }
-
       navigate('/candidato/questionarios');
     } catch (err) {
       setError(err.response?.data?.detail || 'Erro ao criar conta');
