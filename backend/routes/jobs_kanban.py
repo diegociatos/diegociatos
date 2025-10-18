@@ -1,9 +1,9 @@
 from fastapi import APIRouter, HTTPException, Request, Cookie
 from pydantic import BaseModel
-from typing import Optional, Literal
+from typing import Optional, Literal, List
 from datetime import datetime, timezone
 from server import db
-from models import JobStageHistory
+from models import JobStageHistory, JobNote
 from utils.auth import get_current_user, get_user_roles
 
 router = APIRouter()
@@ -17,6 +17,10 @@ class MoveJobStageRequest(BaseModel):
 class ContratacaoResultRequest(BaseModel):
     result: Literal["positivo", "negativo"]
     notes: Optional[str] = None
+
+
+class CreateJobNoteRequest(BaseModel):
+    content: str
 
 
 @router.get("/kanban")
