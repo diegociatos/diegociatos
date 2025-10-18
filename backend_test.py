@@ -2417,17 +2417,17 @@ class BackendTester:
         except Exception as e:
             self.log_test("Step 4: Update Address Separately", False, f"Request failed: {str(e)}")
     def run_all_tests(self):
-        """Run admin login test as requested in review"""
-        print("🚀 Testing Admin Login Credentials")
-        print("🔍 FOCUS: Test admin login credentials from review request")
+        """Run candidate profile data saving test as requested in review"""
+        print("🚀 Testing Candidate Profile Data Saving")
+        print("🔍 FOCUS: Test candidate profile data saving from review request")
         print("=" * 60)
         
-        # PRIORITY: Review request test - Admin Login Credentials
-        self.test_admin_login_credentials_review()
+        # PRIORITY: Review request test - Candidate Profile Data Saving
+        self.test_candidate_profile_data_saving()
         
         # Summary
         print("\n" + "=" * 60)
-        print("📊 ADMIN LOGIN TEST SUMMARY")
+        print("📊 CANDIDATE PROFILE TEST SUMMARY")
         print("=" * 60)
         
         passed = sum(1 for result in self.test_results if result["success"])
@@ -2443,7 +2443,7 @@ class BackendTester:
                 if not result["success"]:
                     print(f"  - {result['test']}: {result['message']}")
         else:
-            print("\n🎉 ALL ADMIN LOGIN TESTS PASSED!")
+            print("\n🎉 ALL CANDIDATE PROFILE TESTS PASSED!")
         
         return passed == total
 
