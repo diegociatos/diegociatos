@@ -17,17 +17,26 @@ const JobsKanbanPage = () => {
     triagem: 'Triagem de Currículos',
     entrevistas: 'Entrevistas',
     selecao: 'Seleção',
-    envio_cliente: 'Envio ao Cliente',
+    envio_cliente: 'Envio do Cliente para Entrevista',
     contratacao: 'Contratação'
   };
   
+  const stageIcons = {
+    cadastro: '📋',
+    triagem: '🔍',
+    entrevistas: '💬',
+    selecao: '⭐',
+    envio_cliente: '📤',
+    contratacao: '✅'
+  };
+  
   const stageColors = {
-    cadastro: 'bg-gray-100 border-gray-300',
-    triagem: 'bg-blue-50 border-blue-200',
-    entrevistas: 'bg-yellow-50 border-yellow-200',
-    selecao: 'bg-purple-50 border-purple-200',
-    envio_cliente: 'bg-orange-50 border-orange-200',
-    contratacao: 'bg-green-50 border-green-200'
+    cadastro: '#f3f4f6',
+    triagem: '#dbeafe',
+    entrevistas: '#fef3c7',
+    selecao: '#e9d5ff',
+    envio_cliente: '#fed7aa',
+    contratacao: '#d1fae5'
   };
   
   useEffect(() => {
