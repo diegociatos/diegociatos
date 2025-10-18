@@ -49,10 +49,22 @@ class Candidate(BaseModel):
     birthdate: Optional[datetime] = None
     location_city: Optional[str] = None
     location_state: Optional[str] = None
+    location_neighborhood: Optional[str] = None  # Bairro
     location_country: str = "Brasil"
+    
+    # Formação
+    education_level: Optional[Literal["ensino_medio", "graduacao", "pos_graduacao", "mestrado", "doutorado"]] = None
+    education_area: Optional[str] = None  # Área de formação (ex: Engenharia, Administração)
+    education_institution: Optional[str] = None  # Nome da instituição
+    education_course: Optional[str] = None  # Nome do curso específico
+    
     salary_expectation: Optional[float] = None
     availability: Optional[str] = None
     visibility: Literal["private", "pool"] = "private"
+    
+    # Campos para busca por IA
+    professional_summary: Optional[str] = None  # Resumo profissional
+    
     created_at: datetime = Field(default_factory=lambda: datetime.now())
     updated_at: datetime = Field(default_factory=lambda: datetime.now())
 
