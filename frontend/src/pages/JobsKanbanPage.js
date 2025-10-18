@@ -267,11 +267,6 @@ const JobsKanbanPage = () => {
               </button>
               <div className="h-8 w-px bg-gray-300"></div>
               <h1 className="text-2xl font-bold text-gray-800">📊 Kanban de Vagas</h1>
-              {userRole === 'recruiter' && (
-                <div className="ml-4 px-3 py-1 bg-yellow-100 text-yellow-800 text-sm rounded-full font-medium">
-                  💡 Arraste os cards para mudar de fase
-                </div>
-              )}
               {userRole === 'client' && (
                 <div className="ml-4 px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full font-medium">
                   👁️ Modo Visualização
