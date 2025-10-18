@@ -18,6 +18,8 @@ const JobsKanbanPage = () => {
   const [notes, setNotes] = useState([]);
   const [newNote, setNewNote] = useState('');
   const [loadingNotes, setLoadingNotes] = useState(false);
+  const [candidates, setCandidates] = useState([]);
+  const [loadingCandidates, setLoadingCandidates] = useState(false);
   
   const stageLabels = {
     cadastro: 'Cadastro da Vaga',
