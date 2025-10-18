@@ -790,6 +790,7 @@ const JobsKanbanPage = () => {
                   setNotes([]);
                   setNewNote('');
                   setCandidates([]);
+                  setSelectedStageToMove('');
                 }}
                 className="px-6 py-2 bg-gray-600 text-white rounded-lg font-medium hover:bg-gray-700 transition-colors"
               >
