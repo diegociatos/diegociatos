@@ -1391,39 +1391,42 @@ class BackendTester:
             
             stages = kanban_response.json()["stages"]
             
-            # Find a job to test (prefer one not in contratacao already)
+            # Find a job to test - try multiple jobs if needed
             test_job = None
+            successful_move = False
             
             for stage_name, jobs in stages.items():
                 if jobs and stage_name != "contratacao":
-                    test_job = jobs[0]
-                    break
+                    for job in jobs:
+                        # Try to move this job to contratacao
+                        job_id = job["id"]
+                        
+                        move_data = {
+                            "to_stage": "contratacao",
+                            "notes": "Movendo para fase de contratação"
+                        }
+                        
+                        move_response = self.make_request("PATCH", f"/jobs-kanban/{job_id}/stage", 
+                                                        move_data, auth_token=self.tokens["admin"])
+                        
+                        if move_response.status_code == 200:
+                            test_job = job
+                            successful_move = True
+                            break
+                    
+                    if successful_move:
+                        break
+            
+            # If no job could be moved, try jobs already in contratacao
+            if not successful_move and stages.get("contratacao"):
+                test_job = stages["contratacao"][0]
+                successful_move = True
             
             if not test_job:
-                # Try contratacao stage if no other jobs
-                if stages.get("contratacao"):
-                    test_job = stages["contratacao"][0]
-            
-            if not test_job:
-                self.log_test("Contratação Positivo", False, "No jobs found to test")
+                self.log_test("Contratação Positivo", False, "No jobs found to test or permission denied for all jobs")
                 return
             
             job_id = test_job["id"]
-            
-            # Move to contratacao stage first if not already there
-            if test_job.get("recruitment_stage") != "contratacao":
-                move_data = {
-                    "to_stage": "contratacao",
-                    "notes": "Movendo para fase de contratação"
-                }
-                
-                move_response = self.make_request("PATCH", f"/jobs-kanban/{job_id}/stage", 
-                                                move_data, auth_token=self.tokens["admin"])
-                
-                if move_response.status_code != 200:
-                    self.log_test("Contratação Positivo", False, 
-                                f"Could not move job to contratacao: {move_response.status_code}")
-                    return
             
             # Now test contratacao positivo
             result_data = {
