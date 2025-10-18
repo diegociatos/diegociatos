@@ -382,7 +382,11 @@ export default function CandidateProfilePage() {
                   <div className="p-4 border rounded-lg">
                     <h3 className="font-semibold mb-2">Perfil DISC</h3>
                     <p className="text-sm text-gray-600 mb-4">Avalie seu perfil comportamental profissional</p>
-                    <Button variant="outline" data-testid="disc-questionnaire-button">
+                    <Button 
+                      variant="outline" 
+                      data-testid="disc-questionnaire-button"
+                      onClick={() => navigate('/candidato/questionarios')}
+                    >
                       Responder Questionário DISC
                     </Button>
                   </div>
@@ -390,7 +394,11 @@ export default function CandidateProfilePage() {
                   <div className="p-4 border rounded-lg">
                     <h3 className="font-semibold mb-2">Linguagens de Reconhecimento</h3>
                     <p className="text-sm text-gray-600 mb-4">Descubra como você prefere ser reconhecido</p>
-                    <Button variant="outline" data-testid="recognition-questionnaire-button">
+                    <Button 
+                      variant="outline" 
+                      data-testid="recognition-questionnaire-button"
+                      onClick={() => navigate('/candidato/questionarios')}
+                    >
                       Responder Questionário
                     </Button>
                   </div>
@@ -398,7 +406,11 @@ export default function CandidateProfilePage() {
                   <div className="p-4 border rounded-lg">
                     <h3 className="font-semibold mb-2">Perfil Comportamental</h3>
                     <p className="text-sm text-gray-600 mb-4">Avalie suas competências comportamentais</p>
-                    <Button variant="outline" data-testid="behavioral-questionnaire-button">
+                    <Button 
+                      variant="outline" 
+                      data-testid="behavioral-questionnaire-button"
+                      onClick={() => navigate('/candidato/questionarios')}
+                    >
                       Responder Questionário
                     </Button>
                   </div>
