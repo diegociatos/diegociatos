@@ -284,14 +284,21 @@ const JobsKanbanPage = () => {
                       }`}
                     >
                       {stages[stageKey]?.map((job, index) => (
-                        <Draggable key={job.id} draggableId={job.id} index={index}>
+                        <Draggable 
+                          key={job.id} 
+                          draggableId={job.id} 
+                          index={index}
+                          isDragDisabled={userRole === 'client'}
+                        >
                           {(provided, snapshot) => (
                             <div
                               ref={provided.innerRef}
                               {...provided.draggableProps}
                               {...provided.dragHandleProps}
                               onClick={() => handleCardClick(job, stageKey)}
-                              className={`bg-white rounded-lg shadow-sm hover:shadow-md transition-all cursor-pointer border border-gray-200 ${
+                              className={`bg-white rounded-lg shadow-sm hover:shadow-md transition-all ${
+                                userRole === 'client' ? 'cursor-pointer' : 'cursor-grab active:cursor-grabbing'
+                              } border border-gray-200 ${
                                 snapshot.isDragging ? 'shadow-2xl rotate-3 scale-105' : ''
                               }`}
                             >
