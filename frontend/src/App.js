@@ -70,7 +70,7 @@ function AppRoutes() {
         path="/recruiter/dashboard"
         element={
           <PrivateRoute>
-            <RecruiterDashboardPage />
+            <DashboardPage />
           </PrivateRoute>
         }
       />
@@ -78,7 +78,7 @@ function AppRoutes() {
         path="/recruiter"
         element={
           <PrivateRoute>
-            <RecruiterDashboardPage />
+            <DashboardPage />
           </PrivateRoute>
         }
       />
