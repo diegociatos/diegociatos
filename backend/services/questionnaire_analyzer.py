@@ -87,14 +87,9 @@ O relatório deve incluir:
 Seja objetivo, profissional e construtivo."""
 
         try:
-            response = self.client.chat.completions.create(
-                model="gpt-4",
-                messages=[{"role": "user", "content": prompt}],
-                max_tokens=500,
-                temperature=0.7
-            )
-            
-            report = response.choices[0].message.content.strip()
+            report = await self._call_llm(prompt)
+            if not report:
+                report = f"Perfil DISC com dominância em {dominant}. Pontuações: D={scores['D']}%, I={scores['I']}%, S={scores['S']}%, C={scores['C']}%"
         except Exception as e:
             print(f"Erro na análise DISC: {e}")
             report = f"Perfil DISC com dominância em {dominant}. Pontuações: D={scores['D']}%, I={scores['I']}%, S={scores['S']}%, C={scores['C']}%"
