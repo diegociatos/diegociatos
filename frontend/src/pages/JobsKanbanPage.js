@@ -150,10 +150,20 @@ const JobsKanbanPage = () => {
       setSelectedJob(job);
       setShowContratacaoModal(true);
     } else {
-      // Abrir modal de notas/comentários
+      // Buscar detalhes completos da vaga e abrir modal
       setSelectedJob(job);
+      loadJobDetails(job.id);
       loadNotes(job.id);
       setShowNotesModal(true);
+    }
+  };
+  
+  const loadJobDetails = async (jobId) => {
+    try {
+      const res = await api.get(`/jobs/${jobId}`);
+      setSelectedJob(res.data);
+    } catch (err) {
+      console.error('Erro ao carregar detalhes da vaga:', err);
     }
   };
   
