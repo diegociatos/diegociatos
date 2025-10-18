@@ -177,14 +177,9 @@ O relatório deve incluir:
 Seja prático, profissional e focado no ambiente de trabalho."""
 
         try:
-            response = self.client.chat.completions.create(
-                model="gpt-4",
-                messages=[{"role": "user", "content": prompt}],
-                max_tokens=500,
-                temperature=0.7
-            )
-            
-            report = response.choices[0].message.content.strip()
+            report = await self._call_llm(prompt)
+            if not report:
+                report = f"Linguagem primária: {lang_names[primary]} ({scores[primary]}%). Linguagem secundária: {lang_names[secondary]} ({scores[secondary]}%)."
         except Exception as e:
             print(f"Erro na análise de Linguagens: {e}")
             report = f"Linguagem primária: {lang_names[primary]} ({scores[primary]}%). Linguagem secundária: {lang_names[secondary]} ({scores[secondary]}%)."
