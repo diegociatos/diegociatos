@@ -119,3 +119,98 @@ async def search_candidates(skill: Optional[str] = None, city: Optional[str] = N
     
     candidates = await db.candidates.find(query, {"_id": 0}).to_list(100)
     return candidates
+
+
+@router.post("/upload-resume")
+async def upload_resume(
+    file: UploadFile = File(...),
+    request: Request = None,
+    session_token: Optional[str] = Cookie(None)
+):
+    """Upload de currículo do candidato"""
+    user = await get_current_user(request, session_token)
+    
+    # Verificar se é candidato
+    candidate = await db.candidates.find_one({"user_id": user["id"]})
+    if not candidate:
+        raise HTTPException(status_code=404, detail="Perfil de candidato não encontrado")
+    
+    # Validar tipo de arquivo
+    allowed_extensions = ['.pdf', '.doc', '.docx']
+    file_ext = os.path.splitext(file.filename)[1].lower()
+    if file_ext not in allowed_extensions:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Tipo de arquivo não permitido. Use: {', '.join(allowed_extensions)}"
+        )
+    
+    # Validar tamanho (máx 5MB)
+    max_size = 5 * 1024 * 1024  # 5MB
+    content = await file.read()
+    if len(content) > max_size:
+        raise HTTPException(status_code=400, detail="Arquivo muito grande. Tamanho máximo: 5MB")
+    
+    # Criar diretório se não existir
+    upload_dir = "/app/backend/uploads/resumes"
+    os.makedirs(upload_dir, exist_ok=True)
+    
+    # Gerar nome único para o arquivo
+    unique_filename = f"{candidate['id']}_{uuid.uuid4().hex[:8]}{file_ext}"
+    file_path = os.path.join(upload_dir, unique_filename)
+    
+    # Salvar arquivo
+    with open(file_path, "wb") as f:
+        f.write(content)
+    
+    # Atualizar candidato no banco
+    await db.candidates.update_one(
+        {"id": candidate["id"]},
+        {"$set": {
+            "resume_url": file_path,
+            "resume_filename": file.filename,
+            "resume_uploaded_at": datetime.now(timezone.utc).isoformat()
+        }}
+    )
+    
+    return {
+        "message": "Currículo enviado com sucesso",
+        "filename": file.filename,
+        "uploaded_at": datetime.now(timezone.utc).isoformat()
+    }
+
+
+@router.put("/profile/address")
+async def update_address(
+    data: dict,
+    request: Request,
+    session_token: Optional[str] = Cookie(None)
+):
+    """Atualizar endereço completo do candidato"""
+    user = await get_current_user(request, session_token)
+    
+    candidate = await db.candidates.find_one({"user_id": user["id"]})
+    if not candidate:
+        raise HTTPException(status_code=404, detail="Perfil de candidato não encontrado")
+    
+    # Campos permitidos de endereço
+    address_fields = {
+        "address_street": data.get("address_street"),
+        "address_number": data.get("address_number"),
+        "address_complement": data.get("address_complement"),
+        "address_zip_code": data.get("address_zip_code"),
+        "location_neighborhood": data.get("location_neighborhood"),
+        "location_city": data.get("location_city"),
+        "location_state": data.get("location_state")
+    }
+    
+    # Remover campos None
+    update_data = {k: v for k, v in address_fields.items() if v is not None}
+    
+    if update_data:
+        await db.candidates.update_one(
+            {"id": candidate["id"]},
+            {"$set": update_data}
+        )
+    
+    return {"message": "Endereço atualizado com sucesso"}
+
