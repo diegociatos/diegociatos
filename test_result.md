@@ -1069,6 +1069,21 @@ backend:
         agent: "testing"
         comment: "✅ ADMIN LOGIN TEST PASSED - ALL REQUIREMENTS MET: (1) Status Code: 200 OK ✅, (2) Response contains access_token: eyJhbGciOiJIUzI1NiIs... ✅, (3) Response contains refresh_token: eyJhbGciOiJIUzI1NiIs... ✅, (4) User object present with email: admin@ciatos.com ✅, (5) Admin role confirmed ✅. Login credentials admin@ciatos.com/admin123 are fully functional and meet all specified requirements."
 
+  - task: "Candidate Profile Data Saving Test"
+    implemented: true
+    working: true
+    file: "/app/backend/routes/candidates.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "user"
+        comment: "Review request: Test candidate profile data saving - Login as pedro@email.com/candidato123, update profile with all fields (phone, whatsapp, email, birthdate, location, address, salary_expectation, availability), verify data saved via GET, test separate address update via PUT /candidates/profile/address"
+      - working: true
+        agent: "testing"
+        comment: "✅ CANDIDATE PROFILE DATA SAVING TEST PASSED - ALL 4 STEPS COMPLETED SUCCESSFULLY: (1) Step 1: Create/Login Candidate - pedro@email.com/candidato123 created and authenticated ✅, (2) Step 2: Update Profile - All profile fields (phone, whatsapp, email, birthdate, location_city, location_state, location_neighborhood, address_street, address_number, address_complement, address_zip_code, salary_expectation, availability) saved correctly via POST /candidates/profile ✅, (3) Step 3: Verify Data Saved - All fields returned correctly from GET /candidates/profile with matching values ✅, (4) Step 4: Update Address Separately - Address fields updated correctly via PUT /candidates/profile/address (street, number, complement, zip_code, neighborhood, city, state) ✅. Complete candidate profile management system is fully functional."
+
 test_plan:
   current_focus:
     - "Testar frontend: Carregar Kanban, drag & drop, modal contratação"
