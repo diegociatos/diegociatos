@@ -761,6 +761,38 @@ agent_communication:
       
       🚀 PIPELINE API 100% FUNCIONAL E SEGURA!
 
+  - agent: "testing"
+    message: |
+      ✅ CANDIDATE SIGNUP ENDPOINT TESTING COMPLETO - REVIEW REQUEST ATENDIDA
+      
+      TESTE SOLICITADO NA REVIEW:
+      ✅ Endpoint: POST /api/auth/candidate/signup
+      ✅ Payload testado: {"email": "novocandidato@test.com", "password": "senha123", "full_name": "Novo Candidato Teste", "phone": "11999887766"}
+      ✅ Response esperado: 200/201 com access_token, refresh_token, user object
+      
+      RESULTADOS DOS TESTES:
+      
+      1. ✅ ENDPOINT FUNCIONANDO PERFEITAMENTE
+         - Status: 200 OK (ou 400 se email já existe - comportamento correto)
+         - Response contém todos os campos obrigatórios: access_token, refresh_token, user object ✅
+         - User object contém: id, email, full_name, requires_password_change=false ✅
+      
+      2. ✅ VERIFICAÇÕES DE BANCO DE DADOS CONFIRMADAS
+         - Usuário criado na collection 'users' ✅
+         - Perfil de candidato criado na collection 'candidates' ✅  
+         - Role 'candidate' criada em 'user_org_roles' ✅
+      
+      3. ✅ VALIDAÇÕES FUNCIONANDO CORRETAMENTE
+         - Email duplicado: retorna 400 "já cadastrado" ✅
+         - Campos obrigatórios: retorna 422 se full_name ausente ✅
+         - Formato de email: retorna 422 se email inválido ✅
+      
+      CREDENCIAIS TESTADAS:
+      - Novo candidato: novocandidato@test.com / senha123 ✅
+      - Login após signup funcionando perfeitamente ✅
+      
+      🎉 CANDIDATE SIGNUP 100% FUNCIONAL - TODOS OS REQUISITOS DA REVIEW ATENDIDOS!
+
 backend:
   - task: "Fix KeyError expires_at in UserSession model"
     implemented: true
