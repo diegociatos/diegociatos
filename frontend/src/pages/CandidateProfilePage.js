@@ -500,6 +500,43 @@ export default function CandidateProfilePage() {
                 </form>
               </CardContent>
             </Card>
+
+            {/* Lista de Experiências */}
+            {experiences.length > 0 && (
+              <Card className="glass-card mt-6">
+                <CardHeader>
+                  <CardTitle>Minhas Experiências</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {experiences.map((exp, index) => (
+                      <div key={index} className="p-4 border border-gray-200 rounded-lg bg-gray-50">
+                        <div className="flex justify-between items-start mb-2">
+                          <div>
+                            <h3 className="font-bold text-lg text-gray-800">{exp.title}</h3>
+                            <p className="text-gray-600 font-medium">{exp.company}</p>
+                          </div>
+                          {exp.is_current && (
+                            <span className="px-3 py-1 bg-green-100 text-green-800 text-xs font-semibold rounded-full">
+                              Atual
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-sm text-gray-600 mb-2">
+                          {new Date(exp.start_date).toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' })} - 
+                          {exp.is_current ? ' Atual' : ` ${new Date(exp.end_date).toLocaleDateString('pt-BR', { month: 'short', year: 'numeric' })}`}
+                        </p>
+                        {exp.responsibilities && (
+                          <p className="text-sm text-gray-700 whitespace-pre-wrap">
+                            {exp.responsibilities}
+                          </p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
           </TabsContent>
 
           <TabsContent value="education">
