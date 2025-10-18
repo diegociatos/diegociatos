@@ -1917,6 +1917,9 @@ class BackendTester:
         # PRIORITY: Review request test - Candidate Signup
         self.test_candidate_signup_review_request()
         
+        # Additional validation tests
+        self.test_candidate_signup_validation()
+        
         # Summary
         print("\n" + "=" * 60)
         print("📊 CANDIDATE SIGNUP TEST SUMMARY")
