@@ -351,6 +351,121 @@ const JobsKanbanPage = () => {
         </DragDropContext>
       </div>
       
+
+      {/* Modal de Notas/Comentários */}
+      {showNotesModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[80vh] flex flex-col">
+            {/* Modal Header */}
+            <div className="p-6 border-b border-gray-200">
+              <div className="flex items-center justify-between">
+                <h3 className="text-2xl font-bold text-gray-800 flex items-center">
+                  <span className="text-3xl mr-3">📝</span>
+                  Anotações do Processo Seletivo
+                </h3>
+                <button
+                  onClick={() => {
+                    setShowNotesModal(false);
+                    setSelectedJob(null);
+                    setNotes([]);
+                    setNewNote('');
+                  }}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              <div className="mt-2 text-sm text-gray-600">
+                Vaga: <strong>{selectedJob?.title}</strong>
+              </div>
+            </div>
+            
+            {/* Modal Body - Lista de Notas */}
+            <div className="flex-1 overflow-y-auto p-6">
+              {loadingNotes ? (
+                <div className="text-center py-8">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+                  <p className="mt-2 text-gray-600">Carregando anotações...</p>
+                </div>
+              ) : notes.length === 0 ? (
+                <div className="text-center py-12 text-gray-500">
+                  <svg className="mx-auto h-12 w-12 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  <p className="text-lg font-medium">Nenhuma anotação ainda</p>
+                  <p className="text-sm mt-2">Adicione sua primeira anotação abaixo</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {notes.map((note) => (
+                    <div key={note.id} className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                      <div className="flex items-start justify-between mb-2">
+                        <div>
+                          <div className="font-semibold text-gray-900">
+                            {note.author?.full_name || 'Usuário'}
+                          </div>
+                          <div className="text-xs text-gray-500">
+                            {new Date(note.created_at).toLocaleString('pt-BR')}
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => handleDeleteNote(note.id)}
+                          className="text-red-600 hover:text-red-800 text-sm"
+                          title="Deletar anotação"
+                        >
+                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
+                        </button>
+                      </div>
+                      <p className="text-gray-700 whitespace-pre-wrap">{note.content}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+            
+            {/* Modal Footer - Nova Nota */}
+            <div className="p-6 bg-gray-50 border-t border-gray-200">
+              <div className="mb-3">
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Nova Anotação
+                </label>
+                <textarea
+                  value={newNote}
+                  onChange={(e) => setNewNote(e.target.value)}
+                  rows={3}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Digite sua anotação sobre o processo seletivo..."
+                />
+              </div>
+              <div className="flex space-x-3">
+                <button
+                  onClick={handleAddNote}
+                  disabled={!newNote.trim()}
+                  className="flex-1 bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+                >
+                  ➕ Adicionar Anotação
+                </button>
+                <button
+                  onClick={() => {
+                    setShowNotesModal(false);
+                    setSelectedJob(null);
+                    setNotes([]);
+                    setNewNote('');
+                  }}
+                  className="px-6 bg-gray-300 text-gray-700 py-3 rounded-lg font-medium hover:bg-gray-400 transition-colors"
+                >
+                  Fechar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Modal de Contratação */}
       {showContratacaoModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
