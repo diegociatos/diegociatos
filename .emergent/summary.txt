@@ -1,30 +1,21 @@
 <analysis>
-The AI engineer successfully progressed the Ciatos Recrutamento ATS from initial setup through several functional enhancements, following a phased approach for complex features. Key accomplishments include implementing multi-tenant architecture, refining role-based access control, and improving user management. Initially, the engineer addressed authentication and UI issues, such as  errors and frontend display problems. User feedback led to features like admin-defined initial user passwords and an improved user table with role display and enhanced action buttons.
-
-Subsequently, the project adopted a four-phase development strategy. Phase 1 focused on core data models, basic recruiter dashboard KPIs, and job listings. Phase 2 introduced a Kanban board for job pipelines with drag-and-drop functionality and stage history. Phase 3 developed a comprehensive notification system, including in-app alerts, email, and user preferences. Phase 4 implemented interview scheduling with a modal, calendar view, and automated reminders. Recurring challenges revolved around persistent  errors during authentication and session handling, which frequently blocked progress and required investigation. The engineer iteratively refined both backend APIs and React frontend components based on detailed user requirements and visual feedback.
+The AI engineer's trajectory focused on evolving the Ciatos Recrutamento ATS. Initially,  authentication issues were resolved by updating the  model. Subsequently, the engineer implemented a job-centric Kanban board with Trello-like aesthetics, moving from a candidate-centric view. This involved substantial backend changes to the  model (, , ) and new API routes (). Frontend updates included , a simplified  (now  handles all roles), and  responsiveness. A major challenge was ensuring data consistency, particularly linking client-created jobs to the recruiter's view, which required updating organization affiliations. The latest efforts focused on enriching the Kanban's job details modal with candidate listings and job notes, and debugging issues where candidates weren't appearing by introducing test data.
 </analysis>
 
 <product_requirements>
-The Ciatos Recrutamento ATS is a multi-tenant application supporting Administrators, Recruitment Analysts, Clients, and Candidates. It features a multi-stage job workflow, custom questionnaires, a 0-100 candidate scoring algorithm, role-specific dashboards, LGPD compliance, email notifications, and an SEO-friendly career site. Authentication uses JWT with RBAC, comprehensive CRUD APIs, and React-based Admin/Analyst/Client panels. Each user type is redirected to a custom dashboard upon login, with robust logout and unauthenticated access handling. Recent and ongoing work includes:
+The Ciatos Recrutamento ATS is a multi-tenant application with RBAC (Admin, Analyst, Client, Candidate), featuring a multi-stage job workflow, candidate scoring, LGPD compliance, email notifications, and an SEO-friendly career site. Authentication uses JWT, with custom dashboards for each role.
 
-1.  **Admin User Management**: Admin can create users, define initial passwords (with optional ), reset/alter existing passwords manually, and deactivate users. The user table displays user roles, and action buttons for editing, changing password, and deactivating are visually improved.
-2.  **Recruiter Dashboard (Phase 1 Implemented)**: Operational view with KPIs (active jobs, active candidates), a table of managed jobs (title, client, status, candidate counts by stage, last update), and global search/filters.
-3.  **Kanban Process Board (Phase 2 Implemented)**: Per-job Kanban board where cards represent candidates (applications). Stages include 'submitted', 'screening', 'recruiter_interview', 'shortlisted', 'client_interview', 'offer', 'hired', 'rejected', 'withdrawn'. Supports drag & drop to move candidates between stages, updates  and , and triggers basic notifications.
-4.  **Notification System (Phase 3 Implemented)**: In-app notifications (bell icon with badge), email notifications via SMTP, user preferences for event types and channels, APIs for listing/marking notifications, and a worker for asynchronous email sending.
-5.  **Interview Scheduling (Phase 4 Implemented)**: CRUD operations for interviews, a scheduling modal (date/time, type, location, interviewer, notes), calendar views for recruiters, automated T-24h/T-2h reminders, and interview status tracking.
-6.  **Job Edit Page for Analyst**: An analyst needs to be able to view and edit job details, including status and candidates, from a dedicated job editing page.
+Current development priorities include:
+1.  **Admin User Management**: Create/edit users, define passwords, reset/alter passwords, deactivate users, and display roles in the user table with improved UI/UX.
+2.  **Job Edit Page for Analyst**: A central management page for open positions, allowing analysts/recruiters to edit job details, manage candidates (view resumes, add manual candidates, notes, analyses, visibility), update recruitment status, upload documents, add comments (internal/client-facing), and synchronize with the client dashboard.
+3.  **Analyst Dashboard & Job Kanban**: The analyst dashboard should be simplified to only Vagas (Jobs) and Candidatos (Candidates). Clicking Vagas should open a Trello-style Kanban board for jobs, with distinct phases: Cadastro da Vaga, Triagem de Currículos, Entrevistas, Seleção, Envio do Cliente para Entrevista, and Contratação (Positive/Negative, with Negative reverting to Entrevistas). It needs drag-and-drop (though currently supplemented by buttons), candidate counts, time in stage, history, and a modal for contract results.
+4.  **Advanced Candidate Search**: For the Candidatos tab, implement advanced search with filters for education, age, city, neighborhood, and AI-powered semantic search.
 </product_requirements>
 
 <key_technical_concepts>
-- **Backend**: FastAPI, MongoDB (UUIDs, ISO strings for dates),  (password hashing), JWT (authentication), Pydantic (data validation/serialization), Python  (for background tasks like notifications).
-- **Frontend**: React, Tailwind CSS, shadcn/ui (UI components), Axios (API client), React Router (navigation), Context API (AuthContext),  (drag & drop).
-- **Deployment**: Docker, backend                          RUNNING   pid 42, uptime 0:00:02
-code-server                      STOPPED   Not started
-frontend                         STOPPED   Oct 17 06:52 PM
-mongodb                          RUNNING   pid 45, uptime 0:00:02
-nginx-code-proxy                 RUNNING   pid 41, uptime 0:00:02
-supervisor> .
-- **Core Concepts**: Multi-tenancy, RBAC, RESTful APIs, Polling (for notifications), Optimistic UI.
+- **Backend**: FastAPI, MongoDB (UUIDs, ISO strings for dates), , JWT, Pydantic, ,  (for LLM).
+- **Frontend**: React, Tailwind CSS, shadcn/ui, Axios, React Router, Context API, .
+- **Core Concepts**: Multi-tenancy, RBAC, RESTful APIs, Trello-style Kanban, AI-powered search.
 </key_technical_concepts>
 
 <code_architecture>
@@ -32,54 +23,40 @@ The application uses a monorepo structure in , with distinct  (FastAPI) and  (Re
 
 
 
--   : Defines Pydantic models. Modified extensively to include  in , and new , , , , ,  models. It also includes  and  models for backend API updates. Duplicates for  and  were resolved. The  model was updated to include .
--   : Main FastAPI application. Modified to register new routers (, , , ) and to initialize the .
--   : Original database seeding script.
--   : New seeding script created specifically for Phase 1 data, later updated to include  for Phase 2, and additional entities for Phases 3 and 4. It handles existing users/applications to avoid duplicates.
--   : Handles authentication logic. Currently being investigated and fixed for  related to session handling.
--   : Handles authentication. Modified login to return  and the  endpoint to accept an optional  field for admin-defined initial passwords.
--   : User-related API endpoints. Expanded to include routes for Admin to create, edit, deactivate users, reset passwords, and now alterar (change) passwords manually, with . The GET  endpoint was updated to return user roles.
--   : Job-related API endpoints. The PATCH  endpoint was enhanced to update more job fields based on  model changes.
--   : **NEW FILE**. Contains backend endpoints for the Recruiter Dashboard, including KPIs and job listings (Phase 1).
--   : **NEW FILE**. Contains backend endpoints for the Job Pipeline (Kanban board), including fetching pipeline data and moving applications between stages (Phase 2).
--   : **NEW FILE**. Contains backend endpoints for the notification system, including listing, marking as read, and managing preferences (Phase 3).
--   : **NEW FILE**. Contains backend endpoints for interview scheduling, including CRUD operations, confirmations, and status updates (Phase 4).
--   : **NEW FILE**. Centralized service for handling notification creation, email queuing, preferences, and processing (Phase 3).
--   : Main React router. Updated with new routes for , , , , , , , , , , , , . Also imports and includes the  component.
--   : Manages auth state. Modified to correctly handle JWT tokens and .
--   : Axios configuration. Confirmed to correctly add  prefix and handle tokens via interceptor.
--   : User login. Updated to link to candidate signup and handle  redirection.
--   : Page for Admin to manage users. Significantly modified to include: optional password input for new users, a PAPEL (role) column in the user table, and updated action buttons (Editar, Alterar Senha, Desativar) with improved aesthetics and a dedicated modal for password alteration.
--   : **NEW FILE**. Implements the recruiter dashboard with KPI cards and a table of managed jobs. Updated to include an Editar button for each job leading to . Also includes the .
--   : **NEW FILE**. Implements the Kanban board for job applications, allowing drag & drop between stages. Includes a Schedule Interview button.
--   : **NEW FILE**. Likely for viewing the  of an application.
--   : **NEW FILE**. Page to display a list of all user notifications.
--   : **NEW FILE**. Page for users to manage their notification preferences.
--   : **NEW FILE**. React component for the in-app notification bell, displaying unread count and a dropdown of recent notifications.
--   : **NEW FILE**. Page for recruiters to view a calendar of interviews.
--   : **NEW FILE**. React component for scheduling and editing interviews.
--   : **NEW FILE**. Page for recruiters/analysts to view and edit job details.
--   : Updated frequently to document progress and test results.
--   : **NEW FILE**. Documents test user credentials.
+-   : Defines Pydantic models. Updated  to include  and .  model now includes . Added  and  models.  model updated with , , , , .  model now requires .
+-   : Main FastAPI app. Registered new routers:  and .
+-   : Handles auth logic. Fixed for  related to session handling.
+-   : Auth endpoints. Login response now includes  in JSON body for broader compatibility, in addition to setting it as a cookie.
+-   : Job endpoints. Used for editing job details.
+-   : **NEW FILE**. Contains backend endpoints for the job-centric Kanban, including fetching jobs by stage, moving jobs between stages, and managing job notes.
+-   : **NEW FILE**. Endpoint for advanced candidate search using AI ().
+-   : **NEW FILE**. Migration script to clean up old sessions (ran once).
+-   : **NEW FILE**. Script to add  to existing jobs (ran once).
+-   : React router. Updated to use  for  and  routes, and added  for .
+-   : Modified to display only Vagas and Candidatos cards for recruiter roles, and simplified for other roles. Removed Informações do Perfil and Atalhos Rápidos for analysts.
+-   : Adjusted for responsiveness: reduced padding, smaller text, abbreviated roles, truncated emails/names, compact action buttons.
+-   : Was re-written to 4 cards, then effectively deprecated/removed by redirecting  to .
+-   : **NEW FILE**. Implements the Trello-style job Kanban board. Features include drag & drop (though currently supplemented by buttons), distinct stage headers with icons/colors, job cards showing details, a modal for job details, notes, candidate list, and actions to move jobs or set contract results. The initial instruction banner for dragging was removed.  was installed.
+-   : Re-written to include advanced search functionality.
+-   : Added a Ver Kanban de Vagas button.
+-   : Updated with test user credentials, including for recruiter.
 </code_architecture>
 
 <pending_tasks>
-- Fix the persistent  error in  () which is preventing proper session handling and API calls. This is blocking the functionality of the Job Edit Page.
-- Implement automated frontend testing for all newly added features (Phases 1-4 and Admin user management enhancements).
+- Fully implement drag & drop functionality for the Kanban board, as the current implementation is supplemented by buttons and the user reported dragging issues.
+- Refine the Candidatos advanced search (frontend implementation is done, but full testing and integration of the AI search capabilities needs to be confirmed).
 - Complete the Trabalhe Conosco (Careers) page, including the full application flow (mentioned in initial requirements).
+- Ensure comments system on Job Edit Page is fully functional and meets user expectations.
 </pending_tasks>
 
 <current_work>
-Immediately before this summary request, the AI engineer was addressing a user's report that the Job Edit Page for the analyst profile was not working; specifically, the user Continuo não conseguindo editar vaga (Still can't edit job).
+Immediately before this summary request, the AI engineer was addressing a user's critical feedback that Continua não tem candidatos e eu fico gastando créditos com erro seu. Acho que nem deveria me cobrar créditos por estes erros (Still no candidates and I'm spending credits on your error. I don't think I should be charged credits for these errors).
 
-Upon investigation, the AI engineer identified a recurring backend error:  originating from the  function within . This error indicates that the application's authentication middleware or session handling logic is attempting to access an  field from a user session that either does not exist or is malformed. This issue has intermittently surfaced throughout the development trajectory, impacting various API calls despite successful login attempts. The engineer confirmed the API for fetching a specific job works, but the API for *editing* the job returns a 500 error due to this underlying session key error.
+This occurred after the engineer had implemented a comprehensive job details modal within the  (frontend) which was intended to display candidates associated with a job. Upon investigation, the engineer discovered that the backend API call for candidates was returning an empty list () because there were no candidates actually linked to the jobs in the database.
 
-The engineer's last action was to confirm the problem is located in  and specifically in how  is being accessed.
-
-**File being analyzed/modified:** 
-**Problem:**  during API calls, specifically observed during job editing.
+The engineer's last action was to create test candidates and link them to existing jobs (, ) by updating  to correctly include  in the  model during candidate creation. This fixed the data gap, and now test candidates should appear in the Kanban modal.
 </current_work>
 
 <optional_next_step>
-Fix the  in  to correctly handle session token expiration.
+Verify that the newly created test candidates are visible in the Kanban job details modal.
 </optional_next_step>

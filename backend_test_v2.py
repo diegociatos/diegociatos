@@ -8,7 +8,7 @@ import requests
 import json
 import sys
 
-BASE_URL = "https://jobsift.preview.emergentagent.com/api"
+BASE_URL = "https://ats-workflow.preview.emergentagent.com/api"
 
 TEST_CREDENTIALS = {
     "admin": {"email": "admin@ciatos.com", "password": "admin123"},
