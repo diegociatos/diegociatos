@@ -32,14 +32,19 @@ const CandidateQuestionnairesPage = () => {
     try {
       setLoading(true);
       
-      // Verificar se já completou
-      const statusRes = await api.get('/questionnaires/candidate/assessments');
-      if (statusRes.data.questionnaires_completed) {
-        navigate('/carreiras');
-        return;
+      // Tentar verificar se já completou (opcional - não bloqueia se falhar)
+      try {
+        const statusRes = await api.get('/questionnaires/candidate/assessments');
+        if (statusRes.data.questionnaires_completed) {
+          navigate('/carreiras');
+          return;
+        }
+      } catch (err) {
+        // Ignorar erro de autenticação - candidato pode não estar logado ainda
+        console.log('Verificação de status ignorada:', err.response?.status);
       }
       
-      // Carregar os 3 questionários
+      // Carregar os 3 questionários (públicos - não precisam autenticação)
       const [disc, recognition, behavioral] = await Promise.all([
         api.get('/questionnaires/disc'),
         api.get('/questionnaires/recognition'),
@@ -53,7 +58,7 @@ const CandidateQuestionnairesPage = () => {
       });
     } catch (err) {
       console.error('Erro ao carregar questionários:', err);
-      alert('Erro ao carregar questionários');
+      alert('Erro ao carregar questionários. Por favor, tente novamente.');
     } finally {
       setLoading(false);
     }
