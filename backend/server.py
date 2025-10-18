@@ -26,7 +26,7 @@ import services.notification_service as notif_service_module
 notif_service_module.notification_service = NotificationService(db)
 
 # Import and include all route modules
-from routes import auth, organizations, users, candidates, skills, jobs, applications, interviews, feedbacks, questionnaires, assessments, scores, notifications, consents, reports, recruiter, pipeline, notifications_api, interviews_api, jobs_kanban
+from routes import auth, organizations, users, candidates, skills, jobs, applications, interviews, feedbacks, questionnaires, assessments, scores, notifications, consents, reports, recruiter, pipeline, notifications_api, interviews_api, jobs_kanban, candidates_search
 
 api_router.include_router(auth.router, prefix="/auth", tags=["auth"])
 api_router.include_router(organizations.router, prefix="/organizations", tags=["organizations"])
@@ -48,6 +48,7 @@ api_router.include_router(pipeline.router, prefix="/applications", tags=["pipeli
 api_router.include_router(notifications_api.router, prefix="/notifications", tags=["notifications_v2"])
 api_router.include_router(interviews_api.router, prefix="/applications", tags=["interviews_v2"])
 api_router.include_router(jobs_kanban.router, prefix="/jobs-kanban", tags=["jobs_kanban"])
+api_router.include_router(candidates_search.router, prefix="/candidates", tags=["candidates_search"])
 
 api_router.get("/")(lambda: {"message": "Ciatos ATS API v1.0"})
 
