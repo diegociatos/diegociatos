@@ -4,17 +4,31 @@ Usa Emergent LLM Key para gerar análises detalhadas
 """
 import os
 from typing import Dict, Any, List
-from openai import OpenAI
+from emergentintegrations.llm.chat import LlmChat, UserMessage
 
 
 class QuestionnaireAnalyzer:
     """Analisa respostas de questionários e gera perfis com IA"""
     
     def __init__(self):
-        self.client = OpenAI(
-            api_key=os.environ.get('EMERGENT_LLM_KEY'),
-            base_url="https://api.elevenlabs.io/v1"  # Emergent LLM endpoint
-        )
+        self.api_key = os.environ.get('EMERGENT_LLM_KEY')
+    
+    async def _call_llm(self, prompt: str) -> str:
+        """Helper para chamar o LLM"""
+        try:
+            chat = LlmChat(
+                api_key=self.api_key,
+                session_id="questionnaire-analysis",
+                system_message="Você é um especialista em análise de perfis profissionais e comportamentais."
+            ).with_model("openai", "gpt-4o-mini")
+            
+            user_message = UserMessage(text=prompt)
+            response = await chat.send_message(user_message)
+            
+            return response.strip()
+        except Exception as e:
+            print(f"Erro ao chamar LLM: {e}")
+            return ""
     
     async def analyze_disc(self, responses: List[Dict[str, Any]]) -> Dict[str, Any]:
         """
