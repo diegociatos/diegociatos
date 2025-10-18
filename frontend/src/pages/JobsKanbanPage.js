@@ -48,7 +48,20 @@ const JobsKanbanPage = () => {
   
   useEffect(() => {
     loadKanban();
+    checkUserRole();
   }, []);
+  
+  const checkUserRole = async () => {
+    try {
+      const res = await api.get('/users/me/roles');
+      const roles = res.data || [];
+      const isClient = roles.some(r => r.role === 'client');
+      const isRecruiter = roles.some(r => r.role === 'recruiter' || r.role === 'admin');
+      setUserRole(isClient ? 'client' : (isRecruiter ? 'recruiter' : null));
+    } catch (err) {
+      console.error('Erro ao verificar role:', err);
+    }
+  };
   
   const loadKanban = async () => {
     try {
