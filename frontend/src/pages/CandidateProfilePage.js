@@ -137,6 +137,7 @@ export default function CandidateProfilePage() {
         is_current: false,
         responsibilities: ''
       });
+      loadExperiences(); // Recarregar lista
     } catch (error) {
       toast.error('Erro ao adicionar experiência');
     } finally {
