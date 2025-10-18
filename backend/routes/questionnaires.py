@@ -86,3 +86,113 @@ async def submit_responses(assignment_id: str, data: ResponseSubmit, request: Re
     )
     
     return {"message": "Respostas enviadas com sucesso"}
+
+
+@router.post("/candidate/submit-all")
+async def submit_all_questionnaires(
+    data: Dict[str, Any],
+    request: Request,
+    session_token: Optional[str] = Cookie(None)
+):
+    """
+    Candidato submete respostas de todos os 3 questionários de uma vez
+    Gera análises com IA e salva como assessments
+    """
+    user = await get_current_user(request, session_token)
+    
+    # Verificar se é candidato
+    candidate = await db.candidates.find_one({"user_id": user["id"]})
+    if not candidate:
+        raise HTTPException(status_code=403, detail="Apenas candidatos podem responder")
+    
+    # Extrair respostas
+    disc_responses = data.get("disc", [])
+    recognition_responses = data.get("recognition", [])
+    behavioral_responses = data.get("behavioral", [])
+    
+    if not all([disc_responses, recognition_responses, behavioral_responses]):
+        raise HTTPException(status_code=400, detail="Todos os questionários são obrigatórios")
+    
+    try:
+        # Analisar DISC
+        disc_analysis = await analyzer.analyze_disc(disc_responses)
+        disc_assessment = Assessment(
+            application_id=candidate["id"],  # Usando candidate_id como referência
+            kind="disc",
+            data=disc_analysis,
+            summary=disc_analysis["report"],
+            score=disc_analysis["scores"][disc_analysis["dominant_profile"]],
+            created_at=datetime.now(timezone.utc)
+        )
+        await db.assessments.insert_one(disc_assessment.model_dump())
+        
+        # Analisar Linguagens de Reconhecimento
+        recognition_analysis = await analyzer.analyze_recognition(recognition_responses)
+        recognition_assessment = Assessment(
+            application_id=candidate["id"],
+            kind="recognition",
+            data=recognition_analysis,
+            summary=recognition_analysis["report"],
+            score=recognition_analysis["scores"][recognition_analysis["primary_language"]],
+            created_at=datetime.now(timezone.utc)
+        )
+        await db.assessments.insert_one(recognition_assessment.model_dump())
+        
+        # Analisar Comportamental
+        behavioral_analysis = await analyzer.analyze_behavioral(behavioral_responses)
+        behavioral_assessment = Assessment(
+            application_id=candidate["id"],
+            kind="behavioral",
+            data=behavioral_analysis,
+            summary=behavioral_analysis["report"],
+            score=sum(behavioral_analysis["scores"].values()) / len(behavioral_analysis["scores"]),
+            created_at=datetime.now(timezone.utc)
+        )
+        await db.assessments.insert_one(behavioral_assessment.model_dump())
+        
+        # Marcar candidato como tendo completado os questionários
+        await db.candidates.update_one(
+            {"id": candidate["id"]},
+            {"$set": {
+                "questionnaires_completed": True,
+                "questionnaires_completed_at": datetime.now(timezone.utc).isoformat()
+            }}
+        )
+        
+        return {
+            "success": True,
+            "message": "Questionários enviados e analisados com sucesso!",
+            "analyses": {
+                "disc": disc_analysis,
+                "recognition": recognition_analysis,
+                "behavioral": behavioral_analysis
+            }
+        }
+    
+    except Exception as e:
+        print(f"Erro ao processar questionários: {e}")
+        raise HTTPException(status_code=500, detail=f"Erro ao processar análise: {str(e)}")
+
+
+@router.get("/candidate/assessments")
+async def get_candidate_assessments(
+    request: Request,
+    session_token: Optional[str] = Cookie(None)
+):
+    """Retorna os assessments do candidato logado"""
+    user = await get_current_user(request, session_token)
+    
+    candidate = await db.candidates.find_one({"user_id": user["id"]})
+    if not candidate:
+        raise HTTPException(status_code=404, detail="Candidato não encontrado")
+    
+    assessments = await db.assessments.find(
+        {"application_id": candidate["id"]},
+        {"_id": 0}
+    ).to_list(100)
+    
+    return {
+        "questionnaires_completed": candidate.get("questionnaires_completed", False),
+        "assessments": assessments
+    }
+
