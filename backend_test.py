@@ -1744,26 +1744,30 @@ class BackendTester:
             self.log_test("Pipeline - Existing Job Test", False, f"Request failed: {str(e)}")
 
     def run_all_tests(self):
-        """Run Jobs Kanban functionality tests"""
-        print("🚀 Testing Jobs Kanban Functionality")
-        print("🔍 FOCUS: Verify all Kanban APIs work correctly")
+        """Run Pipeline functionality tests as requested in review"""
+        print("🚀 Testing Pipeline Functionality")
+        print("🔍 FOCUS: Test pipeline API with job-001 and recruiter credentials")
         print("=" * 60)
         
         # Login first
         self.test_login_with_requires_password_change()
         
-        # Jobs Kanban tests (High Priority)
+        # Pipeline tests (High Priority - as requested in review)
+        self.test_pipeline_functionality()
+        self.test_pipeline_with_existing_job()
+        
+        # Jobs Kanban tests (Medium Priority)
         self.test_jobs_kanban_get()
         self.test_move_job_between_stages()
         self.test_contratacao_positivo()
         self.test_contratacao_negativo_auto_return()
         
-        # Stage History test (Medium Priority)
+        # Stage History test (Low Priority)
         self.test_get_stage_history()
         
         # Summary
         print("\n" + "=" * 60)
-        print("📊 JOBS KANBAN TEST SUMMARY")
+        print("📊 PIPELINE & KANBAN TEST SUMMARY")
         print("=" * 60)
         
         passed = sum(1 for result in self.test_results if result["success"])
