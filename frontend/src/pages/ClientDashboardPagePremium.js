@@ -95,7 +95,7 @@ const ClientDashboardPagePremium = () => {
     { icon: 'home', label: 'Dashboard', path: '/cliente/dashboard', active: true },
     { icon: 'briefcase', label: 'Minhas Vagas', path: '/cliente/vagas' },
     { icon: 'plus-circle', label: 'Nova Vaga', path: '/jobs/new' },
-    { icon: 'users', label: 'Candidatos', path: '/applications' },
+    { icon: 'user-check', label: 'Candidatos Aprovados', path: '/cliente/shortlist' },
   ];
 
   if (loading) {
