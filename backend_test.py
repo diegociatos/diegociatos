@@ -2530,7 +2530,7 @@ class BackendTester:
         try:
             application_data = {"job_id": target_job_id}
             
-            app_response = self.make_request("POST", "/applications", 
+            app_response = self.make_request("POST", "/applications/", 
                                            application_data, auth_token=candidate_token)
             
             if app_response.status_code in [200, 201]:
