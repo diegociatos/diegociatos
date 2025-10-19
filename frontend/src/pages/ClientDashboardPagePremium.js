@@ -837,6 +837,34 @@ const ClientDashboardPagePremium = () => {
           color: var(--ciatos-gray);
         }
 
+        .job-card-info {
+          margin: var(--space-md) 0;
+          padding: var(--space-sm);
+          background: rgba(91, 14, 14, 0.05);
+          border-radius: var(--radius-sm);
+          border-left: 3px solid var(--ciatos-primary);
+        }
+
+        .info-text {
+          display: flex;
+          align-items: start;
+          gap: var(--space-xs);
+          font-size: 0.875rem;
+          color: var(--ciatos-gray-dark);
+          margin: 0;
+          line-height: 1.6;
+        }
+
+        .info-text .icon {
+          flex-shrink: 0;
+          margin-top: 2px;
+        }
+
+        .info-text strong {
+          color: var(--ciatos-primary);
+          font-weight: 600;
+        }
+
         .job-card-footer {
           display: flex;
           justify-content: space-between;
