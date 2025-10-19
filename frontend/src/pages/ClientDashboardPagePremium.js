@@ -40,14 +40,18 @@ const ClientDashboardPagePremium = () => {
         setJobs(myJobs);
         
         // Calcular estatísticas
-        const totalApplications = myJobs.reduce((sum, job) => 
-          sum + (job.application_count || 0), 0
-        );
+        // Candidatos aprovados = candidatos que chegaram na fase de "envio_cliente"
+        const approvedCandidates = myJobs.reduce((sum, job) => {
+          if (job.recruitment_stage === 'envio_cliente' || job.recruitment_stage === 'contratacao') {
+            return sum + (job.application_count || 0);
+          }
+          return sum;
+        }, 0);
         
         setStats({
           total_jobs: myJobs.length,
           active_jobs: myJobs.filter(j => j.status === 'published').length,
-          total_applications: totalApplications,
+          approved_candidates: approvedCandidates,
           in_process: myJobs.filter(j => j.recruitment_stage && j.recruitment_stage !== 'cadastro').length
         });
       }
