@@ -236,51 +236,103 @@ const ClientDashboardPagePremium = () => {
               </button>
             </div>
           ) : (
-            <div className="jobs-grid">
-              {jobs.map((job, index) => (
-                <div 
-                  key={job.id} 
-                  className="job-card card animate-fade-in"
-                  style={{animationDelay: `${index * 0.1}s`}}
-                  onClick={() => navigate(`/jobs/${job.id}/manage`)}
-                >
-                  <div className="job-card-header">
-                    <h3 className="job-title">{job.title}</h3>
-                    <span className={`stage-badge ${getStageColor(job.recruitment_stage)}`}>
-                      {getStageLabel(job.recruitment_stage)}
-                    </span>
+            <>
+              {/* Action Cards - Ações Principais do Cliente */}
+              <div className="client-action-cards">
+                <div className="client-action-card card" onClick={() => navigate('/jobs/new')}>
+                  <div className="action-card-icon action-icon-primary">
+                    <span className="icon icon-plus-circle"></span>
                   </div>
-
-                  <div className="job-card-details">
-                    <div className="detail-item">
-                      <span className="icon icon-map-pin"></span>
-                      <span>{job.location || 'Não especificado'}</span>
-                    </div>
-                    <div className="detail-item">
-                      <span className="icon icon-monitor"></span>
-                      <span>{getWorkModeLabel(job.work_mode)}</span>
-                    </div>
-                    {job.salary_range && (
-                      <div className="detail-item">
-                        <span className="icon icon-dollar"></span>
-                        <span>{job.salary_range}</span>
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="job-card-footer">
-                    <div className="candidates-count">
-                      <span className="icon icon-users"></span>
-                      <span>{job.application_count || 0} candidatura{job.application_count !== 1 ? 's' : ''}</span>
-                    </div>
-                    <button className="btn-link">
-                      Ver detalhes
-                      <span className="icon icon-arrow-right"></span>
-                    </button>
+                  <div className="action-card-text">
+                    <h4>Cadastrar Nova Vaga</h4>
+                    <p>Inicie um novo processo seletivo</p>
                   </div>
                 </div>
-              ))}
-            </div>
+
+                <div className="client-action-card card" onClick={() => navigate('/cliente/shortlist')}>
+                  <div className="action-card-icon action-icon-success">
+                    <span className="icon icon-user-check"></span>
+                  </div>
+                  <div className="action-card-text">
+                    <h4>Candidatos Aprovados</h4>
+                    <p>Veja os candidatos selecionados</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Jobs Grid */}
+              <div className="jobs-grid">
+                {jobs.map((job, index) => (
+                  <div 
+                    key={job.id} 
+                    className="job-card card animate-fade-in"
+                    style={{animationDelay: `${index * 0.1}s`}}
+                  >
+                    <div className="job-card-header">
+                      <h3 className="job-title">{job.title}</h3>
+                      <span className={`stage-badge ${getStageColor(job.recruitment_stage)}`}>
+                        {getStageLabel(job.recruitment_stage)}
+                      </span>
+                    </div>
+
+                    <div className="job-card-details">
+                      <div className="detail-item">
+                        <span className="icon icon-map-pin"></span>
+                        <span>{job.location || 'Não especificado'}</span>
+                      </div>
+                      <div className="detail-item">
+                        <span className="icon icon-monitor"></span>
+                        <span>{getWorkModeLabel(job.work_mode)}</span>
+                      </div>
+                      {job.salary_range && (
+                        <div className="detail-item">
+                          <span className="icon icon-dollar"></span>
+                          <span>{job.salary_range}</span>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="job-card-info">
+                      <p className="info-text">
+                        <span className="icon icon-info"></span>
+                        Esta vaga está na fase de <strong>{getStageLabel(job.recruitment_stage)}</strong>. 
+                        O recrutador está conduzindo o processo seletivo.
+                      </p>
+                    </div>
+
+                    <div className="job-card-footer">
+                      <div className="candidates-count">
+                        <span className="icon icon-clock"></span>
+                        <span>Em andamento</span>
+                      </div>
+                      <button 
+                        className="btn-link"
+                        onClick={() => navigate(`/jobs/${job.id}/edit`)}
+                      >
+                        Editar vaga
+                        <span className="icon icon-arrow-right"></span>
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Info Box */}
+              <div className="info-box card">
+                <div className="info-box-icon">
+                  <span className="icon icon-info-circle"></span>
+                </div>
+                <div className="info-box-content">
+                  <h4>Como funciona o processo</h4>
+                  <ul>
+                    <li>📝 Você cadastra a vaga e aguarda a análise do recrutador</li>
+                    <li>🔍 O recrutador busca e seleciona os melhores candidatos</li>
+                    <li>💬 Conduz entrevistas e avaliações</li>
+                    <li>✅ Ao finalizar, você recebe os candidatos aprovados com análise completa</li>
+                  </ul>
+                </div>
+              </div>
+            </>
           )}
         </div>
       </main>
