@@ -785,6 +785,127 @@ const DashboardPage = () => {
         .icon-check::before { content: '✓'; }
         .icon-chevron-left::before { content: '‹'; }
         .icon-chevron-right::before { content: '›'; }
+        .icon-users-cog::before { content: '👥⚙️'; }
+        .icon-building::before { content: '🏢'; }
+
+        /* ===== ADMIN SECTION ===== */
+        .admin-section-header {
+          margin: var(--space-2xl) 0 var(--space-lg);
+          padding-bottom: var(--space-md);
+          border-bottom: 2px solid var(--ciatos-primary);
+        }
+
+        .admin-section-header h2 {
+          font-size: 1.75rem;
+          color: var(--ciatos-primary);
+          margin-bottom: var(--space-xs);
+        }
+
+        .admin-cards-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+          gap: var(--space-lg);
+          margin-bottom: var(--space-xl);
+        }
+
+        .admin-card {
+          background: white;
+          padding: var(--space-xl);
+          cursor: pointer;
+          transition: all var(--transition-base);
+          border-left: 4px solid var(--ciatos-primary);
+        }
+
+        .admin-card:hover {
+          transform: translateY(-4px);
+          box-shadow: var(--shadow-lg);
+          border-left-color: var(--ciatos-primary-hover);
+        }
+
+        .admin-card-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: var(--space-md);
+        }
+
+        .admin-card-icon {
+          width: 56px;
+          height: 56px;
+          border-radius: var(--radius-md);
+          background: linear-gradient(135deg, var(--ciatos-primary) 0%, var(--ciatos-primary-light) 100%);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.5rem;
+        }
+
+        .admin-card-icon .icon::before {
+          font-size: 1.75rem;
+        }
+
+        .admin-card-badge {
+          background: rgba(91, 14, 14, 0.1);
+          color: var(--ciatos-primary);
+          font-weight: 700;
+          font-size: 1.25rem;
+          padding: var(--space-xs) var(--space-md);
+          border-radius: var(--radius-lg);
+          border: 2px solid var(--ciatos-primary);
+        }
+
+        .admin-card-content h3 {
+          font-size: 1.25rem;
+          color: var(--ciatos-black);
+          margin-bottom: var(--space-xs);
+        }
+
+        .admin-card-content > p {
+          color: var(--ciatos-gray);
+          margin-bottom: var(--space-md);
+        }
+
+        .admin-card-features {
+          list-style: none;
+          padding: 0;
+          margin: var(--space-md) 0;
+        }
+
+        .admin-card-features li {
+          font-size: 0.875rem;
+          color: var(--ciatos-gray-dark);
+          padding: var(--space-xs) 0;
+          line-height: 1.6;
+        }
+
+        .admin-card-footer {
+          margin-top: var(--space-md);
+          padding-top: var(--space-md);
+          border-top: 1px solid var(--ciatos-gray-lighter);
+        }
+
+        .admin-card-link {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          font-weight: 600;
+          color: var(--ciatos-primary);
+          font-size: 0.875rem;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+        }
+
+        .admin-card:hover .admin-card-link {
+          color: var(--ciatos-primary-hover);
+        }
+
+        .admin-card-link .icon {
+          transition: transform var(--transition-fast);
+        }
+
+        .admin-card:hover .admin-card-link .icon {
+          transform: translateX(4px);
+        }
 
         /* ===== RESPONSIVIDADE ===== */
         @media (max-width: 1024px) {
