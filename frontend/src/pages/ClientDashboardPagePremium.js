@@ -13,7 +13,7 @@ const ClientDashboardPagePremium = () => {
   const [stats, setStats] = useState({
     total_jobs: 0,
     active_jobs: 0,
-    total_applications: 0,
+    approved_candidates: 0,
     in_process: 0
   });
 
