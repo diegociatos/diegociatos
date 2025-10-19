@@ -787,6 +787,7 @@ const DashboardPage = () => {
         .icon-chevron-right::before { content: '›'; }
         .icon-users-cog::before { content: '👥⚙️'; }
         .icon-building::before { content: '🏢'; }
+        .icon-applications::before { content: '📄'; }
 
         /* ===== ADMIN SECTION ===== */
         .admin-section-header {
