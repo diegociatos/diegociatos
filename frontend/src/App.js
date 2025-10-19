@@ -168,7 +168,7 @@ function AppRoutes() {
         path="/cliente/dashboard"
         element={
           <PrivateRoute>
-            <ClientDashboardPage />
+            <ClientDashboardPagePremium />
           </PrivateRoute>
         }
       />
