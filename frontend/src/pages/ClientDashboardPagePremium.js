@@ -977,6 +977,9 @@ const ClientDashboardPagePremium = () => {
         .icon-monitor::before { content: '💻'; }
         .icon-dollar::before { content: '💰'; }
         .icon-trending-up::before { content: '📈'; }
+        .icon-clock::before { content: '⏱️'; }
+        .icon-info::before { content: 'ℹ️'; }
+        .icon-info-circle::before { content: 'ℹ️'; }
 
         /* Responsividade */
         @media (max-width: 1024px) {
