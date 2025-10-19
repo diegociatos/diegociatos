@@ -779,6 +779,7 @@ const ClientDashboardPagePremium = () => {
         .icon-briefcase::before { content: '💼'; }
         .icon-plus-circle::before { content: '➕'; }
         .icon-users::before { content: '👥'; }
+        .icon-user-check::before { content: '✅'; }
         .icon-logout::before { content: '🚪'; }
         .icon-chevron-left::before { content: '‹'; }
         .icon-chevron-right::before { content: '›'; }
