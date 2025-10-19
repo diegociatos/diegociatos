@@ -22,6 +22,9 @@ const DashboardPage = () => {
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
+    // Verificar se é admin
+    const role = getUserRole();
+    setIsAdmin(role === 'admin');
     loadDashboardStats();
   }, []);
 
@@ -30,13 +33,22 @@ const DashboardPage = () => {
       setLoading(true);
       
       // Carregar estatísticas
-      const [jobsRes, candidatesRes] = await Promise.all([
+      const promises = [
         api.get('/jobs'),
         api.get('/candidates')
-      ]);
+      ];
 
-      const jobs = jobsRes.data || [];
-      const candidates = candidatesRes.data || [];
+      // Se for admin, carregar também usuários e organizações
+      if (isAdmin || getUserRole() === 'admin') {
+        promises.push(api.get('/users'));
+        promises.push(api.get('/organizations'));
+      }
+
+      const results = await Promise.all(promises);
+      const jobs = results[0].data || [];
+      const candidates = results[1].data || [];
+      const users = results[2]?.data || [];
+      const organizations = results[3]?.data || [];
 
       setStats({
         totalJobs: jobs.length,
@@ -44,7 +56,9 @@ const DashboardPage = () => {
         totalCandidates: candidates.length,
         activeCandidates: candidates.filter(c => c.visibility === 'pool').length,
         pendingInterviews: 0, // TODO: Integrar com entrevistas
-        hiredThisMonth: 0 // TODO: Integrar com contratações
+        hiredThisMonth: 0, // TODO: Integrar com contratações
+        totalUsers: users.length,
+        totalOrganizations: organizations.length
       });
     } catch (error) {
       console.error('Erro ao carregar dashboard:', error);
