@@ -2543,7 +2543,7 @@ class BackendTester:
                                 f"✅ Application created successfully: {application_id}, tenant_id: {app_data['tenant_id']}")
                     
                     # Step 5: Try to apply again (should fail with 400)
-                    duplicate_response = self.make_request("POST", "/applications", 
+                    duplicate_response = self.make_request("POST", "/applications/", 
                                                          application_data, auth_token=candidate_token)
                     
                     if duplicate_response.status_code == 400:
