@@ -6,17 +6,20 @@ import '../ciatos-design-system.css';
 
 const DashboardPage = () => {
   const navigate = useNavigate();
-  const { user, logout } = useAuth();
+  const { user, logout, getUserRole } = useAuth();
   const [stats, setStats] = useState({
     totalJobs: 0,
     activeJobs: 0,
     totalCandidates: 0,
     activeCandidates: 0,
     pendingInterviews: 0,
-    hiredThisMonth: 0
+    hiredThisMonth: 0,
+    totalUsers: 0,
+    totalOrganizations: 0
   });
   const [loading, setLoading] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     loadDashboardStats();
