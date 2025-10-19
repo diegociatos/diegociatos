@@ -1168,6 +1168,34 @@ test_plan:
     - "Testar backend: GET /jobs-kanban/kanban"
     - "Testar backend: PATCH /jobs-kanban/{job_id}/stage"
     - "Testar backend: PATCH /jobs-kanban/{job_id}/contratacao-result (positivo e negativo)"
+  - agent: "testing"
+    message: |
+      🎉 REVIEW REQUEST TESTING COMPLETO - AMBOS OS TESTES CRÍTICOS PASSARAM!
+      
+      ✅ TESTE 1: CANDIDATURA EM VAGA - PASSOU COMPLETAMENTE
+      Fluxo testado e aprovado:
+      1. ✅ Login candidato: teste_candidato@teste.com / teste123
+      2. ✅ Verificação perfil: todos os campos obrigatórios (phone, email, address_zip_code, location_city, resume_url)
+      3. ✅ Busca vaga: job-001 encontrada e disponível
+      4. ✅ Criar candidatura: POST /api/applications/ funcionando com tenant_id preenchido
+      5. ✅ Teste duplicata: sistema rejeita candidatura duplicada com erro 400
+      
+      ✅ TESTE 2: KANBAN MOSTRA VAGAS DO BRUNO - PASSOU COMPLETAMENTE
+      Verificações realizadas e aprovadas:
+      1. ✅ Login admin/recrutador: admin@ciatos.com / admin123
+      2. ✅ API Kanban: GET /api/jobs-kanban/kanban retorna estrutura 'stages'
+      3. ✅ Vagas do Bruno encontradas:
+         - job-bruno-001 (Consultor Financeiro) → stage 'triagem' ✅
+         - job-bruno-002 (Analista Controladoria) → stage 'entrevistas' ✅
+      4. ✅ Total correto: 8 vagas no kanban (6 TechCorp + 2 Bruno)
+      
+      DADOS DO SISTEMA VALIDADOS:
+      - Organização Bruno: org-bruno-consultoria ✅
+      - Total vagas: 8 (conforme especificado) ✅
+      - Vagas TechCorp: 6 ✅
+      - Vagas Bruno: 2 ✅
+      
+      🚀 AMBAS AS FUNCIONALIDADES CRÍTICAS ESTÃO 100% OPERACIONAIS!
     - "Testar backend: GET /jobs-kanban/{job_id}/stage-history"
     - "Testar backend: Pipeline API com job-001 e credenciais recruiter/admin"
     - "Testar backend: Candidate signup endpoint com payload específico da review"
