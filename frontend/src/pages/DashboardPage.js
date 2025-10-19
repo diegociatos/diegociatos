@@ -232,6 +232,72 @@ const DashboardPage = () => {
           </div>
         </div>
 
+        {/* Admin Cards - Somente para Administradores */}
+        {isAdmin && (
+          <>
+            <div className="admin-section-header">
+              <h2>Administração do Sistema</h2>
+              <p className="text-muted">Gerencie usuários, organizações e configurações</p>
+            </div>
+            
+            <div className="admin-cards-grid">
+              <div className="admin-card card-elevated animate-fade-in" onClick={() => navigate('/admin/usuarios')}>
+                <div className="admin-card-header">
+                  <div className="admin-card-icon">
+                    <span className="icon icon-users-cog"></span>
+                  </div>
+                  <div className="admin-card-badge">
+                    <span>{stats.totalUsers}</span>
+                  </div>
+                </div>
+                <div className="admin-card-content">
+                  <h3>Gestão de Usuários</h3>
+                  <p>Criar, editar e gerenciar usuários do sistema</p>
+                  <ul className="admin-card-features">
+                    <li>• Criar novos usuários (Admin, Analista, Cliente)</li>
+                    <li>• Definir senhas iniciais</li>
+                    <li>• Alterar permissões e papéis</li>
+                    <li>• Resetar senhas de usuários</li>
+                  </ul>
+                </div>
+                <div className="admin-card-footer">
+                  <span className="admin-card-link">
+                    Gerenciar Usuários
+                    <span className="icon icon-arrow-right"></span>
+                  </span>
+                </div>
+              </div>
+
+              <div className="admin-card card-elevated animate-fade-in" style={{animationDelay: '0.1s'}} onClick={() => navigate('/admin/organizacoes')}>
+                <div className="admin-card-header">
+                  <div className="admin-card-icon">
+                    <span className="icon icon-building"></span>
+                  </div>
+                  <div className="admin-card-badge">
+                    <span>{stats.totalOrganizations}</span>
+                  </div>
+                </div>
+                <div className="admin-card-content">
+                  <h3>Gestão de Clientes</h3>
+                  <p>Criar e gerenciar organizações clientes</p>
+                  <ul className="admin-card-features">
+                    <li>• Cadastrar novos clientes</li>
+                    <li>• Editar dados das organizações</li>
+                    <li>• Visualizar vagas por cliente</li>
+                    <li>• Gerenciar status e informações</li>
+                  </ul>
+                </div>
+                <div className="admin-card-footer">
+                  <span className="admin-card-link">
+                    Gerenciar Clientes
+                    <span className="icon icon-arrow-right"></span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
+
         {/* Recent Activity */}
         <div className="recent-section">
           <div className="section-header">
