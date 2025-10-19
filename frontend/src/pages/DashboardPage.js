@@ -218,13 +218,13 @@ const DashboardPage = () => {
             </div>
           </div>
 
-          <div className="action-card card-elevated" onClick={() => navigate('/jobs/create')}>
+          <div className="action-card card-elevated" onClick={() => navigate('/applications')}>
             <div className="action-card-icon">
-              <span className="icon icon-plus-circle"></span>
+              <span className="icon icon-applications"></span>
             </div>
             <div className="action-card-content">
-              <h3>Nova Vaga</h3>
-              <p>Cadastre uma nova posição e inicie o processo seletivo</p>
+              <h3>Candidaturas</h3>
+              <p>Visualize e gerencie todas as candidaturas do sistema</p>
             </div>
             <div className="action-card-arrow">
               <span className="icon icon-arrow-right"></span>
