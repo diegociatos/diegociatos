@@ -2416,6 +2416,283 @@ class BackendTester:
                 
         except Exception as e:
             self.log_test("Step 4: Update Address Separately", False, f"Request failed: {str(e)}")
+    def test_candidate_job_application_flow(self):
+        """TESTE 1: Candidatura em Vaga - Test complete job application flow"""
+        print("\n🎯 TESTE 1: CANDIDATURA EM VAGA")
+        print("=" * 50)
+        
+        # Step 1: Create/Login candidate
+        candidate_data = {
+            "email": "teste_candidato@teste.com",
+            "password": "teste123",
+            "full_name": "Candidato Teste Aplicação",
+            "phone": "11999888777"
+        }
+        
+        try:
+            # Try to create candidate (or login if already exists)
+            signup_response = self.make_request("POST", "/auth/candidate/signup", candidate_data)
+            
+            if signup_response.status_code == 200:
+                signup_data = signup_response.json()
+                candidate_token = signup_data["access_token"]
+                self.log_test("Candidate Login/Create", True, "Candidate created/logged successfully")
+            elif signup_response.status_code == 400 and "já cadastrado" in signup_response.text:
+                # Try login instead
+                login_response = self.make_request("POST", "/auth/login", {
+                    "email": candidate_data["email"],
+                    "password": candidate_data["password"]
+                })
+                
+                if login_response.status_code == 200:
+                    login_data = login_response.json()
+                    candidate_token = login_data["access_token"]
+                    self.log_test("Candidate Login/Create", True, "Candidate logged in successfully")
+                else:
+                    self.log_test("Candidate Login/Create", False, f"Login failed: {login_response.status_code}")
+                    return
+            else:
+                self.log_test("Candidate Login/Create", False, f"Signup failed: {signup_response.status_code}")
+                return
+        except Exception as e:
+            self.log_test("Candidate Login/Create", False, f"Request failed: {str(e)}")
+            return
+        
+        # Step 2: Check and complete profile if needed
+        try:
+            profile_response = self.make_request("GET", "/candidates/profile", auth_token=candidate_token)
+            
+            if profile_response.status_code == 200:
+                profile_data = profile_response.json()
+                
+                # Check required fields for job application
+                required_fields = ["phone", "email", "address_zip_code", "location_city"]
+                missing_fields = [field for field in required_fields if not profile_data.get(field)]
+                
+                if missing_fields:
+                    # Update profile with missing data
+                    update_data = {
+                        "phone": "11999888777",
+                        "email": "teste_candidato@teste.com",
+                        "address_zip_code": "01234-567",
+                        "location_city": "São Paulo",
+                        "location_state": "SP",
+                        "address_street": "Rua Teste",
+                        "address_number": "123",
+                        "resume_url": "https://example.com/resume.pdf"
+                    }
+                    
+                    update_response = self.make_request("POST", "/candidates/profile", 
+                                                      update_data, auth_token=candidate_token)
+                    
+                    if update_response.status_code == 200:
+                        self.log_test("Profile Completion", True, "Profile completed with required fields")
+                    else:
+                        self.log_test("Profile Completion", False, f"Profile update failed: {update_response.status_code}")
+                else:
+                    self.log_test("Profile Completion", True, "Profile already complete")
+            else:
+                self.log_test("Profile Completion", False, f"Could not get profile: {profile_response.status_code}")
+        except Exception as e:
+            self.log_test("Profile Completion", False, f"Profile check failed: {str(e)}")
+        
+        # Step 3: Find available job (job-001 or job-bruno-001)
+        target_job_id = None
+        try:
+            jobs_response = self.make_request("GET", "/jobs/", auth_token=candidate_token)
+            
+            if jobs_response.status_code == 200:
+                jobs = jobs_response.json()
+                
+                # Look for specific jobs mentioned in review
+                for job in jobs:
+                    if job.get("id") in ["job-001", "job-bruno-001"]:
+                        target_job_id = job["id"]
+                        break
+                
+                if not target_job_id and jobs:
+                    # Use first available job if specific ones not found
+                    target_job_id = jobs[0]["id"]
+                
+                if target_job_id:
+                    self.log_test("Find Available Job", True, f"Found job to apply: {target_job_id}")
+                else:
+                    self.log_test("Find Available Job", False, "No jobs available")
+                    return
+            else:
+                self.log_test("Find Available Job", False, f"Could not list jobs: {jobs_response.status_code}")
+                return
+        except Exception as e:
+            self.log_test("Find Available Job", False, f"Job search failed: {str(e)}")
+            return
+        
+        # Step 4: Create job application
+        try:
+            application_data = {"job_id": target_job_id}
+            
+            app_response = self.make_request("POST", "/applications", 
+                                           application_data, auth_token=candidate_token)
+            
+            if app_response.status_code in [200, 201]:
+                app_data = app_response.json()
+                
+                # Verify application was created with tenant_id
+                if "id" in app_data and "tenant_id" in app_data:
+                    application_id = app_data["id"]
+                    self.log_test("Create Job Application", True, 
+                                f"✅ Application created successfully: {application_id}, tenant_id: {app_data['tenant_id']}")
+                    
+                    # Step 5: Try to apply again (should fail with 400)
+                    duplicate_response = self.make_request("POST", "/applications", 
+                                                         application_data, auth_token=candidate_token)
+                    
+                    if duplicate_response.status_code == 400:
+                        self.log_test("Duplicate Application Check", True, 
+                                    "✅ Duplicate application properly rejected with 400")
+                    else:
+                        self.log_test("Duplicate Application Check", False, 
+                                    f"Expected 400 for duplicate, got {duplicate_response.status_code}")
+                else:
+                    self.log_test("Create Job Application", False, 
+                                "Application created but missing id or tenant_id", app_data)
+            else:
+                self.log_test("Create Job Application", False, 
+                            f"❌ Application failed: {app_response.status_code}", app_response.text)
+        except Exception as e:
+            self.log_test("Create Job Application", False, f"Application request failed: {str(e)}")
+
+    def test_bruno_jobs_in_kanban(self):
+        """TESTE 2: Kanban do Analista Mostra Vagas do Bruno"""
+        print("\n🎯 TESTE 2: KANBAN MOSTRA VAGAS DO BRUNO")
+        print("=" * 50)
+        
+        # Step 1: Login as admin or recruiter
+        admin_token = None
+        
+        # Try admin first
+        try:
+            admin_response = self.make_request("POST", "/auth/login", {
+                "email": "admin@ciatos.com",
+                "password": "admin123"
+            })
+            
+            if admin_response.status_code == 200:
+                admin_data = admin_response.json()
+                admin_token = admin_data["access_token"]
+                self.log_test("Admin Login for Kanban", True, "Admin logged in successfully")
+            else:
+                # Try recruiter
+                recruiter_response = self.make_request("POST", "/auth/login", {
+                    "email": "recrutador@ciatos.com",
+                    "password": "recruiter123"
+                })
+                
+                if recruiter_response.status_code == 200:
+                    recruiter_data = recruiter_response.json()
+                    admin_token = recruiter_data["access_token"]
+                    self.log_test("Admin Login for Kanban", True, "Recruiter logged in successfully")
+                else:
+                    self.log_test("Admin Login for Kanban", False, "Could not login as admin or recruiter")
+                    return
+        except Exception as e:
+            self.log_test("Admin Login for Kanban", False, f"Login failed: {str(e)}")
+            return
+        
+        # Step 2: Call GET /api/jobs-kanban/kanban
+        try:
+            kanban_response = self.make_request("GET", "/jobs-kanban/kanban", auth_token=admin_token)
+            
+            if kanban_response.status_code == 200:
+                kanban_data = kanban_response.json()
+                
+                # Step 3: Verify response contains "stages" object
+                if "stages" in kanban_data:
+                    stages = kanban_data["stages"]
+                    self.log_test("Kanban Structure", True, "Kanban response contains 'stages' object")
+                    
+                    # Step 4: Look for Bruno's jobs
+                    bruno_jobs_found = []
+                    total_jobs = 0
+                    
+                    # Count total jobs and look for Bruno's specific jobs
+                    for stage_name, jobs in stages.items():
+                        if isinstance(jobs, list):
+                            total_jobs += len(jobs)
+                            
+                            for job in jobs:
+                                job_id = job.get("id", "")
+                                if job_id in ["job-bruno-001", "job-bruno-002"]:
+                                    bruno_jobs_found.append({
+                                        "id": job_id,
+                                        "stage": stage_name,
+                                        "title": job.get("title", "")
+                                    })
+                    
+                    # Step 5: Verify Bruno's jobs are in correct stages
+                    expected_bruno_jobs = {
+                        "job-bruno-001": "triagem",
+                        "job-bruno-002": "entrevistas"
+                    }
+                    
+                    bruno_jobs_correct = True
+                    bruno_jobs_details = []
+                    
+                    for expected_job in expected_bruno_jobs:
+                        found_job = next((j for j in bruno_jobs_found if j["id"] == expected_job), None)
+                        
+                        if found_job:
+                            expected_stage = expected_bruno_jobs[expected_job]
+                            actual_stage = found_job["stage"]
+                            
+                            if actual_stage == expected_stage:
+                                bruno_jobs_details.append(f"✅ {expected_job} in {actual_stage} (correct)")
+                            else:
+                                bruno_jobs_details.append(f"❌ {expected_job} in {actual_stage} (expected {expected_stage})")
+                                bruno_jobs_correct = False
+                        else:
+                            bruno_jobs_details.append(f"❌ {expected_job} not found in kanban")
+                            bruno_jobs_correct = False
+                    
+                    if bruno_jobs_correct and len(bruno_jobs_found) == 2:
+                        self.log_test("Bruno Jobs in Kanban", True, 
+                                    f"✅ Bruno's jobs found in correct stages: {'; '.join(bruno_jobs_details)}")
+                    else:
+                        self.log_test("Bruno Jobs in Kanban", False, 
+                                    f"Bruno's jobs not in correct stages: {'; '.join(bruno_jobs_details)}")
+                    
+                    # Step 6: Verify total job count (should be 8)
+                    if total_jobs == 8:
+                        self.log_test("Total Jobs Count", True, f"✅ Kanban has correct total: {total_jobs} jobs")
+                    else:
+                        self.log_test("Total Jobs Count", False, f"Expected 8 jobs, found {total_jobs}")
+                    
+                    # Additional details for debugging
+                    print(f"📊 KANBAN SUMMARY:")
+                    print(f"   Total jobs: {total_jobs}")
+                    print(f"   Bruno jobs found: {len(bruno_jobs_found)}")
+                    for job in bruno_jobs_found:
+                        print(f"   - {job['id']}: {job['title']} (stage: {job['stage']})")
+                    
+                else:
+                    self.log_test("Kanban Structure", False, "Kanban response missing 'stages' object", kanban_data)
+            else:
+                self.log_test("Kanban Structure", False, f"Kanban request failed: {kanban_response.status_code}", kanban_response.text)
+        except Exception as e:
+            self.log_test("Kanban Structure", False, f"Kanban request failed: {str(e)}")
+
+    def run_review_tests(self):
+        """Run the specific tests requested in the review"""
+        print("🎯 EXECUTANDO TESTES DA REVIEW REQUEST")
+        print("=" * 60)
+        
+        # Test 1: Job Application Flow
+        self.test_candidate_job_application_flow()
+        
+        # Test 2: Bruno Jobs in Kanban
+        self.test_bruno_jobs_in_kanban()
+        
+        # Print summary
+        self.print_summary()
     def run_all_tests(self):
         """Run candidate profile data saving test as requested in review"""
         print("🚀 Testing Candidate Profile Data Saving")
