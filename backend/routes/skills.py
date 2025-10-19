@@ -17,7 +17,7 @@ class TagCreate(BaseModel):
     name: str
 
 
-@router.post("/")
+@router.post("")
 async def create_skill(data: SkillCreate, request: Request, session_token: Optional[str] = Cookie(None)):
     user = await get_current_user(request, session_token)
     

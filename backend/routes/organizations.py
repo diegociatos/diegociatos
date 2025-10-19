@@ -20,7 +20,7 @@ class OrganizationUpdate(BaseModel):
     active: Optional[bool] = None
 
 
-@router.post("/")
+@router.post("")
 async def create_organization(data: OrganizationCreate, request: Request, session_token: Optional[str] = Cookie(None)):
     user = await get_current_user(request, session_token)
     await require_role(user, ["admin"])

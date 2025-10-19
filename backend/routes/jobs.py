@@ -47,7 +47,7 @@ class JobRequiredSkillCreate(BaseModel):
     min_level: int = 1
 
 
-@router.post("/")
+@router.post("")
 async def create_job(data: JobCreate, organization_id: str, request: Request, session_token: Optional[str] = Cookie(None)):
     user = await get_current_user(request, session_token)
     roles = await get_user_roles(user["id"], organization_id)

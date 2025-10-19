@@ -16,7 +16,7 @@ class FeedbackCreate(BaseModel):
     visibility: Literal["internal", "client", "candidate"] = "internal"
 
 
-@router.post("/")
+@router.post("")
 async def create_feedback(data: FeedbackCreate, request: Request, session_token: Optional[str] = Cookie(None)):
     user = await get_current_user(request, session_token)
     

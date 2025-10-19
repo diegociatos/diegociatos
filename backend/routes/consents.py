@@ -18,7 +18,7 @@ class DataSubjectRequestCreate(BaseModel):
     request_type: Literal["access", "rectify", "erase", "revoke_consent"]
 
 
-@router.post("/")
+@router.post("")
 async def create_consent(data: ConsentCreate, request: Request, session_token: Optional[str] = Cookie(None)):
     user = await get_current_user(request, session_token)
     
