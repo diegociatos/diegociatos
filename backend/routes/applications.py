@@ -51,7 +51,7 @@ async def create_application(data: ApplicationCreate, request: Request, session_
     application = Application(
         job_id=data.job_id,
         candidate_id=candidate["id"],
-        tenant_id=job["organization_id"]
+        tenant_id=job.get("tenant_id") or job.get("organization_id")
     )
     await db.applications.insert_one(application.model_dump())
     
