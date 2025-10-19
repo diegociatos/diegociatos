@@ -6,6 +6,8 @@ import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
 import ClientDashboardPage from './pages/ClientDashboardPage';
 import ClientDashboardPagePremium from './pages/ClientDashboardPagePremium';
+import ClientJobsPage from './pages/ClientJobsPage';
+import ClientKanbanPage from './pages/ClientKanbanPage';
 import CandidateDashboardPage from './pages/CandidateDashboardPage';
 import JobsPage from './pages/JobsPage';
 import CreateJobPage from './pages/CreateJobPage';
