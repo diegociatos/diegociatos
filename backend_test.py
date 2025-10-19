@@ -2693,6 +2693,28 @@ class BackendTester:
         
         # Print summary
         self.print_summary()
+    def print_summary(self):
+        """Print test summary"""
+        print("\n" + "=" * 60)
+        print("📊 REVIEW TESTS SUMMARY")
+        print("=" * 60)
+        
+        passed = sum(1 for result in self.test_results if result["success"])
+        total = len(self.test_results)
+        
+        print(f"Total Tests: {total}")
+        print(f"Passed: {passed}")
+        print(f"Failed: {total - passed}")
+        
+        if total - passed > 0:
+            print("\n❌ FAILED TESTS:")
+            for result in self.test_results:
+                if not result["success"]:
+                    print(f"  - {result['test']}: {result['message']}")
+        else:
+            print("\n🎉 ALL REVIEW TESTS PASSED!")
+        
+        return passed == total
     def run_all_tests(self):
         """Run candidate profile data saving test as requested in review"""
         print("🚀 Testing Candidate Profile Data Saving")
