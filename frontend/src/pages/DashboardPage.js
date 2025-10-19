@@ -188,7 +188,7 @@ const DashboardPage = () => {
             </div>
           </div>
 
-          <div className="action-card card-elevated" onClick={() => navigate('/candidatos')}>
+          <div className="action-card card-elevated" onClick={() => navigate('/candidates')}>
             <div className="action-card-icon">
               <span className="icon icon-user-search"></span>
             </div>
