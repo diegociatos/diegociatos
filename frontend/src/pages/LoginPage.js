@@ -8,9 +8,6 @@ import { Label } from '../components/ui/label';
 import { toast } from 'sonner';
 import '../ciatos-design-system.css';
 
-const AUTH_REDIRECT_URL = `${window.location.origin}/dashboard`;
-const GOOGLE_AUTH_URL = `https://auth.emergentagent.com/?redirect=${encodeURIComponent(AUTH_REDIRECT_URL)}`;
-
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
