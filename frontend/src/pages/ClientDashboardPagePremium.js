@@ -194,12 +194,12 @@ const ClientDashboardPagePremium = () => {
 
           <div className="kpi-card card animate-fade-in" style={{animationDelay: '0.1s'}}>
             <div className="kpi-icon-wrapper kpi-success">
-              <span className="icon icon-users"></span>
+              <span className="icon icon-user-check"></span>
             </div>
             <div className="kpi-content">
-              <p className="kpi-label">Candidaturas</p>
-              <h2 className="kpi-value">{stats.total_applications}</h2>
-              <p className="kpi-change">Total recebidas</p>
+              <p className="kpi-label">Candidatos Aprovados</p>
+              <h2 className="kpi-value">{stats.approved_candidates}</h2>
+              <p className="kpi-change">Prontos para análise</p>
             </div>
           </div>
 
