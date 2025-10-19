@@ -47,20 +47,6 @@ export default function LoginPage() {
     }
   };
 
-  const handleGoogleCallback = async (sessionId) => {
-    setLoading(true);
-    try {
-      await googleLogin(sessionId);
-      window.history.replaceState(null, '', '/dashboard');
-      navigate('/dashboard');
-      toast.success('Login realizado com sucesso!');
-    } catch (error) {
-      toast.error('Erro ao fazer login com Google');
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
