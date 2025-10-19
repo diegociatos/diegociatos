@@ -15,15 +15,11 @@ export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const { login, googleLogin, user, getUserRole, userRoles } = useAuth();
+  const { login, user, getUserRole, userRoles } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    const hash = window.location.hash;
-    if (hash && hash.includes('session_id=')) {
-      const sessionId = hash.split('session_id=')[1].split('&')[0];
-      handleGoogleCallback(sessionId);
-    } else if (user && userRoles.length > 0) {
+    if (user && userRoles.length > 0) {
       redirectBasedOnRole();
     }
   }, [user, userRoles]);
