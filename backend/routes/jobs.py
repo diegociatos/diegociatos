@@ -64,7 +64,7 @@ async def create_job(data: JobCreate, organization_id: str, request: Request, se
     return job
 
 
-@router.get("/")
+@router.get("")
 async def list_jobs(
     organization_id: Optional[str] = None,
     status: Optional[str] = None,
