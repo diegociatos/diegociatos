@@ -175,6 +175,14 @@ function AppRoutes() {
         }
       />
       <Route
+        path="/cliente/vagas"
+        element={
+          <PrivateRoute>
+            <ClientJobsPage />
+          </PrivateRoute>
+        }
+      />
+      <Route
         path="/cliente/vagas-kanban"
         element={
           <PrivateRoute>
