@@ -15,7 +15,7 @@ class NotificationCreate(BaseModel):
     payload: Dict[str, Any]
 
 
-@router.get("/")
+@router.get("")
 async def get_notifications(
     request: Request, 
     session_token: Optional[str] = Cookie(None),

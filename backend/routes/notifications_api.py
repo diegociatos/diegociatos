@@ -15,7 +15,7 @@ class UpdatePreferencesRequest(BaseModel):
     updates: dict  # { notification_type: { channel: bool } }
 
 
-@router.get("/")
+@router.get("")
 async def list_notifications(
     is_read: Optional[bool] = Query(None),
     page: int = Query(1, ge=1),

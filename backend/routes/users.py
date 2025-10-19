@@ -18,7 +18,7 @@ class ChangePasswordByAdminRequest(BaseModel):
     new_password: Optional[str] = None
 
 
-@router.get("/")
+@router.get("")
 async def list_users(organization_id: Optional[str] = None, request: Request = None, session_token: Optional[str] = Cookie(None)):
     user = await get_current_user(request, session_token)
     await require_role(user, ["admin", "recruiter"])

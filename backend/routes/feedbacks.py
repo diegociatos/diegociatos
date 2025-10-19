@@ -32,7 +32,7 @@ async def create_feedback(data: FeedbackCreate, request: Request, session_token:
     return feedback
 
 
-@router.get("/")
+@router.get("")
 async def list_feedbacks(
     application_id: Optional[str] = None,
     request: Request = None,

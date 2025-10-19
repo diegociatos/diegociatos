@@ -39,7 +39,7 @@ async def create_interview(data: InterviewCreate, request: Request, session_toke
     return interview
 
 
-@router.get("/")
+@router.get("")
 async def list_interviews(
     application_id: Optional[str] = None,
     request: Request = None,

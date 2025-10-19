@@ -249,7 +249,7 @@ async def cancel_interview(
     return {"success": True, "message": "Entrevista cancelada com sucesso"}
 
 
-@router.get("/")
+@router.get("")
 async def list_interviews(
     tenant_id: str = Query(...),
     range_start_iso: Optional[str] = Query(None),

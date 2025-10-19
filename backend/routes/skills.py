@@ -30,7 +30,7 @@ async def create_skill(data: SkillCreate, request: Request, session_token: Optio
     return skill
 
 
-@router.get("/")
+@router.get("")
 async def list_skills(category: Optional[str] = None):
     query = {}
     if category:

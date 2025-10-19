@@ -30,7 +30,7 @@ async def create_organization(data: OrganizationCreate, request: Request, sessio
     return org
 
 
-@router.get("/")
+@router.get("")
 async def list_organizations(request: Request, session_token: Optional[str] = Cookie(None)):
     user = await get_current_user(request, session_token)
     await require_role(user, ["admin", "recruiter", "client"])

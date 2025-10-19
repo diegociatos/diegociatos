@@ -69,7 +69,7 @@ async def create_application(data: ApplicationCreate, request: Request, session_
     return application
 
 
-@router.get("/")
+@router.get("")
 async def list_applications(
     job_id: Optional[str] = None,
     candidate_id: Optional[str] = None,
