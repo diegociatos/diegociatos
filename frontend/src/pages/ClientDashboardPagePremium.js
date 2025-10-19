@@ -692,6 +692,66 @@ const ClientDashboardPagePremium = () => {
           display: grid;
           grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
           gap: var(--space-lg);
+          margin-top: var(--space-lg);
+        }
+
+        /* Client Action Cards */
+        .client-action-cards {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+          gap: var(--space-md);
+          margin-bottom: var(--space-xl);
+        }
+
+        .client-action-card {
+          display: flex;
+          align-items: center;
+          gap: var(--space-md);
+          padding: var(--space-lg);
+          cursor: pointer;
+          transition: all var(--transition-base);
+        }
+
+        .client-action-card:hover {
+          transform: translateY(-2px);
+          box-shadow: var(--shadow-md);
+        }
+
+        .action-card-icon {
+          width: 56px;
+          height: 56px;
+          border-radius: var(--radius-md);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
+        }
+
+        .action-card-icon .icon::before {
+          font-size: 1.75rem;
+        }
+
+        .action-icon-primary {
+          background: linear-gradient(135deg, var(--ciatos-primary) 0%, var(--ciatos-primary-light) 100%);
+          color: white;
+        }
+
+        .action-icon-success {
+          background: linear-gradient(135deg, var(--ciatos-success) 0%, #43A047 100%);
+          color: white;
+        }
+
+        .action-card-text h4 {
+          font-family: var(--font-serif);
+          font-size: 1.125rem;
+          color: var(--ciatos-black);
+          margin: 0 0 4px 0;
+        }
+
+        .action-card-text p {
+          font-size: 0.875rem;
+          color: var(--ciatos-gray);
+          margin: 0;
         }
 
         .job-card {
