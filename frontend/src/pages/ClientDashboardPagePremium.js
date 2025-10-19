@@ -756,13 +756,12 @@ const ClientDashboardPagePremium = () => {
 
         .job-card {
           padding: var(--space-lg);
-          cursor: pointer;
           transition: all var(--transition-base);
         }
 
         .job-card:hover {
-          transform: translateY(-4px);
-          box-shadow: var(--shadow-lg);
+          transform: translateY(-2px);
+          box-shadow: var(--shadow-md);
         }
 
         .job-card-header {
