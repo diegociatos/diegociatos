@@ -1145,4 +1145,6 @@ test_plan:
     - "Complete Candidate Questionnaire Frontend Flow - All steps tested and working"
     - "Admin Login Credentials Test - Review request fulfilled"
     - "Candidate Profile Data Saving Test - Review request fulfilled"
+    - "TESTE 1: Candidatura em Vaga - PASSOU COMPLETAMENTE"
+    - "TESTE 2: Kanban do Analista Mostra Vagas do Bruno - PASSOU COMPLETAMENTE"
 
