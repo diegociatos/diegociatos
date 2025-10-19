@@ -38,9 +38,14 @@ async def get_jobs_kanban(request: Request, session_token: Optional[str] = Cooki
     if not any(r["role"] == "admin" for r in roles):
         org_ids = list(set([r["organization_id"] for r in roles if r["role"] in ["recruiter", "client"]]))
         if org_ids:
-            query["organization_id"] = {"$in": org_ids}
+            # Buscar vagas onde organization_id OU tenant_id estão na lista
+            query["$or"] = [
+                {"organization_id": {"$in": org_ids}},
+                {"tenant_id": {"$in": org_ids}}
+            ]
         else:
-            return {"stages": {}}
+            # Se não é recruiter ou client, mostrar todas para admin/analyst
+            pass
     
     # Buscar todas as vagas
     jobs = await db.jobs.find(query, {"_id": 0}).to_list(None)
