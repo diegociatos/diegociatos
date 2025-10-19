@@ -907,6 +907,56 @@ const ClientDashboardPagePremium = () => {
           transform: translateX(2px);
         }
 
+        /* Info Box */
+        .info-box {
+          display: flex;
+          gap: var(--space-md);
+          padding: var(--space-xl);
+          margin-top: var(--space-xl);
+          background: linear-gradient(135deg, rgba(91, 14, 14, 0.03) 0%, rgba(91, 14, 14, 0.01) 100%);
+          border-left: 4px solid var(--ciatos-primary);
+        }
+
+        .info-box-icon {
+          width: 48px;
+          height: 48px;
+          border-radius: 50%;
+          background: var(--ciatos-primary);
+          color: white;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
+        }
+
+        .info-box-icon .icon::before {
+          font-size: 1.5rem;
+        }
+
+        .info-box-content {
+          flex: 1;
+        }
+
+        .info-box-content h4 {
+          font-family: var(--font-serif);
+          font-size: 1.125rem;
+          color: var(--ciatos-black);
+          margin: 0 0 var(--space-sm) 0;
+        }
+
+        .info-box-content ul {
+          list-style: none;
+          padding: 0;
+          margin: 0;
+        }
+
+        .info-box-content li {
+          font-size: 0.875rem;
+          color: var(--ciatos-gray-dark);
+          padding: var(--space-xs) 0;
+          line-height: 1.6;
+        }
+
         /* Icons */
         .icon {
           width: 20px;
