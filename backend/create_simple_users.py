@@ -16,7 +16,7 @@ import uuid
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 MONGO_URL = "mongodb://localhost:27017"
-DB_NAME = "ats_db"
+DB_NAME = "ciatos_ats"  # Banco correto usado pelo backend
 
 async def main():
     client = AsyncIOMotorClient(MONGO_URL)
