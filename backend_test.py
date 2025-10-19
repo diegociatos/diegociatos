@@ -2469,28 +2469,25 @@ class BackendTester:
                 required_fields = ["phone", "email", "address_zip_code", "location_city"]
                 missing_fields = [field for field in required_fields if not profile_data.get(field)]
                 
-                if missing_fields:
-                    # Update profile with missing data
-                    update_data = {
-                        "phone": "11999888777",
-                        "email": "teste_candidato@teste.com",
-                        "address_zip_code": "01234-567",
-                        "location_city": "São Paulo",
-                        "location_state": "SP",
-                        "address_street": "Rua Teste",
-                        "address_number": "123",
-                        "resume_url": "https://example.com/resume.pdf"
-                    }
-                    
-                    update_response = self.make_request("POST", "/candidates/profile", 
-                                                      update_data, auth_token=candidate_token)
-                    
-                    if update_response.status_code == 200:
-                        self.log_test("Profile Completion", True, "Profile completed with required fields")
-                    else:
-                        self.log_test("Profile Completion", False, f"Profile update failed: {update_response.status_code}")
+                # Always update profile to ensure all required fields are present
+                update_data = {
+                    "phone": "11999888777",
+                    "email": "teste_candidato@teste.com",
+                    "address_zip_code": "01234-567",
+                    "location_city": "São Paulo",
+                    "location_state": "SP",
+                    "address_street": "Rua Teste",
+                    "address_number": "123",
+                    "resume_url": "https://example.com/resume-teste-candidato.pdf"
+                }
+                
+                update_response = self.make_request("POST", "/candidates/profile", 
+                                                  update_data, auth_token=candidate_token)
+                
+                if update_response.status_code == 200:
+                    self.log_test("Profile Completion", True, "Profile updated with all required fields including resume_url")
                 else:
-                    self.log_test("Profile Completion", True, "Profile already complete")
+                    self.log_test("Profile Completion", False, f"Profile update failed: {update_response.status_code}")
             else:
                 self.log_test("Profile Completion", False, f"Could not get profile: {profile_response.status_code}")
         except Exception as e:
