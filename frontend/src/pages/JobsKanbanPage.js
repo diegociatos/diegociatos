@@ -61,7 +61,7 @@ const JobsKanbanPagePremium = () => {
   const menuItems = [
     { icon: '🏠', label: 'Dashboard', path: '/recruiter' },
     { icon: '💼', label: 'Vagas', path: '/analista/vagas-kanban', active: true },
-    { icon: '👥', label: 'Candidatos', path: '/candidatos' },
+    { icon: '👥', label: 'Candidatos', path: '/candidates' },
     { icon: '📅', label: 'Entrevistas', path: '/interviews' },
     { icon: '📊', label: 'Relatórios', path: '/reports' },
   ];
