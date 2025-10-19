@@ -249,7 +249,7 @@ function AppRoutes() {
         path="/candidates"
         element={
           <PrivateRoute>
-            <CandidatesPage />
+            <CandidatesPagePremium />
           </PrivateRoute>
         }
       />
