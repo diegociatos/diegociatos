@@ -2726,5 +2726,11 @@ class BackendTester:
 
 if __name__ == "__main__":
     tester = BackendTester()
-    success = tester.run_all_tests()
+    tester.run_review_tests()
+    
+    # Check if all tests passed
+    passed = sum(1 for result in tester.test_results if result["success"])
+    total = len(tester.test_results)
+    success = passed == total
+    
     sys.exit(0 if success else 1)
