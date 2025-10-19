@@ -928,6 +928,10 @@ const DashboardPage = () => {
           .action-cards-grid {
             grid-template-columns: 1fr;
           }
+
+          .admin-cards-grid {
+            grid-template-columns: 1fr;
+          }
         }
 
         @media (max-width: 640px) {
@@ -938,6 +942,10 @@ const DashboardPage = () => {
 
           .kpi-grid {
             grid-template-columns: 1fr;
+          }
+
+          .admin-section-header h2 {
+            font-size: 1.25rem;
           }
         }
       `}</style>
