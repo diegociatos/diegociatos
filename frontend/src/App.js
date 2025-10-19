@@ -11,6 +11,7 @@ import CreateJobPage from './pages/CreateJobPage';
 import JobDashboardPage from './pages/JobDashboardPage';
 import ApplicationsPage from './pages/ApplicationsPage';
 import CandidatesPage from './pages/CandidatesPage';
+import CandidatesPagePremium from './pages/CandidatesPagePremium';
 import CareerSitePage from './pages/CareerSitePage';
 import CandidateProfilePage from './pages/CandidateProfilePage';
 import CandidateSignupPage from './pages/CandidateSignupPage';
