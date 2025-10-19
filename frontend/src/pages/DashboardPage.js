@@ -53,7 +53,7 @@ const DashboardPage = () => {
   const menuItems = [
     { icon: 'home', label: 'Dashboard', path: '/recruiter', active: true },
     { icon: 'briefcase', label: 'Vagas', path: '/analista/vagas-kanban' },
-    { icon: 'users', label: 'Candidatos', path: '/candidatos' },
+    { icon: 'users', label: 'Candidatos', path: '/candidates' },
     { icon: 'calendar', label: 'Entrevistas', path: '/interviews' },
     { icon: 'bar-chart', label: 'Relatórios', path: '/reports' },
     { icon: 'settings', label: 'Configurações', path: '/settings' },
