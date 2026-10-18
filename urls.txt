@@ -1,0 +1,12 @@
+folha_personagens.png https://cdn.kairogen.ai/gallery/images/6a92bc0350cd3e161bcd1c6c/b1f61b8e-e9a3-47fd-8c1f-911491a62dd2.png
+cena01.png https://cdn.kairogen.ai/gallery/images/6a92bc0350cd3e161bcd1c6c/fab90e9f-f30a-4983-9349-0a7c2003e170.png
+cena02.png https://cdn.kairogen.ai/gallery/images/6a92bc0350cd3e161bcd1c6c/e998d4e9-a96b-4906-90e1-a3d225a99de3.png
+cena03.png https://cdn.kairogen.ai/gallery/images/6a92bc0350cd3e161bcd1c6c/7bac94bc-f659-4bd3-a3c0-352cba3a6cd9.png
+cena04.png https://cdn.kairogen.ai/gallery/images/6a92bc0350cd3e161bcd1c6c/6260c270-70e0-4a30-9dce-2f7df6f890e3.png
+cena05.png https://cdn.kairogen.ai/gallery/images/6a92bc0350cd3e161bcd1c6c/c0c54f3b-e9e8-4d09-a7d3-b7efb5b493f6.png
+cena06.png https://cdn.kairogen.ai/gallery/images/6a92bc0350cd3e161bcd1c6c/aa2c1320-fe04-4fd2-83fb-d0a5e48c58b2.png
+cena07.png https://cdn.kairogen.ai/gallery/images/6a92bc0350cd3e161bcd1c6c/57949d9a-54dd-409a-9c67-040d261fb854.png
+cena08.png https://cdn.kairogen.ai/gallery/images/6a92bc0350cd3e161bcd1c6c/0cee24ca-4068-4927-8460-a54d2c32ff26.png
+cena09a.png https://cdn.kairogen.ai/gallery/images/6a92bc0350cd3e161bcd1c6c/a97eb863-fbd3-43ab-82cb-ccd4a4899658.png
+cena09b.png https://cdn.kairogen.ai/gallery/images/6a92bc0350cd3e161bcd1c6c/b6b8395e-f00c-488f-be52-6506c4e3744f.png
+narracao.mp3 https://cdn.kairogen.ai/audio-generations/6a92bc0350cd3e161bcd1c6c/6ad53a6f24b8601d0da608d6/speech.mp3

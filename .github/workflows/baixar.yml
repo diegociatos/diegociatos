@@ -1,0 +1,27 @@
+name: Baixar midia do Kairogen
+on:
+  push:
+    branches: [hq-gabriel-theo]
+    paths: [urls.txt]
+permissions:
+  contents: write
+jobs:
+  baixar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Baixar arquivos
+        run: |
+          mkdir -p ep01
+          while read -r nome url; do
+            [ -z "$nome" ] && continue
+            curl -fsSL -o "ep01/$nome" "$url"
+          done < urls.txt
+          ls -la ep01
+      - name: Gravar no branch
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add ep01
+          git commit -m "Midia do episodio 1 (Kairogen)" || echo "nada novo"
+          git push
