@@ -9,7 +9,7 @@ S=[
 ("A CONTA QUE VEIO",["Para a Receita, esse desconto era **receita**. E receita paga **PIS e Cofins**: 9,25% no lucro real.","Se o crédito é de **R$ 1 milhão por ano**, são **R$ 92.500 por ano** de PIS/Cofins.","Em 5 anos, **R$ 462.500**. (Conta ilustrativa.)"],None,None),
 ("O QUE O STF DECIDIU",["Em **07/10/2026**, o Plenário fechou a questão a favor das empresas:"],{"veiculo":"Tema 843 · RE 835.818","manchete":"\"Surge incompatível, com a Constituição Federal, a inclusão de créditos presumidos do ICMS na base de cálculo da Cofins e da contribuição ao PIS.\"","ficha":[["Tribunal","STF · Plenário"],["Placar","7 a 4"],["Relator","Min. Marco Aurélio (aposentado)"],["Data","07/10/2026"]]},"Julgamento iniciado em 2021: há votos de ministros já aposentados."),
 ("GANHOU. AGORA, ATENÇÃO",["• O acórdão **ainda não foi publicado**.","• A Fazenda pode pedir **modulação** nos embargos. Quem não tiver ação pode ficar sem o passado.","• Ainda não está claro se vale para a regra da **Lei 14.789/2023** (desde 2024).","• Recuperação: em regra, **últimos 5 anos**."],None,"Cada caso exige análise individual."),
-("SUA EMPRESA TEM INCENTIVO DE ICMS?",["Indústria, atacado, agro, importação com benefício estadual...","Comenta **\"843\"** que eu te mostro como levantar quanto você pagou a mais.","WhatsApp (31) 99110-0349"],None,None),
+("SUA EMPRESA TEM INCENTIVO DE ICMS?",["Indústria, atacado, agro, importação com benefício estadual...","Comenta **\"843\"** que eu te mostro como levantar quanto você pagou a mais.","WhatsApp (31) 99712-9789"],None,None),
 ]
 for i,(t,p,f,r) in enumerate(S,start=2): tweet(i,T,t,p,'%s_%02d.jpg'%(o,i),f,r)
 ims=[Image.open('%s_%02d.jpg'%(o,i)).convert('RGB') for i in range(1,T+1)]
