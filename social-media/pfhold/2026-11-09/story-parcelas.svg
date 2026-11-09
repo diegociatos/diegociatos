@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1920" viewBox="0 0 1080 1920">
 <rect width="1080" height="1920" fill="#0f2a1f"/>
 <rect x="36" y="36" width="1008" height="1848" rx="30" fill="none" stroke="#D2B477" stroke-width="2" opacity=".55"/>
-<path d="M80 460 H1000" stroke="#D2B477" stroke-width="4"/>
+<path d="M80 550 H1000" stroke="#D2B477" stroke-width="4"/>
 <text x="90" y="172" font-family="Georgia,serif" font-size="32" fill="#D2B477" letter-spacing="6">PFHOLD  /  FINANÇAS PESSOAIS</text>
 <text x="90" y="290" font-family="Georgia,serif" font-size="83" fill="#F7F4EE" font-weight="bold">SUAS PARCELAS</text>
 <text x="90" y="385" font-family="Georgia,serif" font-size="83" fill="#F7F4EE" font-weight="bold">JÁ OCUPAM</text>
