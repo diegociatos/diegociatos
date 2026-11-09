@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1920" viewBox="0 0 1080 1920">
+<rect width="1080" height="1920" fill="#0f2a1f"/>
+<rect x="36" y="36" width="1008" height="1848" rx="30" fill="none" stroke="#D2B477" stroke-width="2" opacity=".55"/>
+<path d="M80 460 H1000" stroke="#D2B477" stroke-width="4"/>
+<text x="90" y="172" font-family="Georgia,serif" font-size="32" fill="#D2B477" letter-spacing="6">PFHOLD  /  FINANÇAS PESSOAIS</text>
+<text x="90" y="290" font-family="Georgia,serif" font-size="83" fill="#F7F4EE" font-weight="bold">SUAS PARCELAS</text>
+<text x="90" y="385" font-family="Georgia,serif" font-size="83" fill="#F7F4EE" font-weight="bold">JÁ OCUPAM</text>
+<text x="90" y="480" font-family="Georgia,serif" font-size="83" fill="#D2B477" font-weight="bold">O AMANHÃ.</text>
+<text x="90" y="622" font-family="Arial,sans-serif" font-size="41" fill="#F7F4EE">Antes da próxima compra, confira</text>
+<text x="90" y="679" font-family="Arial,sans-serif" font-size="41" fill="#F7F4EE">as faturas dos próximos meses.</text>
+<rect x="90" y="800" width="900" height="630" rx="34" fill="#F7F4EE"/>
+<text x="136" y="900" font-family="Arial,sans-serif" font-size="30" fill="#55645A" letter-spacing="3">EXEMPLO ILUSTRATIVO</text>
+<text x="136" y="1020" font-family="Georgia,serif" font-size="49" fill="#0f2a1f">Notebook</text>
+<text x="944" y="1020" text-anchor="end" font-family="Arial,sans-serif" font-size="47" font-weight="bold" fill="#0f2a1f">R$ 600/mês</text>
+<line x1="136" x2="944" y1="1070" y2="1070" stroke="#C3C9BD"/>
+<text x="136" y="1165" font-family="Georgia,serif" font-size="49" fill="#0f2a1f">Viagem</text>
+<text x="944" y="1165" text-anchor="end" font-family="Arial,sans-serif" font-size="47" font-weight="bold" fill="#0f2a1f">R$ 600/mês</text>
+<line x1="136" x2="944" y1="1210" y2="1210" stroke="#C3C9BD"/>
+<text x="136" y="1300" font-family="Georgia,serif" font-size="49" fill="#0f2a1f">Geladeira</text>
+<text x="944" y="1300" text-anchor="end" font-family="Arial,sans-serif" font-size="47" font-weight="bold" fill="#0f2a1f">R$ 300/mês</text>
+<rect x="90" y="1500" width="900" height="166" rx="28" fill="#D2B477"/>
+<text x="540" y="1570" text-anchor="middle" font-family="Arial,sans-serif" font-weight="bold" font-size="45" fill="#0f2a1f">VEJA O PFHOLD EM AÇÃO</text>
+<text x="540" y="1624" text-anchor="middle" font-family="Arial,sans-serif" font-size="38" fill="#0f2a1f">DEMO: pfhold.com.br</text>
+<text x="90" y="1770" font-family="Georgia,serif" font-weight="bold" font-size="60" fill="#F7F4EE">PFHold</text>
+<text x="990" y="1770" text-anchor="end" font-family="Arial,sans-serif" font-size="24" fill="#D2B477">DEMONSTRAÇÃO COM DADOS FICTÍCIOS</text>
+</svg>
