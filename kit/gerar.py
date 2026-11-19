@@ -98,7 +98,8 @@ def rich_lines(d, text, maxw, size):
     if cur: lines.append(cur)
     return lines, reg, bold, sp
 
-def tweet(n, total, titulo, paras, out, fonte=None, rodape=None):
+def tweet(n, total, titulo, paras, out, fonte=None, rodape=None, punch=None):
+    # punch: frase final em CAIXA ALTA e negrito (estilo 'conclusão do slide')
     img = Image.new("RGB", (W, H), WHITE); d = ImageDraw.Draw(img); X = 80; maxw = W - 2 * X
     # contador
     cf = font("inter", 600, 28); ct = f"{n}/{total}"; cw = d.textlength(ct, font=cf)
@@ -111,6 +112,8 @@ def tweet(n, total, titulo, paras, out, fonte=None, rodape=None):
     h = 150 + 50 + len(tl) * 62 + 30
     for lines, *_ in blocks: h += len(lines) * 56 + 28
     if fonte: h += 120 + len(fonte.get("ficha", [])) * 46 + 44 * 2
+    pf = font("inter", 800, 44); pl = wrap(d, punch.upper(), pf, maxw) if punch else []
+    if pl: h += 20 + len(pl) * 56
     y = max(150, int((H - h) / 2) - 20)
     av = avatar(150); img.paste(av, (X, y), av)
     d.text((X + 180, y + 30), "Diego Ciatos", font=font("inter", 800, 44), fill=INK)
@@ -128,6 +131,10 @@ def tweet(n, total, titulo, paras, out, fonte=None, rodape=None):
                 d.text((x, y), w, font=f, fill=INK); x += d.textlength(w, font=f) + sp
             y += 56
         y += 28
+    if pl:
+        y += 12
+        for l in pl: d.text((X, y), l, font=pf, fill=INK); y += 56
+        y += 16
     if fonte:
         y += 10; sf = font("inter", 700, 26); hf = font("inter", 800, 34)
         lf = font("inter", 600, 30); vf = font("inter", 500, 30)
